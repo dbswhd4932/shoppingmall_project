@@ -1,4 +1,4 @@
 package com.project.shop.order.domain.entity;
 
-public class Pay {
+public class OrderPay {
 }
