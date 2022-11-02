@@ -8,22 +8,22 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "order_pay")
+@Table(name = "order_cancel_pay")
 @Entity
-public class OrderPay extends BaseEntityTime {
+public class OrderCancelPay extends BaseEntityTime {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "order_pay_id")
-    private Long id;        //결제번호(PK)
+    @Column(name = "order_cancel_pay_id")
+    private Long id;
 
     @OneToOne
-    @JoinColumn(name = "order_id")
-    private Order order;            //주문(일대일)
+    @JoinColumn(name = "order_cancel_id")
+    private OrderCancel orderCancel;
 
     @OneToOne
     @JoinColumn(name = "card_id")
-    private Card card;              //카드(일대일)
+    private Card card;
 
-    private int price;              //결제가격
-
+    private int price;
+    private String cancelMethod;
 }
