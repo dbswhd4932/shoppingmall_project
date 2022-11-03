@@ -14,7 +14,7 @@ public class Role {
     @Column(name = "role_id")
     private Long id;          //권한번호
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;      //회원(다대일)
 

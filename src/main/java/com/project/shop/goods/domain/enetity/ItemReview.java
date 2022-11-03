@@ -16,11 +16,11 @@ public class ItemReview extends BaseEntityTime {
     @Column(name = "item_review_id")
     private Long id;  //상품리뷰번호(PK)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;      //회원(다대일)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goods;        //상품(다대일)
 

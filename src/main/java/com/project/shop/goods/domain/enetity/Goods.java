@@ -15,7 +15,7 @@ public class Goods extends BaseEntityTime {
     @Column(name = "goods_id")
     private Long id;   //상품번호(PK)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_category_id")
     private ItemCategory itemCategory;  //카테고리(다대일)
 

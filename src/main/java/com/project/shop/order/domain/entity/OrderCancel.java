@@ -17,11 +17,11 @@ public class OrderCancel extends BaseEntityTime {
     @Column(name = "order_cancel_id")
     private Long id;            //주문취소번호(PK)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;        //주문(다대일)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goods;        //상품(다대일)
 

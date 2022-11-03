@@ -16,7 +16,7 @@ public class Order extends BaseEntityTime {
     @Column(name = "order_id")
     private Long id;            //주문번호(PK)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;      //회원(다대일)
 

@@ -38,7 +38,7 @@ public class Member extends BaseEntityTime {
     private String phone;       //핸드폰번호
     private LocalDateTime deletedAt; //회원탈퇴시간
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;          //장바구니(일대일)
 

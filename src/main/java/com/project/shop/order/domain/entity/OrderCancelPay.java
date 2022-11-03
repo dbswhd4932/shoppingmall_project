@@ -16,11 +16,11 @@ public class OrderCancelPay extends BaseEntityTime {
     @Column(name = "order_cancel_pay_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_cancel_id")
     private OrderCancel orderCancel;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
     private Card card;
 

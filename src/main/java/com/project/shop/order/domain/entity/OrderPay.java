@@ -16,11 +16,11 @@ public class OrderPay extends BaseEntityTime {
     @Column(name = "order_pay_id")
     private Long id;        //결제번호(PK)
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;            //주문(일대일)
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
     private Card card;              //카드(일대일)
 
