@@ -103,7 +103,9 @@ class MemberServiceTest {
                 .phone("phone수정")
                 .build();
 
-        member.update(updateDto);
+        given(memberRepository.findById(1L)).willReturn(Optional.ofNullable(member));
+
+        memberService.update(1L, updateDto);
 
         assertThat(member.getId()).isEqualTo(1L);
         assertThat(member.getLoginId()).isEqualTo("loginId");

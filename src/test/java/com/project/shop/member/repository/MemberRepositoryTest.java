@@ -12,18 +12,4 @@ import static org.assertj.core.api.Assertions.*;
 @DataJpaTest
 class MemberRepositoryTest {
 
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Test
-    @DisplayName("회원 가입 DB 저장")
-    void saveMemberTest() {
-        //given
-        Member member = MemberFactory.createMember();
-        //when
-        Member savedMember = memberRepository.save(member);
-        //then
-        assertThat(savedMember).isSameAs(member);
-
-    }
 }
