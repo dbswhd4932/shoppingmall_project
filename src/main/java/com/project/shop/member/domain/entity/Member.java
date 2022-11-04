@@ -3,10 +3,7 @@ package com.project.shop.member.domain.entity;
 import com.project.shop.global.common.BaseEntityTime;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@ToString
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -29,7 +27,7 @@ public class Member extends BaseEntityTime {
     @Column(nullable = false, length = 50)
     private String password;    //비밀번호
 
-    @OneToMany(mappedBy = "member") // 양방향
+    @OneToMany(mappedBy = "member") // 양방향 todo 권한 확인
     private List<Role> roles = new ArrayList<>();
 
     @Column(nullable = false, length = 20)
@@ -81,4 +79,6 @@ public class Member extends BaseEntityTime {
         this.email = memberUpdateDto.getEmail();
         this.phone = memberUpdateDto.getPhone();
     }
+
+
 }

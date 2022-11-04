@@ -64,11 +64,12 @@ public class MemberService {
      * 회원 수정
      * 비밀번호, 이메일, 핸드폰번호, 주소(우편번호, 상세주소)
      */
-    public void update(Long id, @RequestBody MemberUpdateDto memberUpdateDto) {
-        Member findMember = memberRepository.findById(id).orElseThrow(
+    public MemberResponse update(Long id, @RequestBody MemberUpdateDto memberUpdateDto) {
+        Member member = memberRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
 
-        findMember.update(memberUpdateDto);
+        member.update(memberUpdateDto);
+        return new MemberResponse(member);
     }
 
     /**

@@ -1,12 +1,10 @@
 package com.project.shop.member.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class MemberUpdateDto {
 
     private String password;
@@ -15,4 +13,12 @@ public class MemberUpdateDto {
     private String email;
     private String phone;
 
+    @Builder
+    public MemberUpdateDto(String password, String zipcode, String detailAddress, String email, String phone) {
+        this.password = password;
+        this.zipcode = zipcode;
+        this.detailAddress = detailAddress;
+        this.email = email;
+        this.phone = phone;
+    }
 }

@@ -3,6 +3,7 @@ package com.project.shop.member.service;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
+import com.project.shop.member.domain.request.MemberUpdateDto;
 import com.project.shop.member.domain.response.MemberResponse;
 import com.project.shop.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -35,10 +37,16 @@ class MemberServiceTest {
     void signupTest() {
         //given
         MemberSignupDto memberSignupDto = MemberFactory.createSignupRequestDto();
+        Member member = new Member(memberSignupDto);
+        given(memberRepository.save(any())).willReturn(member);
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
         //when
-        when(memberRepository.save(any())).thenReturn(new Member(memberSignupDto));
-        //then
         memberService.signup(memberSignupDto);
+
+        //then
+        assertThat(memberRepository.findById(member.getId())).isEqualTo(Optional.of(member));
+        verify(memberRepository, times(1)).save(any());
+        verify(memberRepository, times(1)).findById(any());
     }
 
     @Test
@@ -53,10 +61,12 @@ class MemberServiceTest {
             memberService.signup(memberSignupDto);
         }
         //when
-        when(memberRepository.findAll()).thenReturn(list.stream().map(signupRequestDto ->
+        given(memberRepository.findAll()).willReturn(list.stream().map(signupRequestDto ->
                 new Member(signupRequestDto)).collect(Collectors.toList()));
         //then
         assertThat(memberRepository.findAll().size()).isEqualTo(2);
+
+        verify(memberRepository, times(1)).findAll();
 
     }
 
@@ -65,15 +75,45 @@ class MemberServiceTest {
     void findOneTest() {
         //given
         MemberSignupDto memberSignupDto = MemberFactory.createSignupRequestDto();
-        when(memberRepository.save(any())).thenReturn(new Member(memberSignupDto));
-
+        given(memberRepository.save(any())).willReturn(new Member(memberSignupDto));
         //when
         memberService.signup(memberSignupDto);
-        when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member(memberSignupDto)));
-
+        given(memberRepository.findById(1L)).willReturn(Optional.of(new Member(memberSignupDto)));
         MemberResponse memberResponse = memberService.findOne(1L);
-
         //then
         assertThat(memberResponse.getLoginId()).isEqualTo(memberSignupDto.getLoginId());
+
+        verify(memberRepository, times(1)).save(any());
+        verify(memberRepository, times(1)).findById(1L);
+
     }
+
+    @Test
+    @DisplayName("회원수정 테스트")
+    void updateTest() {
+        //given
+        Member member = MemberFactory.createMember();
+
+        //when
+        MemberUpdateDto updateDto = MemberUpdateDto.builder()
+                .password("password수정")
+                .zipcode("zipcode수정")
+                .detailAddress("detailAddress수정")
+                .email("email수정")
+                .phone("phone수정")
+                .build();
+
+        member.update(updateDto);
+
+        assertThat(member.getId()).isEqualTo(1L);
+        assertThat(member.getLoginId()).isEqualTo("loginId");
+        assertThat(member.getPassword()).isEqualTo("password수정");
+        assertThat(member.getName()).isEqualTo("name");
+        assertThat(member.getZipcode()).isEqualTo("zipcode수정");
+        assertThat(member.getDetailAddress()).isEqualTo("detailAddress수정");
+        assertThat(member.getEmail()).isEqualTo("email수정");
+        assertThat(member.getPhone()).isEqualTo("phone수정");
+
+    }
+
 }

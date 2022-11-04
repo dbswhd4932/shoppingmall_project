@@ -7,6 +7,7 @@ public class MemberFactory {
 
     public static Member createMember() {
         Member member = Member.builder()
+                .id(1L)
                 .loginId("loginId")
                 .password("1234")
                 .name("name")
