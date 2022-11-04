@@ -93,7 +93,7 @@ class MemberServiceTest {
     void updateTest() {
         //given
         Member member = MemberFactory.createMember();
-
+        given(memberRepository.findById(1L)).willReturn(Optional.ofNullable(member));
         //when
         MemberUpdateDto updateDto = MemberUpdateDto.builder()
                 .password("password수정")
@@ -102,11 +102,8 @@ class MemberServiceTest {
                 .email("email수정")
                 .phone("phone수정")
                 .build();
-
-        given(memberRepository.findById(1L)).willReturn(Optional.ofNullable(member));
-
         memberService.update(1L, updateDto);
-
+        //then
         assertThat(member.getId()).isEqualTo(1L);
         assertThat(member.getLoginId()).isEqualTo("loginId");
         assertThat(member.getPassword()).isEqualTo("password수정");
@@ -116,6 +113,19 @@ class MemberServiceTest {
         assertThat(member.getEmail()).isEqualTo("email수정");
         assertThat(member.getPhone()).isEqualTo("phone수정");
 
+    }
+
+    @Test
+    @DisplayName("회원삭제 테스트")
+    void deleteTest() {
+        Member member = MemberFactory.createMember();
+        memberRepository.save(member);
+        //given
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+        //when
+        memberService.delete(1L);
+        //then
+        assertThat(memberRepository.findAll().size()).isEqualTo(0);
     }
 
 }
