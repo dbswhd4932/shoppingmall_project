@@ -1,17 +1,21 @@
 package com.project.shop.member.domain.entity;
 
 import com.project.shop.global.common.BaseEntityTime;
+import com.project.shop.member.domain.request.MemberSignupDto;
+import com.project.shop.member.domain.request.MemberUpdateDto;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Table(name = "member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Member extends BaseEntityTime {
 
@@ -24,6 +28,9 @@ public class Member extends BaseEntityTime {
 
     @Column(nullable = false, length = 50)
     private String password;    //비밀번호
+
+    @OneToMany(mappedBy = "member") // 양방향
+    private List<Role> roles = new ArrayList<>();
 
     @Column(nullable = false, length = 20)
     private String name;        //이름
@@ -43,5 +50,35 @@ public class Member extends BaseEntityTime {
     private Cart cart;          //장바구니(일대일)
 
 
+    @Builder
+    public Member(Long id, String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LocalDateTime deletedAt, Cart cart) {
+        this.id = id;
+        this.loginId = loginId;
+        this.password = password;
+        this.name = name;
+        this.zipcode = zipcode;
+        this.detailAddress = detailAddress;
+        this.email = email;
+        this.phone = phone;
+        this.deletedAt = deletedAt;
+        this.cart = cart;
+    }
 
+    public Member(MemberSignupDto memberSignupDto) {
+        this.loginId = memberSignupDto.getLoginId();
+        this.password = memberSignupDto.getPassword();
+        this.name = memberSignupDto.getName();
+        this.zipcode = memberSignupDto.getZipcode();
+        this.detailAddress = memberSignupDto.getDetailAddress();
+        this.email = memberSignupDto.getEmail();
+        this.phone = memberSignupDto.getPhone();
+    }
+
+    public void update(MemberUpdateDto memberUpdateDto) {
+        this.password = memberUpdateDto.getPassword();
+        this.zipcode = memberUpdateDto.getZipcode();
+        this.detailAddress = memberUpdateDto.getDetailAddress();
+        this.email = memberUpdateDto.getEmail();
+        this.phone = memberUpdateDto.getPhone();
+    }
 }
