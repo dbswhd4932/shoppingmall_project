@@ -4,7 +4,7 @@ import com.project.shop.factory.MemberFactory;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
-import com.project.shop.member.domain.response.MemberResponse;
+import com.project.shop.member.domain.response.MemberResponseDto;
 import com.project.shop.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -81,9 +79,9 @@ class MemberServiceTest {
         //when
         memberService.signup(memberSignupDto);
         given(memberRepository.findById(1L)).willReturn(Optional.of(new Member(memberSignupDto)));
-        MemberResponse memberResponse = memberService.findOne(1L);
+        MemberResponseDto memberResponseDto = memberService.findOne(1L);
         //then
-        assertThat(memberResponse.getLoginId()).isEqualTo(memberSignupDto.getLoginId());
+        assertThat(memberResponseDto.getLoginId()).isEqualTo(memberSignupDto.getLoginId());
 
         verify(memberRepository, times(1)).save(any());
         verify(memberRepository, times(1)).findById(1L);

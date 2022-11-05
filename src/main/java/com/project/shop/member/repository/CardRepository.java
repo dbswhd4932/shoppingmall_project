@@ -1,7 +1,7 @@
 package com.project.shop.member.repository;
 
-import com.project.shop.member.domain.entity.Cart;
+import com.project.shop.member.domain.entity.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CardRepository extends JpaRepository<Cart, Long> {
+public interface CardRepository extends JpaRepository<Card, Long> {
 }

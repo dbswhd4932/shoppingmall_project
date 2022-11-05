@@ -3,7 +3,7 @@ package com.project.shop.member.service;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberUpdateDto;
-import com.project.shop.member.domain.response.MemberResponse;
+import com.project.shop.member.domain.response.MemberResponseDto;
 import com.project.shop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,17 +25,8 @@ public class MemberService {
      * 회원 가입
      *  todo 패스워드 암호화
      */
-    public void signup(@RequestBody @Valid MemberSignupDto memberSignupDto) {
-        Member member = Member.builder()
-                .loginId(memberSignupDto.getLoginId())
-                .password(memberSignupDto.getPassword())
-                .name(memberSignupDto.getName())
-                .zipcode(memberSignupDto.getZipcode())
-                .detailAddress(memberSignupDto.getDetailAddress())
-                .email(memberSignupDto.getEmail())
-                .phone(memberSignupDto.getPhone())
-                .build();
-
+    public void signup(@RequestBody MemberSignupDto memberSignupDto) {
+        Member member = new Member(memberSignupDto);
         memberRepository.save(member);
     }
 
@@ -43,9 +34,9 @@ public class MemberService {
      * 회원 전체조회
      */
     @Transactional(readOnly = true)
-    public List<MemberResponse> findAll() {
+    public List<MemberResponseDto> findAll() {
         return memberRepository.findAll().stream()
-                .map(member -> new MemberResponse(member))
+                .map(member -> new MemberResponseDto(member))
                 .collect(Collectors.toList());
     }
 
@@ -53,23 +44,23 @@ public class MemberService {
      * 회원 단건 조회
      */
     @Transactional(readOnly = true)
-    public MemberResponse findOne(Long id) {
+    public MemberResponseDto findOne(Long id) {
         Member findMember = memberRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
 
-        return new MemberResponse(findMember);
+        return new MemberResponseDto(findMember);
     }
 
     /**
      * 회원 수정
      * 비밀번호, 이메일, 핸드폰번호, 주소(우편번호, 상세주소)
      */
-    public MemberResponse update(Long id, @RequestBody MemberUpdateDto memberUpdateDto) {
+    public MemberResponseDto update(Long id, @RequestBody MemberUpdateDto memberUpdateDto) {
         Member member = memberRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
 
         member.update(memberUpdateDto);
-        return new MemberResponse(member);
+        return new MemberResponseDto(member);
     }
 
     /**
@@ -80,4 +71,5 @@ public class MemberService {
                 () -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
         memberRepository.delete(findMember);
     }
+
 }

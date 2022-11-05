@@ -10,9 +10,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class MemberResponse {
-
-    private Long id;
+public class MemberResponseDto {
 
     private String loginId;
 
@@ -30,8 +28,7 @@ public class MemberResponse {
 
     private String phone;
 
-    public MemberResponse(Member member){
-        this.id = member.getId();
+    public MemberResponseDto(Member member){
         this.loginId = member.getLoginId();
         this.password = member.getPassword();
         this.name = member.getName();

@@ -1,9 +1,14 @@
 spring:
+  h2: #todo mysql로 변경예정
+    console:
+      enabled: true
+      path: /h2-console
+
   datasource:
-    url: jdbc:mysql://localhost:3306/shop?serverTimezone=Asia/Seoul
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:h2:mem:shop
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
 
   jpa:
     hibernate:

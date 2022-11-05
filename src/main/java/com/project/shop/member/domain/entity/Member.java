@@ -1,6 +1,7 @@
 package com.project.shop.member.domain.entity;
 
 import com.project.shop.global.common.BaseEntityTime;
+import com.project.shop.member.domain.request.CardCreateDto;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
 import lombok.*;
@@ -43,6 +44,9 @@ public class Member extends BaseEntityTime {
     private String phone;       //핸드폰번호
     private LocalDateTime deletedAt; //회원탈퇴시간
 
+    @OneToMany(mappedBy = "member")
+    private List<Card> cards = new ArrayList<>();
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;          //장바구니(일대일)
@@ -78,6 +82,10 @@ public class Member extends BaseEntityTime {
         this.detailAddress = memberUpdateDto.getDetailAddress();
         this.email = memberUpdateDto.getEmail();
         this.phone = memberUpdateDto.getPhone();
+    }
+
+    public void cardMapping(CardCreateDto cardCreateDto) {
+        this.cards = cardCreateDto.getMember().getCards();
     }
 
 

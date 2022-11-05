@@ -2,10 +2,10 @@ package com.project.shop.member.controller;
 
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
-import com.project.shop.member.domain.response.MemberResponse;
+import com.project.shop.member.domain.request.MemberUpdateDto;
+import com.project.shop.member.domain.response.MemberResponseDto;
 import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +24,9 @@ public class MemberController {
      */
     @PostMapping("/members")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse signup(@Valid @RequestBody MemberSignupDto memberSignupDto){
+    public MemberResponseDto signup(@Valid @RequestBody MemberSignupDto memberSignupDto){
         memberService.signup(memberSignupDto);
-        return new MemberResponse(new Member(memberSignupDto));
+        return new MemberResponseDto(new Member(memberSignupDto));
     }
 
     /**
@@ -34,7 +34,7 @@ public class MemberController {
      */
     @GetMapping("/members")
     @ResponseStatus(HttpStatus.OK)
-    public List<MemberResponse> findAll() {
+    public List<MemberResponseDto> findAll() {
         return memberService.findAll();
     }
 
@@ -43,10 +43,20 @@ public class MemberController {
      */
     @GetMapping("/members/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse findOne(@PathVariable("id") Long id) {
+    public MemberResponseDto findOne(@PathVariable("id") Long id) {
         return memberService.findOne(id);
     }
 
+    @PutMapping("/members/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponseDto update(@PathVariable("id") Long id, @RequestBody MemberUpdateDto memberUpdateDto) {
+        return memberService.update(id,memberUpdateDto);
+    }
+
+    @DeleteMapping("/members/{id}")
+    public void delete(@PathVariable("id") Long id) {
+        memberService.delete(id);
+    }
 
 
 }
