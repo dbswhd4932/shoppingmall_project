@@ -2,8 +2,10 @@ package com.project.shop.member.domain.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class MemberSignupDto {
 
     private String loginId;
