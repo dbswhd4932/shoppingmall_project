@@ -12,6 +12,9 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher #swagger
 
 logging:
   level:
