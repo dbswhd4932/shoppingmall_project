@@ -4,7 +4,7 @@ import com.project.shop.member.domain.entity.Address;
 import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class MemberUpdateDto {
 

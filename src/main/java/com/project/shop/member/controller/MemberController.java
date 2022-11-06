@@ -1,5 +1,7 @@
 package com.project.shop.member.controller;
 
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
@@ -18,6 +20,15 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+
+    @GetMapping("/test")
+    public String businessExceptionTest(@RequestParam String error) {
+        if("true".equals(error)) {
+            throw new BusinessException(ErrorCode.TEST);
+        }
+        return "ok";
+    }
+
 
     /**
      *  회원가입

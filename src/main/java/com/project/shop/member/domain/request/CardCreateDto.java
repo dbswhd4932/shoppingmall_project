@@ -2,12 +2,13 @@ package com.project.shop.member.domain.request;
 
 import com.project.shop.member.domain.entity.Card;
 import com.project.shop.member.domain.entity.Member;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CardCreateDto {
 
     private Member member;

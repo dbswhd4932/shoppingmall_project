@@ -3,6 +3,7 @@ package com.project.shop.member.domain.response;
 import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.entity.Role;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberResponseDto {
 
     private String loginId;
