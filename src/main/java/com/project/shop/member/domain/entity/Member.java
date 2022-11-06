@@ -34,8 +34,8 @@ public class Member extends BaseEntityTime {
     @Column(nullable = false, length = 20)
     private String name;        //이름
 
-    private String zipcode;     //우편번호
-    private String detailAddress; //상세주소
+    @Embedded
+    private Address address; // 주소
 
     @Column(nullable = false, length = 50, unique = true)
     private String email;       //이메일
@@ -53,16 +53,17 @@ public class Member extends BaseEntityTime {
 
 
     @Builder
-    public Member(Long id, String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LocalDateTime deletedAt, Cart cart) {
+    public Member(Long id, String loginId, String password, List<Role> roles, String name, Address address, String email, String phone, LocalDateTime deletedAt, List<Card> cards, Cart cart) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
+        this.roles = roles;
         this.name = name;
-        this.zipcode = zipcode;
-        this.detailAddress = detailAddress;
+        this.address = address;
         this.email = email;
         this.phone = phone;
         this.deletedAt = deletedAt;
+        this.cards = cards;
         this.cart = cart;
     }
 
@@ -70,16 +71,14 @@ public class Member extends BaseEntityTime {
         this.loginId = memberSignupDto.getLoginId();
         this.password = memberSignupDto.getPassword();
         this.name = memberSignupDto.getName();
-        this.zipcode = memberSignupDto.getZipcode();
-        this.detailAddress = memberSignupDto.getDetailAddress();
+        this.address = memberSignupDto.getAddress();
         this.email = memberSignupDto.getEmail();
         this.phone = memberSignupDto.getPhone();
     }
 
     public void update(MemberUpdateDto memberUpdateDto) {
         this.password = memberUpdateDto.getPassword();
-        this.zipcode = memberUpdateDto.getZipcode();
-        this.detailAddress = memberUpdateDto.getDetailAddress();
+        this.address = memberUpdateDto.getAddress();
         this.email = memberUpdateDto.getEmail();
         this.phone = memberUpdateDto.getPhone();
     }

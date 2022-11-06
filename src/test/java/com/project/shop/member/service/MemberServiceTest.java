@@ -1,6 +1,7 @@
 package com.project.shop.member.service;
 
 import com.project.shop.factory.MemberFactory;
+import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
@@ -97,8 +98,7 @@ class MemberServiceTest {
         //when
         MemberUpdateDto updateDto = MemberUpdateDto.builder()
                 .password("password수정")
-                .zipcode("zipcode수정")
-                .detailAddress("detailAddress수정")
+                .address(new Address("zipcode수정","detailAddress수정"))
                 .email("email수정")
                 .phone("phone수정")
                 .build();
@@ -108,8 +108,8 @@ class MemberServiceTest {
         assertThat(member.getLoginId()).isEqualTo("loginId");
         assertThat(member.getPassword()).isEqualTo("password수정");
         assertThat(member.getName()).isEqualTo("name");
-        assertThat(member.getZipcode()).isEqualTo("zipcode수정");
-        assertThat(member.getDetailAddress()).isEqualTo("detailAddress수정");
+        assertThat(member.getAddress().getZipcode()).isEqualTo("zipcode수정");
+        assertThat(member.getAddress().getDetailAddress()).isEqualTo("detailAddress수정");
         assertThat(member.getEmail()).isEqualTo("email수정");
         assertThat(member.getPhone()).isEqualTo("phone수정");
 

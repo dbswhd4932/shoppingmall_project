@@ -1,5 +1,6 @@
 package com.project.shop.member.domain.request;
 
+import com.project.shop.member.domain.entity.Address;
 import lombok.*;
 
 @Getter
@@ -8,16 +9,14 @@ import lombok.*;
 public class MemberUpdateDto {
 
     private String password;
-    private String zipcode;
-    private String detailAddress;
+    private Address address;
     private String email;
     private String phone;
 
     @Builder
-    public MemberUpdateDto(String password, String zipcode, String detailAddress, String email, String phone) {
+    public MemberUpdateDto(String password, Address address, String email, String phone) {
         this.password = password;
-        this.zipcode = zipcode;
-        this.detailAddress = detailAddress;
+        this.address = address;
         this.email = email;
         this.phone = phone;
     }

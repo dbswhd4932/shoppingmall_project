@@ -1,5 +1,6 @@
 package com.project.shop.factory;
 
+import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
 
@@ -11,8 +12,7 @@ public class MemberFactory {
                 .loginId("loginId")
                 .password("1234")
                 .name("name")
-                .zipcode("우편번호")
-                .detailAddress("상세주소")
+                .address(new Address("zipcode","detailsAddress"))
                 .email("user@test.com")
                 .phone("010-1111-1111")
                 .build();
@@ -25,8 +25,7 @@ public class MemberFactory {
                 .loginId("loginId")
                 .password("1234")
                 .name("name")
-                .zipcode("우편번호")
-                .detailAddress("상세주소")
+                .address(new Address("zipcode","detailsAddress"))
                 .email("user@test.com")
                 .phone("010-1111-1111")
                 .build();
