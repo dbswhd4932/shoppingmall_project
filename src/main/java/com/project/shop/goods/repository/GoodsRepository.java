@@ -1,4 +1,7 @@
 package com.project.shop.goods.repository;
 
-public interface GoodsRepository {
+import com.project.shop.goods.domain.enetity.Goods;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface GoodsRepository extends JpaRepository<Goods, Long> {
 }
