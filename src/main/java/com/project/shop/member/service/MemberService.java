@@ -1,5 +1,7 @@
 package com.project.shop.member.service;
 
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberUpdateDto;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,17 @@ public class MemberService {
      */
     public void signup(@RequestBody MemberSignupDto memberSignupDto) {
         Member member = new Member(memberSignupDto);
+        validateDuplicatedMember(member);
         memberRepository.save(member);
+    }
+
+    private void validateDuplicatedMember(Member member) {
+        memberRepository.findByLoginId(member.getLoginId())
+                .ifPresent(m -> { // 같은 LoginId 가 존재하면 예외발생
+                    throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);});
+        memberRepository.findByEmail(member.getEmail())
+                .ifPresent(m -> { // 같은 Email 이 존재하면 예외발생
+                    throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);});
     }
 
     /**
@@ -46,7 +57,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberResponseDto findOne(Long id) {
         Member findMember = memberRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         return new MemberResponseDto(findMember);
     }
@@ -57,18 +68,18 @@ public class MemberService {
      */
     public MemberResponseDto update(Long id, @RequestBody MemberUpdateDto memberUpdateDto) {
         Member member = memberRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         member.update(memberUpdateDto);
         return new MemberResponseDto(member);
     }
 
     /**
-     *  회원 삭제 todo 1) 회원정보 삭제?  2) 중요정보만 삭제하고 데이터 보관?
+     * 회원 삭제 todo 1) 회원정보 삭제?  2) 중요정보만 삭제하고 데이터 보관?
      */
     public void delete(Long id) {
         Member findMember = memberRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
         memberRepository.delete(findMember);
     }
 

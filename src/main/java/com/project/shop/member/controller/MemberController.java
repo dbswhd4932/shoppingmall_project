@@ -21,15 +21,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/test")
-    public String businessExceptionTest(@RequestParam String error) {
-        if("true".equals(error)) {
-            throw new BusinessException(ErrorCode.TEST);
-        }
-        return "ok";
-    }
-
-
     /**
      *  회원가입
      */
@@ -58,12 +49,18 @@ public class MemberController {
         return memberService.findOne(id);
     }
 
+    /**
+     *  회원 수정
+     */
     @PutMapping("/members/{id}")
     @ResponseStatus(HttpStatus.OK)
     public MemberResponseDto update(@PathVariable("id") Long id, @RequestBody MemberUpdateDto memberUpdateDto) {
         return memberService.update(id,memberUpdateDto);
     }
 
+    /**
+     *  회원 삭제
+     */
     @DeleteMapping("/members/{id}")
     public void delete(@PathVariable("id") Long id) {
         memberService.delete(id);
