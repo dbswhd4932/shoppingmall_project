@@ -26,10 +26,11 @@ public class MemberService {
      * 회원 가입
      *  todo 패스워드 암호화
      */
-    public void signup(@RequestBody MemberSignupDto memberSignupDto) {
+    public MemberResponseDto signup(@RequestBody MemberSignupDto memberSignupDto) {
         Member member = new Member(memberSignupDto);
         validateDuplicatedMember(member);
         memberRepository.save(member);
+        return new MemberResponseDto(member);
     }
 
     private void validateDuplicatedMember(Member member) {
@@ -79,7 +80,7 @@ public class MemberService {
      */
     public void delete(Long id) {
         Member findMember = memberRepository.findById(id).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+                () -> new IllegalArgumentException("존재하지 않는 회원입니다. id = " + id));
         memberRepository.delete(findMember);
     }
 

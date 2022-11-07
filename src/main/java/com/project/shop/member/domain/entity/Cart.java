@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Entity
 public class Cart extends BaseEntityTime {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "cart_id")
     private Long id;        //장바구니 번호
 
@@ -20,7 +21,12 @@ public class Cart extends BaseEntityTime {
     @JoinColumn(name = "goods_id")
     private Goods goods;        //상품번호(다대일)
 
+    @OneToOne(mappedBy = "cart")
+    private Member member;
+
     private int totalAmount;    //장바구니 총 수량
     private int totalPrice;     //장바구니 총 가격
+
+
 
 }

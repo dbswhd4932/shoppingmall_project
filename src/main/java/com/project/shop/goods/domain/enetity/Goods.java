@@ -2,12 +2,14 @@ package com.project.shop.goods.domain.enetity;
 
 import com.project.shop.global.common.BaseEntityTime;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "goods")
+@Getter
 @Entity
 public class Goods extends BaseEntityTime {
 

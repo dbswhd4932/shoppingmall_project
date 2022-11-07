@@ -2,6 +2,7 @@ package com.project.shop.member.domain.entity;
 
 import com.project.shop.global.common.BaseEntityTime;
 import com.project.shop.member.domain.request.CardCreateDto;
+import com.project.shop.member.domain.request.CartCreateDto;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
 import lombok.*;
@@ -82,11 +83,5 @@ public class Member extends BaseEntityTime {
         this.email = memberUpdateDto.getEmail();
         this.phone = memberUpdateDto.getPhone();
     }
-
-    public void cardMapping(CardCreateDto cardCreateDto) {
-        this.cards = cardCreateDto.getMember().getCards();
-    }
-
-
 
 }

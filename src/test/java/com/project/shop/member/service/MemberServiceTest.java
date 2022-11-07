@@ -1,12 +1,15 @@
 package com.project.shop.member.service;
 
 import com.project.shop.factory.MemberFactory;
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
 import com.project.shop.member.domain.response.MemberResponseDto;
 import com.project.shop.member.repository.MemberRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -49,6 +53,20 @@ class MemberServiceTest {
         verify(memberRepository, times(1)).save(any());
         verify(memberRepository, times(1)).findById(any());
     }
+
+    /* 질문하기
+    @Test
+    @DisplayName("회원가입 LoginId 중복 테스트")
+    void signupDuplicatedLoginIdTest() {
+        MemberSignupDto memberA = MemberSignupDto.builder().loginId("MemberA").email("memberA@aaa.com").build();
+
+        given(memberService.signup(memberA)).willThrow(new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID));
+
+        assertThrows(BusinessException.class, () -> {
+            memberService.signup(memberA);
+        });
+    }
+    */
 
     @Test
     @DisplayName("회원전체조회 테스트")
@@ -98,7 +116,7 @@ class MemberServiceTest {
         //when
         MemberUpdateDto updateDto = MemberUpdateDto.builder()
                 .password("password수정")
-                .address(new Address("zipcode수정","detailAddress수정"))
+                .address(new Address("zipcode수정", "detailAddress수정"))
                 .email("email수정")
                 .phone("phone수정")
                 .build();
@@ -121,9 +139,9 @@ class MemberServiceTest {
         Member member = MemberFactory.createMember();
         memberRepository.save(member);
         //given
-        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
         //when
-        memberService.delete(1L);
+        memberService.delete(member.getId());
         //then
         assertThat(memberRepository.findAll().size()).isEqualTo(0);
     }
