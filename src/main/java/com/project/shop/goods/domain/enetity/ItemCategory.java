@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "item_category")
@@ -15,5 +17,8 @@ public class ItemCategory {
     private Long id;                 //카테고리번호(PK)
 
     private String mainCategory;    //메인카테고리
+
+    @OneToMany(mappedBy = "itemCategory")
+    private List<Goods> goodsList = new ArrayList<>();
 
 }

@@ -23,17 +23,19 @@ public class CartService {
 
     /**
      * 장바구니 담기 - 장바구니는 상품이 등록되면 자동 생성되며, 하나도 없을 경우에는 자동 삭제된다.
+     * todo 작성 중  CartItem 같은 중간테이블이 있어야 할 것 같음.
      */
     public void create(CartCreateDto cartCreateDto, Member member) {
-        Goods goods = goodsRepository.findById(cartCreateDto.getGoodsId()).orElseThrow(
+        Goods goods = goodsRepository.findById(cartCreateDto.getGoods().getId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_GOODS));
 
-        if (!cartRepository.findCartByMember(member).isEmpty()) {
-            CartCreateDto.builder()
-                    .memberId(member.getId())
-                    .goodsId(goods.getId())
-                    .quantity(1); // 선택한 개수만큼 추가를 어떻게 ??..
-        }
+        CartCreateDto createDto = CartCreateDto.builder()
+                .member(member)
+                .goods(goods)
+                .quantity(1) // 선택한 개수만큼 추가를 어떻게 ??..
+                .build();
+
+        cartRepository.save(new Cart(cartCreateDto));
 
     }
 
