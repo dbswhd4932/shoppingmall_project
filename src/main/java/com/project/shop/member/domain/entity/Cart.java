@@ -2,7 +2,6 @@ package com.project.shop.member.domain.entity;
 
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.member.domain.request.CartCreateDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -27,15 +26,6 @@ public class Cart extends BaseTimeEntity {
 
     private int totalAmount;    //장바구니 총 수량
     private int totalPrice;     //장바구니 총 가격
-
-    public Cart(CartCreateDto cartCreateDto) {
-        this.goods = cartCreateDto.getGoods();
-        this.member = cartCreateDto.getMember();
-        this.totalAmount = cartCreateDto.getQuantity();
-        this.totalPrice = cartCreateDto.getQuantity() * cartCreateDto.getGoods().getPrice();
-
-    }
-
 
 
 }

@@ -1,9 +1,6 @@
 package com.project.shop.member.domain.response;
 
-import com.project.shop.member.domain.entity.Address;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.entity.MemberRole;
-import com.project.shop.member.domain.entity.RoleType;
+import com.project.shop.member.domain.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +15,7 @@ public class MemberResponseDto {
     private String password;
     private String name;
     private Address address;
-    private List<MemberRole> roleType;
+    private List<MemberRole> memberRoles;
     private String email;
     private String phone;
 
@@ -27,6 +24,7 @@ public class MemberResponseDto {
         this.password = member.getPassword();
         this.name = member.getName();
         this.address = member.getAddress();
+        this.memberRoles = member.getMemberRoleList();
         this.email = member.getEmail();
         this.phone = member.getPhone();
     }

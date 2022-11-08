@@ -14,9 +14,10 @@ public enum ErrorCode {
     DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "M-003", "이미 존재하는 Email 입니다."),
 
     // 상품
-    NOT_FOUND_GOODS(HttpStatus.BAD_REQUEST, "G-001" , "존재하지 않는 상품입니다.")
+    NOT_FOUND_GOODS(HttpStatus.BAD_REQUEST, "G-001" , "존재하지 않는 상품입니다."),
 
-
+    // 카드
+    NOT_FOUND_CARD(HttpStatus.BAD_REQUEST, "C-001" , "존재하지 않는 카드입니다.")
     ;
 
     ErrorCode(HttpStatus httpStatus, String errorCode, String message) {

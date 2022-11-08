@@ -1,5 +1,7 @@
 package com.project.shop.member.service;
 
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.domain.entity.Card;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.CardCreateDto;
@@ -26,14 +28,17 @@ public class CardService {
      * 카드생성
      */
     public void create(@RequestBody CardCreateDto cardCreateDto, Member member) {
+        // 카드 등록할 회원 찾기
         Member findMember = memberRepository.findById(member.getId()).orElseThrow(
-                () -> new IllegalArgumentException("찾는 회원이 없습니다"));
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        // 카드 생성
         Card card = Card.builder()
                 .member(findMember)
                 .cardCompany(cardCreateDto.getCardCompany())
                 .cardNumber(cardCreateDto.getCardNumber())
                 .cardExpire(cardCreateDto.getCardExpire())
                 .build();
+        // 카드 저장
         cardRepository.save(card);
     }
 
@@ -43,19 +48,21 @@ public class CardService {
     @Transactional(readOnly = true)
     public List<CardResponseDto> findAll() {
         return cardRepository.findAll().stream()
-                .map(card -> new CardResponseDto(card)).collect(Collectors.toList());
+                .map(CardResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     /**
      * 카드 단건 조회
      */
     @Transactional(readOnly = true)
-    public CardResponseDto findOne(Long id) {
-        Card card = cardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 카드입니다."));
+    public CardResponseDto findOne(Long cardId) {
+        Card card = cardRepository.findById(cardId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_CARD));
         CardResponseDto cardResponseDto = new CardResponseDto(card);
         return cardResponseDto;
     }
+
 
     /**
      * 카드삭제

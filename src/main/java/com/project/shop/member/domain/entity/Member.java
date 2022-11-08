@@ -7,6 +7,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Table(name = "member")
@@ -14,7 +16,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Member extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "member_id")
     private Long id;                 //회원번호(PK)
 
@@ -41,9 +44,11 @@ public class Member extends BaseTimeEntity {
     @JoinColumn(name = "cart_id")
     private Cart cart;              //장바구니(일대일)
 
+    @OneToMany(mappedBy = "member")
+    private List<MemberRole> memberRoleList = new ArrayList<>();
+
     @Builder
-    public Member(Long id, String loginId, String password, String name, Address address, String email, String phone, LocalDateTime deletedAt,Cart cart) {
-        this.id = id;
+    public Member(String loginId, String password, String name, Address address, String email, String phone, LocalDateTime deletedAt, Cart cart) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -62,6 +67,7 @@ public class Member extends BaseTimeEntity {
         this.email = memberSignupDto.getEmail();
         this.phone = memberSignupDto.getPhone();
     }
+
 
     public void update(MemberUpdateDto memberUpdateDto) {
         this.password = memberUpdateDto.getPassword();

@@ -19,7 +19,7 @@ public class Card extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;      //회원번호 다대일
+    private Member member;      //회원(다대일)
 
     private String cardCompany; //카드회사
 
@@ -28,12 +28,12 @@ public class Card extends BaseTimeEntity {
     private String cardExpire;  //카드만료일
 
     @Builder
-    public Card(Long id, Member member, String cardCompany, String cardNumber, String cardExpire) {
-        this.id = id;
+    public Card(Member member, String cardCompany, String cardNumber, String cardExpire) {
         this.member = member;
         this.cardCompany = cardCompany;
         this.cardNumber = cardNumber;
         this.cardExpire = cardExpire;
     }
+
 
 }

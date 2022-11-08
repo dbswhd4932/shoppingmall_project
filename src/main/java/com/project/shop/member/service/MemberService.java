@@ -24,7 +24,6 @@ public class MemberService {
 
     /**
      * 회원 가입
-     *  todo 패스워드 암호화
      */
     public void signup(@RequestBody MemberSignupDto memberSignupDto) {
         Member member = new Member(memberSignupDto);

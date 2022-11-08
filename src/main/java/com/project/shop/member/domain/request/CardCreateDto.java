@@ -2,27 +2,17 @@ package com.project.shop.member.domain.request;
 
 import com.project.shop.member.domain.entity.Card;
 import com.project.shop.member.domain.entity.Member;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class CardCreateDto {
 
-    // todo Long memberId 로 찾아야하나?? -> swagger 테스트 시 member signup 에 전부 표시된다.
-    private Member member;
+    // todo 질문 Long memberId 로 찾아야하나??
     private String cardCompany;
     private String cardNumber;
     private String cardExpire;
-
-    @Builder
-    public CardCreateDto(String cardCompany, String cardNumber, String cardExpire) {
-        this.cardCompany = cardCompany;
-        this.cardNumber = cardNumber;
-        this.cardExpire = cardExpire;
-    }
-
 
 }
