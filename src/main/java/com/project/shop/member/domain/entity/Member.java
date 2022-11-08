@@ -51,7 +51,8 @@ public class Member extends BaseTimeEntity {
     private Cart cart;              //장바구니(일대일)
 
     @Builder
-    public Member(String loginId, String password, String name, List<MemberRole> roles, Address address, String email, String phone, LocalDateTime deletedAt, List<Card> cards, Cart cart) {
+    public Member(Long id, String loginId, String password, String name, List<MemberRole> roles, Address address, String email, String phone, LocalDateTime deletedAt, List<Card> cards, Cart cart) {
+        this.id = id;
         this.loginId = loginId;
         this.password = password;
         this.name = name;

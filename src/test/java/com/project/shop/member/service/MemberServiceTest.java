@@ -1,15 +1,12 @@
 package com.project.shop.member.service;
 
 import com.project.shop.factory.MemberFactory;
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
 import com.project.shop.member.domain.response.MemberResponseDto;
 import com.project.shop.member.repository.MemberRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +20,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -122,7 +118,6 @@ class MemberServiceTest {
                 .build();
         memberService.update(1L, updateDto);
         //then
-        assertThat(member.getId()).isEqualTo(1L);
         assertThat(member.getLoginId()).isEqualTo("loginId");
         assertThat(member.getPassword()).isEqualTo("password수정");
         assertThat(member.getName()).isEqualTo("name");

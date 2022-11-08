@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CardCreateDto {
 
+    // todo Long memberId 로 찾아야하나??
     private Member member;
     private String cardCompany;
     private String cardNumber;

@@ -1,12 +1,15 @@
 package com.project.shop.goods.domain.enetity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "item_category")
 @Entity
@@ -21,4 +24,7 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Goods> goodsList = new ArrayList<>();
 
+    public Category(String mainCategory) {
+        this.mainCategory = mainCategory;
+    }
 }
