@@ -27,7 +27,6 @@ public class MemberResponseDto {
         this.password = member.getPassword();
         this.name = member.getName();
         this.address = member.getAddress();
-        this.roleType = member.getRoles();
         this.email = member.getEmail();
         this.phone = member.getPhone();
     }

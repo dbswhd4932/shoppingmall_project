@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CardCreateDto {
 
-    // todo Long memberId 로 찾아야하나??
+    // todo Long memberId 로 찾아야하나?? -> swagger 테스트 시 member signup 에 전부 표시된다.
     private Member member;
     private String cardCompany;
     private String cardNumber;
