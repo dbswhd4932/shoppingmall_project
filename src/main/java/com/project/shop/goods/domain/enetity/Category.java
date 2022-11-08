@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "item_category")
 @Entity
-public class ItemCategory {
+public class Category {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "item_category_id")
@@ -18,7 +18,7 @@ public class ItemCategory {
 
     private String mainCategory;    //메인카테고리
 
-    @OneToMany(mappedBy = "itemCategory")
+    @OneToMany(mappedBy = "category")
     private List<Goods> goodsList = new ArrayList<>();
 
 }

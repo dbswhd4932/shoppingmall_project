@@ -1,6 +1,6 @@
 package com.project.shop.goods.domain.enetity;
 
-import com.project.shop.global.common.BaseEntityTime;
+import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.member.domain.entity.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "item_review")
 @Entity
-public class ItemReview extends BaseEntityTime {
+public class Review extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "item_review_id")

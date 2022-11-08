@@ -1,8 +1,6 @@
 package com.project.shop.member.domain.entity;
 
-import com.project.shop.global.common.BaseEntityTime;
-import com.project.shop.member.domain.request.CardCreateDto;
-import com.project.shop.member.domain.request.CartCreateDto;
+import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
 import lombok.*;
@@ -17,49 +15,47 @@ import java.util.List;
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Member extends BaseEntityTime {
+public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "member_id")
-    private Long id;            //회원번호(PK)
+    private Long id;                 //회원번호(PK)
 
     @Column(nullable = false, length = 20, unique = true)
-    private String loginId;     //회원ID
+    private String loginId;         //회원ID
 
     @Column(nullable = false, length = 50)
-    private String password;    //비밀번호
-
-    @OneToMany(mappedBy = "member") // 양방향 todo 권한 확인
-    private List<Role> roles = new ArrayList<>();
+    private String password;        //비밀번호
 
     @Column(nullable = false, length = 20)
-    private String name;        //이름
+    private String name;            //이름
+
+    @OneToMany(mappedBy = "member") // 권한(양방향매핑)
+    private List<MemberRole> roles = new ArrayList<>();
 
     @Embedded
-    private Address address; // 주소
+    private Address address;        // 주소
 
     @Column(nullable = false, length = 50, unique = true)
-    private String email;       //이메일
+    private String email;           //이메일
 
     @Column(nullable = false, length = 20, unique = true)
-    private String phone;       //핸드폰번호
-    private LocalDateTime deletedAt; //회원탈퇴시간
+    private String phone;           //핸드폰번호
+    private LocalDateTime deletedAt;//회원탈퇴시간
 
     @OneToMany(mappedBy = "member")
     private List<Card> cards = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
-    private Cart cart;          //장바구니(일대일)
-
+    private Cart cart;              //장바구니(일대일)
 
     @Builder
-    public Member(Long id, String loginId, String password, List<Role> roles, String name, Address address, String email, String phone, LocalDateTime deletedAt, List<Card> cards, Cart cart) {
-        this.id = id;
+    public Member(String loginId, String password, String name, List<MemberRole> roles, Address address, String email, String phone, LocalDateTime deletedAt, List<Card> cards, Cart cart) {
         this.loginId = loginId;
         this.password = password;
-        this.roles = roles;
         this.name = name;
+        this.roles = roles;
         this.address = address;
         this.email = email;
         this.phone = phone;
@@ -72,6 +68,7 @@ public class Member extends BaseEntityTime {
         this.loginId = memberSignupDto.getLoginId();
         this.password = memberSignupDto.getPassword();
         this.name = memberSignupDto.getName();
+        this.roles = memberSignupDto.getMemberRole();
         this.address = memberSignupDto.getAddress();
         this.email = memberSignupDto.getEmail();
         this.phone = memberSignupDto.getPhone();

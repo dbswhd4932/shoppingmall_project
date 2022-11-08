@@ -1,6 +1,6 @@
 package com.project.shop.order.domain.entity;
 
-import com.project.shop.global.common.BaseEntityTime;
+import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.member.domain.entity.Card;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "order_pay")
 @Entity
-public class OrderPay extends BaseEntityTime {
+public class Pay extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "order_pay_id")

@@ -1,7 +1,6 @@
 package com.project.shop.member.domain.entity;
 
-import com.project.shop.global.common.BaseEntityTime;
-import com.project.shop.member.domain.request.CardCreateDto;
+import com.project.shop.global.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "card")
 @Entity
-public class Card extends BaseEntityTime {
+public class Card extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

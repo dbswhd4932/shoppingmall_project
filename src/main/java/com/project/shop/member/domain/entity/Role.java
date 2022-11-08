@@ -1,26 +1,21 @@
 package com.project.shop.member.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "role")
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue
     @Column(name = "role_id")
-    private Long id;          //권한번호
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;      //회원(다대일)
-
-    @Column(nullable = false)
-    private String roleType;    //권한종류(USER, SELLER, ADMIN)
-
-
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
 
 }

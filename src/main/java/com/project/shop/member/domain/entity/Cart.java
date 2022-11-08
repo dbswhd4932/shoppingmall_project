@@ -1,6 +1,6 @@
 package com.project.shop.member.domain.entity;
 
-import com.project.shop.global.common.BaseEntityTime;
+import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.enetity.Goods;
 import com.project.shop.member.domain.request.CartCreateDto;
 import lombok.AccessLevel;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "cart")
 @Entity
-public class Cart extends BaseEntityTime {
+public class Cart extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

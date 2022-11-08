@@ -1,6 +1,6 @@
 package com.project.shop.order.domain.entity;
 
-import com.project.shop.global.common.BaseEntityTime;
+import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.enetity.Goods;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "order_cancel")
 @Entity
-public class OrderCancel extends BaseEntityTime {
+public class Cancel extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
