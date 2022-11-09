@@ -15,7 +15,7 @@ public class MemberResponseDto {
     private String password;
     private String name;
     private Address address;
-    private List<MemberRole> memberRoles;
+    private List<MemberRole> memberRoles; // todo 저장을 어떻게 ?..
     private String email;
     private String phone;
 
@@ -24,7 +24,7 @@ public class MemberResponseDto {
         this.password = member.getPassword();
         this.name = member.getName();
         this.address = member.getAddress();
-        this.memberRoles = member.getMemberRoleList();
+        this.memberRoles = member.getMemberRoles();
         this.email = member.getEmail();
         this.phone = member.getPhone();
     }

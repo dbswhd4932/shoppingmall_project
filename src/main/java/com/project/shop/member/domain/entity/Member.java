@@ -45,10 +45,10 @@ public class Member extends BaseTimeEntity {
     private Cart cart;              //장바구니(일대일)
 
     @OneToMany(mappedBy = "member")
-    private List<MemberRole> memberRoleList = new ArrayList<>();
+    private List<MemberRole> memberRoles = new ArrayList<>();
 
     @Builder
-    public Member(String loginId, String password, String name, Address address, String email, String phone, LocalDateTime deletedAt, Cart cart) {
+    public Member(String loginId, String password, String name, Address address, String email, String phone, LocalDateTime deletedAt, Cart cart, List<MemberRole> memberRoles) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -57,6 +57,7 @@ public class Member extends BaseTimeEntity {
         this.phone = phone;
         this.deletedAt = deletedAt;
         this.cart = cart;
+        this.memberRoles = memberRoles;
     }
 
     public Member(MemberSignupDto memberSignupDto) {
@@ -66,8 +67,8 @@ public class Member extends BaseTimeEntity {
         this.address = memberSignupDto.getAddress();
         this.email = memberSignupDto.getEmail();
         this.phone = memberSignupDto.getPhone();
+//        this.memberRoles = memberSignupDto.getMemberRoles();
     }
-
 
     public void update(MemberUpdateDto memberUpdateDto) {
         this.password = memberUpdateDto.getPassword();

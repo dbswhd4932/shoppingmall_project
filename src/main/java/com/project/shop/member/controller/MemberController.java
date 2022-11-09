@@ -1,14 +1,12 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;
 import com.project.shop.member.domain.response.MemberResponseDto;
 import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,18 +24,16 @@ public class MemberController {
      */
     @PostMapping("/members")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponseDto signup(@Valid @RequestBody MemberSignupDto memberSignupDto){
+    public void signup(@Valid @RequestBody MemberSignupDto memberSignupDto){
         memberService.signup(memberSignupDto);
-        return new MemberResponseDto(new Member(memberSignupDto));
     }
 
     /**
      *  회원 전체 조회
      */
     @GetMapping("/members")
-    @ResponseStatus(HttpStatus.OK)
-    public List<MemberResponseDto> findAll() {
-        return memberService.findAll();
+    public ResponseEntity<List<MemberResponseDto>> findAll() {
+        return ResponseEntity.ok(memberService.findAll());
     }
 
     /**

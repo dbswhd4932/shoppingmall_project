@@ -1,8 +1,7 @@
 package com.project.shop.member.domain.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,11 +10,16 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Role {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "role_id")
+    @JsonIgnore
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private RoleType roleType;
+    private String role; // todo USER, SELLER , ADMIN 을 고정으로 DB 에 저장하고 사용하도록 ..
 
+    @Builder
+    public Role(String role) {
+        this.role = role;
+    }
 }

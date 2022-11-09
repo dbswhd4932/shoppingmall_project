@@ -2,11 +2,13 @@ package com.project.shop.member.service;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
+import com.project.shop.member.domain.entity.MemberRole;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberUpdateDto;
 import com.project.shop.member.domain.response.MemberResponseDto;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.member.repository.MemberRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +23,19 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberRoleRepository memberRoleRepository;
 
     /**
      * 회원 가입
      */
     public void signup(@RequestBody MemberSignupDto memberSignupDto) {
         Member member = new Member(memberSignupDto);
+        MemberRole memberRole = new MemberRole();
+        memberRole.setMember(member);
+        memberRole.setRole(memberSignupDto.getRole());
         validateDuplicatedMember(member);
         memberRepository.save(member);
+        memberRoleRepository.save(memberRole);
     }
 
     private void validateDuplicatedMember(Member member) {
