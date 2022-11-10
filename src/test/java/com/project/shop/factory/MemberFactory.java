@@ -1,7 +1,7 @@
 package com.project.shop.factory;
 
 import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.MemberSignupDto;
+import com.project.shop.member.domain.request.MemberSignupRequest;
 
 public class MemberFactory {
 
@@ -10,7 +10,8 @@ public class MemberFactory {
                 .loginId("loginId")
                 .password("1234")
                 .name("name")
-                .address(new Address("zipcode","detailsAddress"))
+                .zipcode("123-123")
+                .detailAddress("seoul")
                 .email("user@test.com")
                 .phone("010-1111-1111")
                 .build();
@@ -18,16 +19,17 @@ public class MemberFactory {
         return member;
     }
 
-    public static MemberSignupDto createSignupRequestDto() {
-        MemberSignupDto memberSignupDto = MemberSignupDto.builder()
+    public static MemberSignupRequest createSignupRequestDto() {
+        MemberSignupRequest memberSignupRequest = MemberSignupRequest.builder()
                 .loginId("loginId")
                 .password("1234")
                 .name("name")
-                .address(new Address("zipcode","detailsAddress"))
+                .zipcode("123-123")
+                .detailAddress("seoul")
                 .email("user@test.com")
                 .phone("010-1111-1111")
                 .build();
 
-        return memberSignupDto;
+        return memberSignupRequest;
     }
 }
