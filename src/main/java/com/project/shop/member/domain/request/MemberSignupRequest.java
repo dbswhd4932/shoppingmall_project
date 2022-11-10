@@ -1,10 +1,16 @@
 package com.project.shop.member.domain.request;
 
 import com.project.shop.member.domain.entity.Role;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MemberSignupRequest {
 
     private String loginId;         //회원ID
@@ -15,4 +21,6 @@ public class MemberSignupRequest {
     private String email;           //이메일
     private String phone;           //핸드폰번호
     private Role role;              //권한 초기 : USER
+
+
 }

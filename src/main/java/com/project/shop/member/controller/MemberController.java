@@ -25,7 +25,7 @@ public class MemberController {
         memberService.memberSignup(request);
     }
 
-    //회원 1명 조회
+    //회원 단건 조회
     @GetMapping("/members/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     public MemberResponse memberFindOne(@PathVariable("memberId") Long memberId) {
