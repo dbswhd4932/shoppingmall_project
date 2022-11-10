@@ -4,16 +4,16 @@ import com.project.shop.global.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "card")
 @Entity
 public class Card extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_id")
     private Long id;        //카드번호
 
@@ -21,10 +21,13 @@ public class Card extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;      //회원(다대일)
 
+    @Column(nullable = false)
     private String cardCompany; //카드회사
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String cardNumber;  //카드일련번호
+
+    @Column(nullable = false)
     private String cardExpire;  //카드만료일
 
     @Builder
@@ -34,6 +37,4 @@ public class Card extends BaseTimeEntity {
         this.cardNumber = cardNumber;
         this.cardExpire = cardExpire;
     }
-
-
 }

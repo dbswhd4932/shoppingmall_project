@@ -24,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 class CardServiceTest {
 
     @InjectMocks
-    CardService cardService;
+    RoleService cardService;
 
     @Mock
     CardRepository cardRepository;
