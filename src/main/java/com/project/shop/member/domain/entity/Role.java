@@ -11,15 +11,9 @@ import javax.persistence.*;
 public class Role {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    @JsonIgnore
     private Long id;
 
-    private String role; // todo USER, SELLER , ADMIN 을 고정으로 DB 에 저장하고 사용하도록 ..
-
-    @Builder
-    public Role(String role) {
-        this.role = role;
-    }
+    private String role;
 }

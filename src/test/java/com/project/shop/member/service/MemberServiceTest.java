@@ -1,7 +1,6 @@
 package com.project.shop.member.service;
 
 import com.project.shop.factory.MemberFactory;
-import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.domain.request.MemberSignupDto;
 import com.project.shop.member.domain.request.MemberUpdateDto;

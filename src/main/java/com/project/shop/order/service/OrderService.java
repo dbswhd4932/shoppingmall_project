@@ -1,11 +1,7 @@
 package com.project.shop.order.service;
 
 
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.repository.GoodsRepository;
-import com.project.shop.member.domain.entity.Address;
-import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.order.domain.entity.Order;
 import com.project.shop.order.domain.request.CreateOrderRequestDto;

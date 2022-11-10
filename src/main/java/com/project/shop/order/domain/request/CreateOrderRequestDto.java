@@ -1,7 +1,6 @@
 package com.project.shop.order.domain.request;
 
 import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import lombok.*;
 

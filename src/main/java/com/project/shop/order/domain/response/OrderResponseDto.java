@@ -1,6 +1,5 @@
 package com.project.shop.order.domain.response;
 
-import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.order.domain.request.CreateOrderRequestDto;
 import lombok.Getter;

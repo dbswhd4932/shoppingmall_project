@@ -1,7 +1,6 @@
 package com.project.shop.order.domain.entity;
 
 import com.project.shop.global.common.BaseTimeEntity;
-import com.project.shop.member.domain.entity.Address;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.order.domain.request.CreateOrderRequestDto;
 import lombok.AccessLevel;
