@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 public class CancelPay extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_cancel_pay_id")
     private Long id;
 

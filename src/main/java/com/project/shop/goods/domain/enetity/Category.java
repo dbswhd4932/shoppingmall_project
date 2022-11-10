@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 public class Category {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_category_id")
     private Long id;                 //카테고리번호(PK)
 

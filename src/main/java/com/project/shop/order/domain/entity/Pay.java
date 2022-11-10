@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 public class Pay extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_pay_id")
     private Long id;        //결제번호(PK)
 

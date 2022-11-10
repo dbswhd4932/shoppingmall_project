@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 public class OrderItem {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id")
     private Long id;            //주문상품번호(PK)
 

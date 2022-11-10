@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 public class Goods extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "goods_id")
     private Long id;   //상품번호(PK)
 

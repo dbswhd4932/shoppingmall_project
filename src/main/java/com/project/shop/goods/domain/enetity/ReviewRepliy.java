@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 public class ReviewRepliy extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_review_repliy_id")
     private Long id;        //상품리뷰댓글번호(PK)
 

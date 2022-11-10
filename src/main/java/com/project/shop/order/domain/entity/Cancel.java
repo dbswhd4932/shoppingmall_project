@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Cancel extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_cancel_id")
     private Long id;            //주문취소번호(PK)
 
