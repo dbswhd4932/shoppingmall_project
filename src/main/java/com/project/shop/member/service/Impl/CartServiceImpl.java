@@ -50,8 +50,8 @@ public class CartServiceImpl implements CartService {
         Cart cart = Cart.builder()
                 .member(member)
                 .goodsId(cartCreateRequest.getGoodsId())
-                .totalAmount(cartCreateRequest.getTotalAmount())
-                .totalPrice(goods.getPrice() * cartCreateRequest.getTotalAmount())
+                .totalAmount(cartCreateRequest.getAmount())
+                .totalPrice(goods.getPrice() * cartCreateRequest.getAmount())
                 .build();
 
         cartRepository.save(cart);
@@ -59,6 +59,7 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 전체 조회
     @Override
+    @Transactional(readOnly = true)
     public List<CartResponse> cartFindAll() {
         return cartRepository.findAll()
                 .stream().map(CartResponse::toCartResponse).collect(Collectors.toList());
@@ -66,6 +67,7 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 회원별 조회
     @Override
+    @Transactional(readOnly = true)
     public List<CartResponse> cartFind(Long memberId) {
         List<Cart> cartList = cartRepository.findByMemberId(memberId);
         return cartList.stream().map(CartResponse::toCartResponse).collect(Collectors.toList());

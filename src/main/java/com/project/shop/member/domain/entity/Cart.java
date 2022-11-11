@@ -41,8 +41,8 @@ public class Cart extends BaseTimeEntity {
 
     // 장바구니 같은 상품 존재 시 수량, 금액 증가
     public void addAmount(Cart cart, Goods goods, CartCreateRequest request) {
-        int resultAmount = cart.getTotalAmount() + request.getTotalAmount();
-        int resultPrice = cart.getTotalPrice() + (request.getTotalAmount() * goods.getPrice());
+        int resultAmount = cart.getTotalAmount() + request.getAmount();
+        int resultPrice = cart.getTotalPrice() + (request.getAmount() * goods.getPrice());
 
         this.totalAmount = resultAmount;
         this.totalPrice = resultPrice;
