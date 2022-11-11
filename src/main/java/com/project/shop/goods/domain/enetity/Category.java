@@ -1,5 +1,6 @@
 package com.project.shop.goods.domain.enetity;
 
+import com.project.shop.goods.domain.request.CategoryCreateRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,12 +20,16 @@ public class Category {
     @Column(name = "item_category_id")
     private Long id;                 //카테고리번호(PK)
 
-    private String mainCategory;    //메인카테고리
+    private String category;    //메인카테고리
 
-    @OneToMany(mappedBy = "category")
-    private List<Goods> goodsList = new ArrayList<>();
+    @Builder
+    public Category(String category) {
+        this.category = category;
+    }
 
-    public Category(String mainCategory) {
-        this.mainCategory = mainCategory;
+    public static Category toCategory(CategoryCreateRequest categoryCreateRequest) {
+        return Category.builder()
+                .category(categoryCreateRequest.getCategory())
+                .build();
     }
 }
