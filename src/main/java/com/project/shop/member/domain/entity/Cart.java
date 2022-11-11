@@ -2,11 +2,15 @@ package com.project.shop.member.domain.entity;
 
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.enetity.Goods;
+import com.project.shop.member.domain.request.CartCreateRequest;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "cart")
 @Entity
@@ -18,16 +22,30 @@ public class Cart extends BaseTimeEntity {
     private Long id;        //장바구니 번호
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "goods_id")
-    private Goods goods;        //상품번호(다대일)
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    private Long goodsId;       // 상품 Id
 
     private int totalAmount;    //장바구니 총 수량
 
     private int totalPrice;     //장바구니 총 가격
 
+    @Builder
+    public Cart(Member member, Long goodsId, int totalAmount, int totalPrice) {
+        this.member = member;
+        this.goodsId = goodsId;
+        this.totalAmount = totalAmount;
+        this.totalPrice = totalPrice;
+    }
 
+    // 장바구니 같은 상품 존재 시 수량, 금액 증가
+    public void addAmount(Cart cart, Goods goods, CartCreateRequest request) {
+        int resultAmount = cart.getTotalAmount() + request.getTotalAmount();
+        int resultPrice = cart.getTotalPrice() + (request.getTotalAmount() * goods.getPrice());
+
+        this.totalAmount = resultAmount;
+        this.totalPrice = resultPrice;
+
+    }
 }
