@@ -3,6 +3,7 @@ package com.project.shop.member.domain.entity;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.member.domain.request.MemberEditRequest;
 import com.project.shop.member.domain.request.MemberSignupRequest;
+import com.project.shop.member.domain.response.MemberResponse;
 import lombok.*;
 
 import javax.persistence.*;
@@ -79,4 +80,5 @@ public class Member extends BaseTimeEntity {
         this.phone = memberEditRequest.getPhone();
         return this;
     }
+
 }

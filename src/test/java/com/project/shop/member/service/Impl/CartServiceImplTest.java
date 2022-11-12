@@ -86,6 +86,7 @@ class CartServiceImplTest {
     }
 
     @Test
+    @Disabled // todo ??
     @DisplayName("장바구니 회원별 조회")
     void cartFindTest() {
         //given
@@ -101,8 +102,8 @@ class CartServiceImplTest {
     }
 
     @Test
-    @Disabled
-    @DisplayName("장바구니 상품 삭제") // todo ???
+    @Disabled // todo ??
+    @DisplayName("장바구니 상품 삭제")
     void cartDeleteGoodsTesT() {
         //given
         Member member = MemberFactory.createMember();

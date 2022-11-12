@@ -1,5 +1,7 @@
 package com.project.shop.goods.service.Impl;
 
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.enetity.Category;
 import com.project.shop.goods.domain.request.CategoryCreateRequest;
 import com.project.shop.goods.domain.response.CategoryResponse;
@@ -39,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void categoryDelete(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하는 카테고리가 아닙니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
 
         categoryRepository.delete(category);
     }

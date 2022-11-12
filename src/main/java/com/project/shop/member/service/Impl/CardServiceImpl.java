@@ -62,7 +62,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public void cardDelete(Long cardId) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카드입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CARD));
 
         cardRepository.delete(card);
     }

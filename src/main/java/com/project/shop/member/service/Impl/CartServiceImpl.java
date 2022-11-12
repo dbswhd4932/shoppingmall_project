@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.shop.global.error.ErrorCode.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -31,17 +33,17 @@ public class CartServiceImpl implements CartService {
     @Override
     public void cartAddGoods(CartCreateRequest cartCreateRequest, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
 
         Goods goods = goodsRepository.findById(cartCreateRequest.getGoodsId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
 
         // 장바구니에 원래 있는 상품이면 개수, 금액 추가
         List<Cart> cartList = cartRepository.findByMemberId(memberId);
-        if ( cartList.size() != 0 ) {
+        if (cartList.size() != 0) {
             for (Cart cart : cartList) {
-                if ( cart.getGoodsId().equals(goods.getId())) {
-                    cart.addAmount(cart, goods,cartCreateRequest);
+                if (cart.getGoodsId().equals(goods.getId())) {
+                    cart.addAmount(cart, goods, cartCreateRequest);
                     return;
                 }
             }
@@ -70,7 +72,13 @@ public class CartServiceImpl implements CartService {
     @Transactional(readOnly = true)
     public List<CartResponse> cartFind(Long memberId) {
         List<Cart> cartList = cartRepository.findByMemberId(memberId);
-        return cartList.stream().map(CartResponse::toCartResponse).collect(Collectors.toList());
+
+        if (!cartList.isEmpty()) {
+            return cartList.stream()
+                    .map(cart -> CartResponse.toCartResponse(cart)).collect(Collectors.toList());
+        } else {
+            throw new BusinessException(NOT_FOUND_CART);
+        }
 
     }
 
@@ -87,8 +95,8 @@ public class CartServiceImpl implements CartService {
             }
         }
         // 장바구니를 모두 체크했는데, 삭제할 상품이 없으면 예외
-        if ( check == false) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_GOODS);
+        if (check == false) {
+            throw new BusinessException(NOT_FOUND_GOODS);
         }
     }
 }
