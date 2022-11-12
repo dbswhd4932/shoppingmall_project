@@ -1,0 +1,66 @@
+package com.project.shop.goods.controller;
+
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
+import com.project.shop.goods.domain.request.ReviewCreateRequest;
+import com.project.shop.goods.domain.request.ReviewEditRequest;
+import com.project.shop.goods.domain.response.ReviewResponse;
+import com.project.shop.goods.service.Impl.ReviewServiceImpl;
+import com.project.shop.member.domain.entity.Member;
+import com.project.shop.member.domain.response.MemberResponse;
+import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
+public class ReviewController {
+
+    private final ReviewServiceImpl reviewService;
+    private final MemberRepository memberRepository;
+
+    // 리뷰 생성
+    @PostMapping("/reviews")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reviewCreate(@RequestBody ReviewCreateRequest reviewCreateRequest) {
+        reviewService.reviewCreate(reviewCreateRequest);
+    }
+
+    // 리뷰 전체조회
+    @GetMapping("/reviews")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReviewResponse> reviewFindAll() {
+        return reviewService.reviewFindAll();
+    }
+
+    // 리뷰 회원 별 조회
+    @GetMapping("/reviews/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReviewResponse> reviewFindMember(@PathVariable("memberId") Long memberId) {
+
+        return reviewService.reviewFindMember(memberId);
+    }
+
+
+    // 리뷰 수정
+    @PutMapping("/reviews/{reviewId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void reviewEdit(@PathVariable("reviewId") Long reviewId, Long memberId, @RequestBody ReviewEditRequest reviewEditRequest) {
+        memberRepository.findById(memberId).orElseThrow(()-> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        reviewService.reviewEdit(reviewId, memberId, reviewEditRequest);
+    }
+
+    // 리뷰 삭제
+    @DeleteMapping("/reviews/{reviewId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void reviewDelete(@PathVariable("reviewId") Long reviewId) {
+        reviewService.reviewDelete(reviewId);
+    }
+
+
+}
