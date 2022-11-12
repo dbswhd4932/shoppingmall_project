@@ -1,7 +1,6 @@
 package com.project.shop.order.domain.entity;
 
 import com.project.shop.global.common.BaseTimeEntity;
-import com.project.shop.member.domain.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,13 +21,6 @@ public class Order extends BaseTimeEntity {
     @Column(name = "order_id")
     private Long id;            //주문번호(PK)
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;      //회원(다대일)
-
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems = new ArrayList<>();
-
     @Column(nullable = false, length = 20)
     private String name;        //수취인 이름
 
@@ -45,6 +37,13 @@ public class Order extends BaseTimeEntity {
 
     private int totalPrice;     //결제금액
 
-
-
+    @Builder
+    public Order(String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice) {
+        this.name = name;
+        this.phone = phone;
+        this.zipcode = zipcode;
+        this.detailAddress = detailAddress;
+        this.requirement = requirement;
+        this.totalPrice = totalPrice;
+    }
 }

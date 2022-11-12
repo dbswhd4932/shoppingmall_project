@@ -35,7 +35,7 @@ public class CartController {
         return cartService.cartFindAll();
     }
 
-    // 장바구니 조회
+    // 장바구니 회원 별 조회
     @GetMapping("/carts/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     public List<CartResponse> cartFind(@PathVariable("memberId") Long memberId) {
