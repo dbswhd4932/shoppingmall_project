@@ -19,7 +19,6 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
-    private final MemberRepository memberRepository;
 
     // 장바구니 담기
     @PostMapping("/carts")
@@ -28,26 +27,17 @@ public class CartController {
         cartService.cartAddGoods(request, memberId);
     }
 
-    // 장바구니 전체조회
+    // 장바구니 회원 별 조회
     @GetMapping("/carts")
     @ResponseStatus(HttpStatus.OK)
-    public List<CartResponse> cartFindAll() {
-        return cartService.cartFindAll();
+    public List<CartResponse> cartFind(Long memberId) {
+        return cartService.cartFindMember(memberId);
     }
 
-    // 장바구니 회원 별 조회
-    @GetMapping("/carts/{memberId}")
+    // 장바구니 상품 선택 삭제
+    @DeleteMapping("/carts/{cartId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CartResponse> cartFind(@PathVariable("memberId") Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-        return cartService.cartFind(member.getId());
-    }
-
-    // 장바구니 상품 삭제
-    @DeleteMapping("/carts/{memberId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void cartDeleteGoods(@PathVariable("memberId") Long memberId, Long goodsId) {
-        cartService.cartDeleteGoods(goodsId, memberId);
+    public void cartDeleteGoods(@PathVariable("cartId") Long cartId, Long goodsId) {
+        cartService.cartDeleteGoods(cartId,goodsId);
     }
 }

@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -66,57 +67,41 @@ class CartServiceImplTest {
     }
 
     @Test
-    @DisplayName("장바구니 전체 조회")
-    void finaAllTest() {
-        //given
-        Member member = MemberFactory.createMember();
-        Goods goods1 = GoodsFactory.createGoods();
-        Goods goods2 = GoodsFactory.createGoods();
-        Cart cart1 = CartFactory.cartCreate(member, goods1);
-        Cart cart2 = CartFactory.cartCreate(member, goods2);
-
-        given(cartRepository.findAll()).willReturn(List.of(cart1, cart2));
-
-        //when
-        List<CartResponse> responseList = cartService.cartFindAll();
-
-        //then
-        assertThat(responseList.size()).isEqualTo(2);
-
-    }
-
-    @Test
-    @Disabled // todo ??
     @DisplayName("장바구니 회원별 조회")
+    @Disabled
+        // todo
     void cartFindTest() {
         //given
         Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
         Cart cart = CartFactory.cartCreate(member, goods);
+        given(cartRepository.findById(member.getId())).willReturn(Optional.of(cart));
 
         //when
-        cartService.cartFind(member.getId());
+        List<CartResponse> result = cartService.cartFindMember(member.getId());
 
         //then
-        verify(cartRepository).findByMemberId(any());
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
-    @Disabled // todo ??
+    @Disabled // todo
     @DisplayName("장바구니 상품 삭제")
     void cartDeleteGoodsTesT() {
         //given
         Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
         Cart cart = CartFactory.cartCreate(member, goods);
-        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-        given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
-        given(cartRepository.findByMemberId(goods.getId())).willReturn(Collections.singletonList(cart));
+        goodsRepository.save(goods);
+        given(goodsRepository.save(goods)).willReturn(goods);
+        given(cartRepository.findById(member.getId())).willReturn(Optional.of(cart));
 
         //when
-        cartService.cartDeleteGoods(goods.getId(), member.getId());
+        cartService.cartDeleteGoods(cart.getId(), goods.getId());
 
         //then
-        verify(cartRepository).delete(any());
+        verify(cartRepository).deleteById(cart.getId());
+
+
     }
 }

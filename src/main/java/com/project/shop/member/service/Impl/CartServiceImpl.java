@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,43 +60,32 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
-    // 장바구니 전체 조회
+    // 장바구니 회원 별 조회
     @Override
-    @Transactional(readOnly = true)
-    public List<CartResponse> cartFindAll() {
-        return cartRepository.findAll()
-                .stream().map(CartResponse::toCartResponse).collect(Collectors.toList());
-    }
-
-    // 장바구니 회원별 조회
-    @Override
-    @Transactional(readOnly = true)
-    public List<CartResponse> cartFind(Long memberId) {
+    public List<CartResponse> cartFindMember(Long memberId) {
         List<Cart> cartList = cartRepository.findByMemberId(memberId);
-
-        if (!cartList.isEmpty()) {
-            return cartList.stream()
-                    .map(cart -> CartResponse.toCartResponse(cart)).collect(Collectors.toList());
-        } else {
-            throw new BusinessException(NOT_FOUND_CART);
-        }
-
-    }
-
-    // 장바구니 상품 삭제
-    @Override
-    public void cartDeleteGoods(Long goodsId, Long memberId) {
-        List<Cart> cartList = cartRepository.findByMemberId(memberId);
-        // 장바구니 상품 존재여부 확인
-        boolean check = false;
+        List<CartResponse> cartResponseList = new ArrayList<>();
         for (Cart cart : cartList) {
-            if (cart.getGoodsId().equals(goodsId)) {
-                cartRepository.delete(cart);
-                check = true;
+            if (cart.getMember().getId().equals(memberId)) {
+                cartResponseList.add(CartResponse.toCartResponse(cart));
             }
         }
-        // 장바구니를 모두 체크했는데, 삭제할 상품이 없으면 예외
-        if (check == false) {
+        if (cartResponseList.isEmpty()) {
+            throw new BusinessException(NOT_FOUND_CART);
+        } else {
+            return cartResponseList;
+        }
+    }
+
+    // 장바구니 상품 선택 삭제
+    @Override
+    public void cartDeleteGoods(Long cartId, Long goodsId) {
+        Cart cart = cartRepository.findById(cartId).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_CART));
+
+        if ( cart.getGoodsId().equals(goodsId)) {
+            cartRepository.deleteById(cart.getId());
+        } else {
             throw new BusinessException(NOT_FOUND_GOODS);
         }
     }
