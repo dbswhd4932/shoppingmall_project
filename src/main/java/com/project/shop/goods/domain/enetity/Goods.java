@@ -1,6 +1,7 @@
 package com.project.shop.goods.domain.enetity;
 
 import com.project.shop.global.common.BaseTimeEntity;
+import com.project.shop.goods.domain.request.GoodsCreateRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,12 +17,15 @@ import java.util.List;
 @Entity
 public class Goods extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "goods_id")
     private Long id;   //상품번호(PK)
 
-    @Column(nullable = false, length = 20, unique = true)
-    private String name;    //상품이름
+    private Long memberId;
+
+    @Column(nullable = false, length = 100, unique = true)
+    private String goodsName;    //상품이름
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_category_id")
@@ -32,16 +36,27 @@ public class Goods extends BaseTimeEntity {
 
     private String description; //상품설명
 
-    @OneToMany(mappedBy = "goods")
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
     @Builder
-    public Goods(Long id, String name, Category category, int price, String description) {
-        this.id = id;
-        this.name = name;
+    public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images) {
+        this.memberId = memberId;
+        this.goodsName = goodsName;
         this.category = category;
         this.price = price;
         this.description = description;
+        this.images = images;
+    }
+
+    public static Goods toGoods(GoodsCreateRequest goodsCreateRequest) {
+        return Goods.builder()
+                .goodsName(goodsCreateRequest.getGoodsName())
+                .memberId(goodsCreateRequest.getMemberId())
+                .category(goodsCreateRequest.getCategory())
+                .price(goodsCreateRequest.getPrice())
+                .description(goodsCreateRequest.getDescription())
+                .build();
     }
 
 }

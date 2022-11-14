@@ -1,5 +1,6 @@
 package com.project.shop.goods.domain.enetity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.global.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,28 +12,29 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Image extends BaseTimeEntity {
+public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String fileName;
+    private String fileName;    //사진이름
 
-    @Column(nullable = false)
-    private String filePath;
+    @Column(nullable = false)   //사진경로
+    private String fileUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
+    @JsonIgnore
     private Goods goods;
 
 
     @Builder
-    public Image(Long id, String fileName, String filePath, Goods goods) {
-        this.id = id;
+    public Image(String fileName, String fileUrl, Goods goods) {
         this.fileName = fileName;
-        this.filePath = filePath;
+        this.fileUrl = fileUrl;
         this.goods = goods;
     }
 }
+
