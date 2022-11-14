@@ -32,16 +32,16 @@ public class ReviewController {
     }
 
     // 리뷰 전체조회
-    @GetMapping("/reviews")
+    @GetMapping("/reviews/all")
     @ResponseStatus(HttpStatus.OK)
     public List<ReviewResponse> reviewFindAll() {
         return reviewService.reviewFindAll();
     }
 
     // 리뷰 회원 별 조회
-    @GetMapping("/reviews/{memberId}")
+    @GetMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReviewResponse> reviewFindMember(@PathVariable("memberId") Long memberId) {
+    public List<ReviewResponse> reviewFindMember(Long memberId) {
 
         return reviewService.reviewFindMember(memberId);
     }
