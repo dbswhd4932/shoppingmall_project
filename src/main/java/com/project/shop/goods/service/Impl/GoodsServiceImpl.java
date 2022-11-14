@@ -1,8 +1,11 @@
 package com.project.shop.goods.service.Impl;
 
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.enetity.Goods;
 import com.project.shop.goods.domain.enetity.Image;
 import com.project.shop.goods.domain.request.GoodsCreateRequest;
+import com.project.shop.goods.domain.request.GoodsEditRequest;
 import com.project.shop.goods.domain.response.GoodsResponse;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
@@ -86,6 +89,15 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 수정
+    // todo 이미지 수정 구현필요
+    @Override
+    public void goodsEdit(Long goodsId , GoodsEditRequest goodsEditRequest) {
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
+
+        goods.update(goodsEditRequest);
+
+    }
 
     // 상품 삭제
     @Override
