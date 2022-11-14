@@ -13,8 +13,17 @@ insert into MEMBER (login_id, password, name, zipcode, detail_address, email, ph
 values ('테스트2' , '1234', '둘리', '456-678','상세주소','test2@aaa.com','010-4321-4321-', 1);
 
 -- 상품 추가
-insert into GOODS (name, price, description, item_category_id) values ('테스트상품1' , '10000', '설명테스트1', 1);
-insert into GOODS (name, price, description, item_category_id) values ('테스트상품2' , '20000', '설명테스트2', 2);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (1,'나이키1' , '10000', '설명1', 1);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (1,'나이키2' , '20000', '설명2', 1);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (1,'나이키3' , '30000', '설명3', 1);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (1,'나이키4' , '40000', '설명4', 1);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (1,'나이키5' , '50000', '설명5', 1);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (2,'아디다스1' , '60000', '설명6', 2);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (2,'아디다스2' , '70000', '설명7', 2);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (2,'아디다스3' , '80000', '설명8', 2);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (2,'아디다스4' , '90000', '설명9', 2);
+insert into GOODS (member_id, goods_name, price, description, item_category_id) values (2,'아디다스5' , '100000', '설명10', 2);
+
 
 -- 장바구니 추가
 insert into CART (goods_id, total_amount, total_price, member_id) values (1,1, 10000,1);
