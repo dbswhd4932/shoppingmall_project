@@ -37,14 +37,28 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findById(cartId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_CART));
 
-        Goods goods = goodsRepository.findById(cart.getGoodsId()).get();
+        // 추가 주문일 경우 금액 추가하고 리턴
+        List<Order> orderList = orderRepository.findAll();
+        for (Order order : orderList) {
+            if ( order.getMemberId().equals(orderCreateRequest.getMemberId())) {
+                order.addTotalPrice(cart.getTotalPrice());
+                return;
+            }
+        }
 
-        Order newOrder = Order.toOrder(orderCreateRequest, cart);
-        orderRepository.save(newOrder);
-        OrderItem orderItem = OrderItem.createOrderItem(orderCreateRequest.getMemberId(), goods,
-                cart.getTotalPrice(), cart.getTotalAmount(), newOrder);
+        if (cart.getMember().getId().equals(orderCreateRequest.getMemberId())) {
+            Order newOrder = Order.toOrder(orderCreateRequest, cart);
 
-        orderItemRepository.save(orderItem);
+            orderRepository.save(newOrder);
+
+            Goods goods = goodsRepository.findById(cart.getGoodsId()).get();
+            OrderItem orderItem = OrderItem.createOrderItem(orderCreateRequest.getMemberId(), goods,
+                    cart.getTotalPrice(), cart.getTotalAmount(), newOrder);
+
+            orderItemRepository.save(orderItem);
+        } else {
+            throw new BusinessException(ErrorCode.NOT_FOUND_GOODS);
+        }
     }
 
     // 주문 회원별 조회
