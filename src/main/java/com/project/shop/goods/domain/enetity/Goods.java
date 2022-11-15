@@ -2,10 +2,12 @@ package com.project.shop.goods.domain.enetity;
 
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.request.GoodsCreateRequest;
+import com.project.shop.goods.domain.request.GoodsEditRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -57,6 +59,14 @@ public class Goods extends BaseTimeEntity {
                 .price(goodsCreateRequest.getPrice())
                 .description(goodsCreateRequest.getDescription())
                 .build();
+    }
+
+    // 업데이트 ( 상품이름, 설명 , 가격 )
+    // todo 이미지 수정
+    public void update(GoodsEditRequest goodsEditRequest) {
+        this.goodsName = goodsEditRequest.getGoodsName();
+        this.description = goodsEditRequest.getDescription();
+        this.price = goodsEditRequest.getPrice();
     }
 
 }

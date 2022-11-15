@@ -1,6 +1,7 @@
 package com.project.shop.goods.controller;
 
 import com.project.shop.goods.domain.request.GoodsCreateRequest;
+import com.project.shop.goods.domain.request.GoodsEditRequest;
 import com.project.shop.goods.domain.response.GoodsResponse;
 import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,12 @@ public class GoodsController {
     }
 
     // 상품 수정
+    // todo 이미지 수정 구현필요
+    @PutMapping("/goods/{goodsId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void goodsEdit(@PathVariable("goodsId") Long goodsId, @RequestBody GoodsEditRequest goodsEditRequest) {
+        goodsService.goodsEdit(goodsId, goodsEditRequest);
+    }
 
     // 상품 삭제
     @DeleteMapping("/goods/{goodsId}")

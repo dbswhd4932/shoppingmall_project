@@ -1,6 +1,7 @@
 package com.project.shop.goods.service;
 
 import com.project.shop.goods.domain.request.GoodsCreateRequest;
+import com.project.shop.goods.domain.request.GoodsEditRequest;
 import com.project.shop.goods.domain.response.GoodsResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ public interface GoodsService {
     List<GoodsResponse> goodsFindKeyword(String keyword);
 
     // 상품 수정
+    void goodsEdit(Long goodsId , GoodsEditRequest goodsEditRequest);
 
     // 상품 삭제
     void goodsDelete(Long goodsId);

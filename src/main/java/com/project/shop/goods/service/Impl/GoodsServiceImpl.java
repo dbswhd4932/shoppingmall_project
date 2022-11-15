@@ -31,7 +31,7 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
 
-    // 상품 생성 + 이미지 추가
+    // 상품 등록 + 이미지 추가
     @Override
     public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files) throws IOException {
         // 저장할 경로 지정
@@ -76,9 +76,11 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @Transactional(readOnly = true)
     public List<GoodsResponse> goodsFindKeyword(String keyword) {
+        // keyword 로 검색 후 모든 상품 찾기
         List<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(keyword);
 
         List<GoodsResponse> list = new ArrayList<>();
+        // 상품의 이미지 찾아서 응답에 설정
         for (Goods good : goods) {
             List<Image> imageList = imageRepository.findByGoodsId(good.getId());
             GoodsResponse goodsResponse = GoodsResponse.toGoodsResponse(good);

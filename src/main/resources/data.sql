@@ -12,6 +12,13 @@ values ('테스트1' , '1234', '홍길동', '123-123','상세주소','test1@aaa.
 insert into MEMBER (login_id, password, name, zipcode, detail_address, email, phone, role_id)
 values ('테스트2' , '1234', '둘리', '456-678','상세주소','test2@aaa.com','010-4321-4321-', 1);
 
+-- 카드 추가
+insert into CARD ( card_company, card_expire, card_number, member_id )
+values ('국민','23-12','1234-1234-1234-1234',1);
+
+insert into CARD ( card_company, card_expire, card_number, member_id )
+values ('우리','23-12','4312-4321-4312-4132',1);
+
 -- 상품 추가
 insert into GOODS (member_id, goods_name, price, description, item_category_id) values (1,'나이키1' , '10000', '설명1', 1);
 insert into GOODS (member_id, goods_name, price, description, item_category_id) values (1,'나이키2' , '20000', '설명2', 1);
