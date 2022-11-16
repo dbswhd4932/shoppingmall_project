@@ -42,14 +42,19 @@ public class OrderServiceImpl implements OrderService {
         for (Order order : orderList) {
             if ( order.getMemberId().equals(orderCreateRequest.getMemberId())) {
                 order.addTotalPrice(cart.getTotalPrice());
+                // 추가 후 장바구니 상품 삭제
+                cartRepository.deleteById(cartId);
                 return;
             }
         }
 
+        // 추가 주문이 아니면 새로 생성
         if (cart.getMember().getId().equals(orderCreateRequest.getMemberId())) {
             Order newOrder = Order.toOrder(orderCreateRequest, cart);
 
             orderRepository.save(newOrder);
+            // 추가 후 장바구니 상품 삭제
+            cartRepository.deleteById(cartId);
 
             Goods goods = goodsRepository.findById(cart.getGoodsId()).get();
             OrderItem orderItem = OrderItem.createOrderItem(orderCreateRequest.getMemberId(), goods,
