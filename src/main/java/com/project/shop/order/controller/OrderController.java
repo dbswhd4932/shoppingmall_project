@@ -6,6 +6,7 @@ import com.project.shop.order.domain.entity.request.OrderCreateRequest;
 import com.project.shop.order.domain.entity.response.OrderResponse;
 import com.project.shop.order.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,14 +20,16 @@ public class OrderController {
 
     //주문 생성
     @PostMapping("/orders")
+    @ResponseStatus(HttpStatus.CREATED)
     public void orderCreate(@RequestBody OrderCreateRequest orderCreateRequest, Long cartId) {
         orderService.createOrder(orderCreateRequest, cartId);
     }
 
-    // 주문 회원별 조회
+    // 주문 회원별 조회 - 여러 주문이 있을 수 있다.
     @GetMapping("/orders")
-    public List<OrderResponse> orderFind(Long memberId) {
-
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderResponse> orderFindMember(Long memberId) {
+        orderService.orderFindMember(memberId);
         return null;
     }
 

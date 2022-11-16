@@ -12,12 +12,17 @@ import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.ReviewService;
 import com.project.shop.member.domain.entity.Member;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.order.domain.entity.Pay;
+import com.project.shop.order.repository.OrderRepository;
+import com.project.shop.order.repository.PayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.project.shop.global.error.ErrorCode.*;
 
 @Service
 @Transactional
@@ -27,25 +32,32 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final GoodsRepository goodsRepository;
     private final MemberRepository memberRepository;
+    private final PayRepository payRepository;
+    private final OrderRepository orderRepository;
 
-    // 리뷰생성
+    // 리뷰생성 - 결제한 사람만 리뷰 작성이 가능
     @Override
     public void reviewCreate(ReviewCreateRequest reviewCreateRequest) {
-        Goods goods = goodsRepository.findById(reviewCreateRequest.getGoodsId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
+        Pay pay = payRepository.findById(reviewCreateRequest.getPayId())
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_ORDERS));
 
         Member member = memberRepository.findById(reviewCreateRequest.getMemberId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
 
+        Goods goods = goodsRepository.findById(reviewCreateRequest.getGoodsId())
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
 
-        Review review = Review.builder()
-                .memberId(member.getId())
-                .goods(goods)
-                .comment(reviewCreateRequest.getComment())
-                .build();
+        if (pay.getOrder().getMemberId().equals(member.getId())) {
+            Review review = Review.builder()
+                    .memberId(member.getId())
+                    .goods(goods)
+                    .comment(reviewCreateRequest.getComment())
+                    .build();
 
-        reviewRepository.save(review);
-
+            reviewRepository.save(review);
+        } else {
+            throw new BusinessException(NOT_BUY_GOODS);
+        }
     }
 
     // 리뷰 전체조회
@@ -61,11 +73,11 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewResponse> reviewFindMember(Long memberId) {
         List<Review> reviewList = reviewRepository.findByMemberId(memberId);
 
-        if ( !reviewList.isEmpty()) {
+        if (!reviewList.isEmpty()) {
             return reviewList.stream().map(review -> ReviewResponse.toReviewResponse(review))
                     .collect(Collectors.toList());
         } else {
-            throw new BusinessException(ErrorCode.NOT_FOUND_REVIEW);
+            throw new BusinessException(NOT_FOUND_REVIEW);
         }
 
     }
@@ -74,7 +86,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void reviewEdit(Long reviewId, Long memberId, ReviewEditRequest reviewEditRequest) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
         if (review.getMemberId().equals(memberId)) {
             review.edit(reviewEditRequest);
         } else {
@@ -84,9 +96,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰 삭제
     @Override
-    public void reviewDelete(Long reviewId) {
+    public void reviewDelete(Long reviewId, Long memberId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
-        reviewRepository.delete(review);
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
+
+        if (review.getMemberId().equals(memberId)) {
+            reviewRepository.delete(review);
+        } else {
+            throw new BusinessException(CANT_DELETE_REVIEW);
+        }
     }
 }

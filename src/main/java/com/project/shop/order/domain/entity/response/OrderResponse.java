@@ -1,9 +1,11 @@
 package com.project.shop.order.domain.entity.response;
 
+import com.project.shop.order.domain.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 
 import javax.persistence.Column;
 
@@ -21,4 +23,15 @@ public class OrderResponse {
     private String detailAddress;   //상세주소
     private String requirement;     //요청사항
     private int totalPrice;         //결제금액
+
+    public static OrderResponse toOrderResponse(Order order) {
+        return OrderResponse.builder()
+                .name(order.getName())
+                .phone(order.getPhone())
+                .zipcode(order.getZipcode())
+                .detailAddress(order.getDetailAddress())
+                .requirement(order.getRequirement())
+                .totalPrice(order.getTotalPrice())
+                .build();
+    }
 }

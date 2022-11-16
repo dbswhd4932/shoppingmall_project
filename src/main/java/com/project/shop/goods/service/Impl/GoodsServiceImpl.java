@@ -38,7 +38,7 @@ public class GoodsServiceImpl implements GoodsService {
         String url = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
 
         if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 상품입니다.");
+            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
         }
 
         Goods goods = Goods.toGoods(goodsCreateRequest);
@@ -80,7 +80,7 @@ public class GoodsServiceImpl implements GoodsService {
         List<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(keyword);
 
         List<GoodsResponse> list = new ArrayList<>();
-        // 상품의 이미지 찾아서 응답에 설정
+        // 상품의 이미지 찾아서 응답에 추가 설정
         for (Goods good : goods) {
             List<Image> imageList = imageRepository.findByGoodsId(good.getId());
             GoodsResponse goodsResponse = GoodsResponse.toGoodsResponse(good);

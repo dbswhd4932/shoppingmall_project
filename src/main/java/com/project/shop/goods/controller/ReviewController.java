@@ -58,8 +58,8 @@ public class ReviewController {
     // 리뷰 삭제
     @DeleteMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public void reviewDelete(@PathVariable("reviewId") Long reviewId) {
-        reviewService.reviewDelete(reviewId);
+    public void reviewDelete(@PathVariable("reviewId") Long reviewId, Long memberId) {
+        reviewService.reviewDelete(reviewId, memberId );
     }
 
 

@@ -1,5 +1,6 @@
 package com.project.shop.member.service.Impl;
 
+import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.domain.entity.Role;
 import com.project.shop.member.domain.request.RoleCreateRequest;
@@ -41,7 +42,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void roleDelete(Long roleId) {
         Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 권한입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_AUTHORITY));
         roleRepository.delete(role);
     }
 }

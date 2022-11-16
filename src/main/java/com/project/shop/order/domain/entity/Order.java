@@ -57,7 +57,6 @@ public class Order extends BaseTimeEntity {
         this.totalPrice = totalPrice;
     }
 
-
     public static Order toOrder(OrderCreateRequest orderCreateRequest, Cart cart) {
         return Order.builder()
                 .name(orderCreateRequest.getName())

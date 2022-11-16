@@ -12,12 +12,12 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "item_category")
+@Table(name = "category")
 @Entity
 public class Category {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_category_id")
+    @Column(name = "category_id")
     private Long id;                 //카테고리번호(PK)
 
     private String category;    //메인카테고리

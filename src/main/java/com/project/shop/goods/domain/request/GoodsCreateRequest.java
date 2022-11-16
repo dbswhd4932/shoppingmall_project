@@ -20,6 +20,5 @@ public class GoodsCreateRequest {
     private Category category;
     private int price;
     private String description;
-    private List<MultipartFile> files;
 
 }

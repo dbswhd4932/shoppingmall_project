@@ -1,6 +1,7 @@
 package com.project.shop.member.domain.entity;
 
 import com.project.shop.global.common.BaseTimeEntity;
+import com.project.shop.member.domain.request.CardCreateRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,4 +38,5 @@ public class Card extends BaseTimeEntity {
         this.cardNumber = cardNumber;
         this.cardExpire = cardExpire;
     }
+
 }

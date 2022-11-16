@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,11 +67,17 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    // 주문 회원별 조회
+    // 주문 회원별 조회 - 여러 주문이 있을 수 있다.
     @Override
     @Transactional(readOnly = true)
     public List<OrderResponse> orderFindMember(Long memberId) {
-        return null;
+        List<Order> orderList = orderRepository.findAll();
+        List<OrderResponse> list = new ArrayList<>();
+        for (Order order : orderList) {
+            if ( order.getMemberId().equals(memberId)) {
+                list.add(OrderResponse.toOrderResponse(order));
+            }
+        }
+        return list;
     }
-
 }

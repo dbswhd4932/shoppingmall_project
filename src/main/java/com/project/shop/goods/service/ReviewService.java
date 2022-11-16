@@ -22,5 +22,5 @@ public interface ReviewService {
     void reviewEdit(Long reviewId, Long memberId, ReviewEditRequest reviewEditRequest);
 
     // 리뷰 삭제
-    void reviewDelete(Long reviewId);
+    void reviewDelete(Long reviewId, Long memberId);
 }

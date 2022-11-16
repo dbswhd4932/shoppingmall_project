@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.project.shop.global.error.ErrorCode.NOT_FOUND_CARD;
+import static com.project.shop.global.error.ErrorCode.NOT_FOUND_ORDERS;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -29,13 +32,13 @@ public class PayServiceImpl implements PayService {
     @Override
     public void createPay(PayCreateRequest payCreateRequest) {
         Order order = orderRepository.findByMemberId(payCreateRequest.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하는 주문이 없습니다."));
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_ORDERS));
 
         Card card = cardRepository.findById(payCreateRequest.getCardId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CARD));
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_CARD));
 
         if ( !card.getMember().getId().equals(payCreateRequest.getMemberId())) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_CARD);
+            throw new BusinessException(NOT_FOUND_CARD);
         }
 
         Pay pay = Pay.builder()
