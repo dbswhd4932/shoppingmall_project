@@ -25,6 +25,9 @@ dependencies {
     // swagger dependency
     implementation "io.springfox:springfox-boot-starter:3.0.0"
     implementation "io.springfox:springfox-swagger-ui:3.0.0"
+    // https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-52
+    implementation 'com.vladmihalcea:hibernate-types-52:2.20.0'
+
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
