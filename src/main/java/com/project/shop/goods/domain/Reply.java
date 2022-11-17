@@ -23,6 +23,7 @@ public class Reply extends BaseTimeEntity {
     @JoinColumn(name = "review_id")
     private Review review;   //상품리뷰(다대일)
 
+    @Column(nullable = false)
     private String comment;  //리뷰댓글내용
 
     @Builder

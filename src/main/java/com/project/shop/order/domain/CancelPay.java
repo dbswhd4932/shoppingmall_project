@@ -25,5 +25,6 @@ public class CancelPay extends BaseTimeEntity {
     private Card card;
 
     private int price;
+
     private String cancelMethod;
 }

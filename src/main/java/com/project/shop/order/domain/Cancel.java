@@ -25,7 +25,10 @@ public class Cancel extends BaseTimeEntity {
     @JoinColumn(name = "goods_id")
     private Goods goods;        //상품(다대일)
 
+    @Column(nullable = false)
     private int totalAmount;    //주문수량
+
+    @Column(nullable = false)
     private int totalPrice;     //주문가격
 
 }

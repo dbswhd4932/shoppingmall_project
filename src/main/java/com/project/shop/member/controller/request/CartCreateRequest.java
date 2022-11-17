@@ -13,10 +13,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class CartCreateRequest {
 
-    @NotNull(message = "상품번호를 입력하세요.")
+    @NotNull
     private Long goodsId; // 상품 번호
 
-    @NotNull(message = "구매 수량을 입력하세요.")
+    @NotNull
     private int amount; // 구매 수량
 
 

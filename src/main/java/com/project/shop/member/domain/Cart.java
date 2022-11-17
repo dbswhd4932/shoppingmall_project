@@ -27,8 +27,10 @@ public class Cart extends BaseTimeEntity {
 
     private Long goodsId;       // 상품 Id
 
+    @Column(nullable = false)
     private int totalAmount;    //장바구니 총 수량
 
+    @Column(nullable = false)
     private int totalPrice;     //장바구니 총 가격
 
     @Builder

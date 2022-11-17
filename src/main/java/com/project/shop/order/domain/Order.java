@@ -40,6 +40,7 @@ public class Order extends BaseTimeEntity {
 
     private String requirement;     //요청사항
 
+    @Column(nullable = false)
     private int totalPrice;         //결제금액
 
     @Enumerated(EnumType.STRING)

@@ -18,12 +18,14 @@ public class Pay extends BaseTimeEntity {
     @Column(name = "pay_id")
     private Long id;                //결제번호(PK)
 
+    @Column(nullable = false)
     private Long cardId;            // 카드 ID
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;            //주문(일대일)
 
+    @Column(nullable = false)
     private int price;              //결제가격
 
     @Builder

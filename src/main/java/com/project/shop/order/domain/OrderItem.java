@@ -26,8 +26,10 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;          //주문(다대일)
 
+    @Column(nullable = false)
     private int amount;           //주문수량개수
 
+    @Column(nullable = false)
     private int orderPrice;      //주문수량가격
 
     @Builder

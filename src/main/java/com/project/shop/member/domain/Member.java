@@ -28,8 +28,10 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private String name;            //이름
 
+    @Column(nullable = false)
     private String zipcode;         //우편번호
 
+    @Column(nullable = false)
     private String detailAddress;   //상세주소
 
     @Column(nullable = false, length = 50, unique = true)

@@ -18,6 +18,7 @@ public class Category {
     @Column(name = "category_id")
     private Long id;                 //카테고리번호(PK)
 
+    @Column(unique = true)
     private String category;    //메인카테고리
 
     @Builder
