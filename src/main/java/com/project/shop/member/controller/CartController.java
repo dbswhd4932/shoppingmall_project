@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class CartController {
     // 장바구니 담기
     @PostMapping("/carts")
     @ResponseStatus(HttpStatus.CREATED)
-    public void cartAddGoods(@RequestBody CartCreateRequest request, Long memberId) {
+    public void cartAddGoods(@RequestBody @Valid CartCreateRequest request, Long memberId) {
         cartService.cartAddGoods(request, memberId);
     }
 

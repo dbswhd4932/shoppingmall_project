@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class CategoryController {
     // 카테고리 생성
     @PostMapping("/categories")
     @ResponseStatus(HttpStatus.CREATED)
-    public void categoryCreate(@RequestBody CategoryCreateRequest categoryCreateRequest) {
+    public void categoryCreate(@RequestBody @Valid CategoryCreateRequest categoryCreateRequest) {
         categoryService.categoryCreate(categoryCreateRequest);
     }
 

@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReviewEditRequest {
 
+    @NotBlank(message = "댓글을 입력하세요.")
     private String comment;
 }

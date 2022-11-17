@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -21,7 +22,7 @@ public class MemberController {
     //회원 생성
     @PostMapping("/members")
     @ResponseStatus(HttpStatus.CREATED)
-    public void memberSignup(@RequestBody MemberSignupRequest request) {
+    public void memberSignup(@RequestBody @Valid MemberSignupRequest request) {
         memberService.memberSignup(request);
     }
 
@@ -42,7 +43,7 @@ public class MemberController {
     //회원 수정
     @PutMapping("/members/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public void memberEdit(@PathVariable("memberId") Long memberId, @RequestBody MemberEditRequest memberEditRequest) {
+    public void memberEdit(@PathVariable("memberId") Long memberId, @RequestBody @Valid MemberEditRequest memberEditRequest) {
         memberService.memberEdit(memberId, memberEditRequest);
     }
 

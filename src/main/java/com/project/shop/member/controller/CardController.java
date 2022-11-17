@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class CardController {
     //카드 생성
     @PostMapping("/cards")
     @ResponseStatus(HttpStatus.CREATED)
-    public void cardCreate(@RequestBody CardCreateRequest cardCreateRequest) {
+    public void cardCreate(@RequestBody @Valid CardCreateRequest cardCreateRequest) {
         cardService.cardCreate(cardCreateRequest);
     }
 

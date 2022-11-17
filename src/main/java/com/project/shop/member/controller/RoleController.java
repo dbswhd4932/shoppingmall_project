@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class RoleController {
     // 권한 생성
     @PostMapping("/roles")
     @ResponseStatus(HttpStatus.CREATED)
-    public void roleCreate(@RequestBody RoleCreateRequest roleCreateRequest) {
+    public void roleCreate(@RequestBody @Valid RoleCreateRequest roleCreateRequest) {
         roleService.roleCreate(roleCreateRequest);
     }
 

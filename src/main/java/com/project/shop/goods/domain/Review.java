@@ -11,12 +11,12 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "item_review")
+@Table(name = "review")
 @Entity
 public class Review extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_review_id")
+    @Column(name = "review_id")
     private Long id;  //상품리뷰번호(PK)
 
     private Long memberId; // 회원 ID

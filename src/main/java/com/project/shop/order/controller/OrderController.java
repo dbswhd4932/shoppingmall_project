@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class OrderController {
     //주문 생성
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
-    public void orderCreate(@RequestBody OrderCreateRequest orderCreateRequest, Long cartId, Long cardId) {
+    public void orderCreate(@RequestBody @Valid OrderCreateRequest orderCreateRequest, Long cartId, Long cardId) {
         orderService.createOrder(orderCreateRequest, cartId, cardId);
     }
 

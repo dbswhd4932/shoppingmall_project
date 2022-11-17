@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class GoodsController {
     // 상품 생성
     @PostMapping(value = "/goods", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
-    public void goodsCreate(@RequestPart GoodsCreateRequest goodsCreateRequest,
+    public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart List<MultipartFile> files) throws IOException {
         goodsService.goodsCreate(goodsCreateRequest, files);
     }
@@ -50,7 +51,7 @@ public class GoodsController {
     // todo 이미지 수정 구현필요
     @PutMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
-    public void goodsEdit(@PathVariable("goodsId") Long goodsId, @RequestBody GoodsEditRequest goodsEditRequest) {
+    public void goodsEdit(@PathVariable("goodsId") Long goodsId, @RequestBody @Valid GoodsEditRequest goodsEditRequest) {
         goodsService.goodsEdit(goodsId, goodsEditRequest);
     }
 

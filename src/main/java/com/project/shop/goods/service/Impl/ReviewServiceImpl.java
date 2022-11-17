@@ -41,7 +41,7 @@ public class ReviewServiceImpl implements ReviewService {
     public void reviewCreate(ReviewCreateRequest reviewCreateRequest) {
         // 주문_상품 DB 에서 요청회원의 주문이 있는지 확인
         OrderItem orderItem = orderItemRepository.findById(reviewCreateRequest.getOrderItemId())
-                .orElseThrow(() -> new IllegalArgumentException("주문한 상품이 아닙니다."));
+                .orElseThrow(() -> new BusinessException(NO_BUY_ORDER));
 
         // 주문_상품 의 회원과 리뷰 요청의 회원이 일치 && 주문상태가 결제완료 상태일때 리뷰 작성 가능
         if (orderItem.getMemberId().equals(reviewCreateRequest.getMemberId())
@@ -54,7 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
 
             reviewRepository.save(review);
         } else {
-            throw new IllegalArgumentException("주문한 상품이 아닙니다.");
+            throw new BusinessException(NO_BUY_ORDER);
         }
     }
 

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class ReviewController {
     // 리뷰 생성
     @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.CREATED)
-    public void reviewCreate(@RequestBody ReviewCreateRequest reviewCreateRequest) {
+    public void reviewCreate(@RequestBody @Valid ReviewCreateRequest reviewCreateRequest) {
         reviewService.reviewCreate(reviewCreateRequest);
     }
 
@@ -47,7 +48,7 @@ public class ReviewController {
     // 리뷰 수정
     @PutMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public void reviewEdit(@PathVariable("reviewId") Long reviewId, Long memberId, @RequestBody ReviewEditRequest reviewEditRequest) {
+    public void reviewEdit(@PathVariable("reviewId") Long reviewId, Long memberId, @RequestBody @Valid ReviewEditRequest reviewEditRequest) {
         memberRepository.findById(memberId).orElseThrow(()-> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
         reviewService.reviewEdit(reviewId, memberId, reviewEditRequest);
     }

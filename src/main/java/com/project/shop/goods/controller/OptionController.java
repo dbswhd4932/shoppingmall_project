@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -15,7 +17,7 @@ public class OptionController {
 
     @PostMapping("/option")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOption(@RequestBody Option option) {
+    public void createOption(@RequestBody @Valid Option option) {
         optionService.createOption(option);
     }
 }
