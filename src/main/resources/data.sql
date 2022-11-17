@@ -33,7 +33,7 @@ insert into GOODS (member_id, goods_name, price, description, category_id) value
 
 
 -- 장바구니 추가
---insert into CART (goods_id, total_amount, total_price, member_id) values (1,1, 10000,1);
+insert into CART (goods_id, total_amount, total_price, member_id) values (1,1, 10000,1);
 --insert into CART (goods_id, total_amount, total_price, member_id) values (2,1, 20000,1);
 --insert into CART (goods_id, total_amount, total_price, member_id) values (1,1, 10000,2);
 --insert into CART (goods_id, total_amount, total_price, member_id) values (2,1, 20000,2);
