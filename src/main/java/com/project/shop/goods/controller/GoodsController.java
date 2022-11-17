@@ -2,6 +2,7 @@ package com.project.shop.goods.controller;
 
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,9 @@ public class GoodsController {
     @PostMapping(value = "/goods", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
-                            @RequestPart List<MultipartFile> files) throws IOException {
-        goodsService.goodsCreate(goodsCreateRequest, files);
+                            @RequestPart List<MultipartFile> files,
+                            @RequestPart OptionCreateRequest optionCreateRequest) throws IOException {
+        goodsService.goodsCreate(goodsCreateRequest, files, optionCreateRequest);
     }
 
     // 상품 전체 검색

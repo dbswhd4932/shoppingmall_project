@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.request.OptionCreateRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,14 +43,19 @@ public class Goods extends BaseTimeEntity {
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
+    // pk 값 공유
+    @OneToOne (cascade = CascadeType.ALL, mappedBy = "goods")
+    private Option option;
+
     @Builder
-    public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images) {
+    public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images, Option option) {
         this.memberId = memberId;
         this.goodsName = goodsName;
         this.category = category;
         this.price = price;
         this.description = description;
         this.images = images;
+        this.option = option;
     }
 
     public static Goods toGoods(GoodsCreateRequest goodsCreateRequest) {

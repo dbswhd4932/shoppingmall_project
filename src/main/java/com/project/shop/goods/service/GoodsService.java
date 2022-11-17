@@ -2,6 +2,7 @@ package com.project.shop.goods.service;
 
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface GoodsService {
 
     // 상품 생성
-    void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files) throws IOException;
+    void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files, OptionCreateRequest optionCreateRequest) throws IOException;
 
     // 상품 전체 검색 - 페이징 기능
     List<GoodsResponse> goodsFindAll(Pageable pageable);

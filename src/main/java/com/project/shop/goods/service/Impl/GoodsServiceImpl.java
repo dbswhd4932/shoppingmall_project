@@ -2,13 +2,16 @@ package com.project.shop.goods.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
+import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
+import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.goods.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,10 +33,11 @@ public class GoodsServiceImpl implements GoodsService {
 
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
+    private final OptionRepository optionRepository;
 
     // 상품 등록 + 이미지 추가
     @Override
-    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files) throws IOException {
+    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files, OptionCreateRequest optionCreateRequest) throws IOException {
         // 저장할 경로 지정
         String url = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
 
@@ -41,8 +45,16 @@ public class GoodsServiceImpl implements GoodsService {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
         }
 
+        // 상품 정보저장
         Goods goods = Goods.toGoods(goodsCreateRequest);
         goodsRepository.save(goods);
+
+        // 옵션 정보저장
+        Option option = Option.toOption(optionCreateRequest);
+        option.setGoods(goods);
+        optionRepository.save(option);
+
+        // 이미지 정보 저장
         for (MultipartFile file : files) {
             // 랜덤 값 생성
             UUID uuid = UUID.randomUUID();
