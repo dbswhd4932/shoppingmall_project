@@ -22,9 +22,7 @@ import java.util.Map;
 @TypeDef(name = "json", typeClass = JsonStringType.class)
 public class Option  {
 
-    @OneToOne
     @Id
-    @JsonIgnore
     private Long id;
 
     private Long goodsId;

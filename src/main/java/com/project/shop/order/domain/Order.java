@@ -42,6 +42,9 @@ public class Order extends BaseTimeEntity {
 
     private int totalPrice;         //결제금액
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;     //주문상태
+
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -54,6 +57,7 @@ public class Order extends BaseTimeEntity {
         this.detailAddress = detailAddress;
         this.requirement = requirement;
         this.totalPrice = totalPrice;
+        this.status = OrderStatus.COMPLETE;
     }
 
     public static Order toOrder(OrderCreateRequest orderCreateRequest, Cart cart) {

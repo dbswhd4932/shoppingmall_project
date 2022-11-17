@@ -19,8 +19,8 @@ public class OrderController {
     //주문 생성
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
-    public void orderCreate(@RequestBody OrderCreateRequest orderCreateRequest, Long cartId) {
-        orderService.createOrder(orderCreateRequest, cartId);
+    public void orderCreate(@RequestBody OrderCreateRequest orderCreateRequest, Long cartId, Long cardId) {
+        orderService.createOrder(orderCreateRequest, cartId, cardId);
     }
 
     // 주문 회원별 조회 - 여러 주문이 있을 수 있다.
