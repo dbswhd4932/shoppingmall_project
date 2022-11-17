@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReviewCreateRequest {
 
-    private Long payId;
+    private Long orderItemId;
     private Long memberId;
-    private Long goodsId;
     private String comment;
 }

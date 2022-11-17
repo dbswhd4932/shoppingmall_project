@@ -12,7 +12,11 @@ import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.ReviewService;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.order.domain.Order;
+import com.project.shop.order.domain.OrderItem;
+import com.project.shop.order.domain.OrderStatus;
 import com.project.shop.order.domain.Pay;
+import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,33 +34,27 @@ import static com.project.shop.global.error.ErrorCode.*;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final GoodsRepository goodsRepository;
-    private final MemberRepository memberRepository;
-    private final PayRepository payRepository;
-    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     // 리뷰생성 - 결제한 사람만 리뷰 작성이 가능
     @Override
     public void reviewCreate(ReviewCreateRequest reviewCreateRequest) {
-        Pay pay = payRepository.findById(reviewCreateRequest.getPayId())
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_ORDERS));
+        // 주문_상품 DB 에서 요청회원의 주문이 있는지 확인
+        OrderItem orderItem = orderItemRepository.findById(reviewCreateRequest.getOrderItemId())
+                .orElseThrow(() -> new IllegalArgumentException("주문한 상품이 아닙니다."));
 
-        Member member = memberRepository.findById(reviewCreateRequest.getMemberId())
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
-
-        Goods goods = goodsRepository.findById(reviewCreateRequest.getGoodsId())
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
-
-        if (pay.getOrder().getMemberId().equals(member.getId())) {
+        // 주문_상품 의 회원과 리뷰 요청의 회원이 일치 && 주문상태가 결제완료 상태일때 리뷰 작성 가능
+        if (orderItem.getMemberId().equals(reviewCreateRequest.getMemberId())
+                && orderItem.getOrder().getStatus() == OrderStatus.COMPLETE) {
             Review review = Review.builder()
-                    .memberId(member.getId())
-                    .goods(goods)
+                    .memberId(orderItem.getMemberId())
+                    .goods(orderItem.getGoods())
                     .comment(reviewCreateRequest.getComment())
                     .build();
 
             reviewRepository.save(review);
         } else {
-            throw new BusinessException(NOT_BUY_GOODS);
+            throw new IllegalArgumentException("주문한 상품이 아닙니다.");
         }
     }
 
