@@ -1,10 +1,10 @@
 package com.project.shop.factory;
 
-import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.goods.domain.enetity.Review;
-import com.project.shop.goods.domain.request.ReviewCreateRequest;
-import com.project.shop.goods.domain.request.ReviewEditRequest;
-import com.project.shop.member.domain.entity.Member;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Review;
+import com.project.shop.goods.controller.request.ReviewCreateRequest;
+import com.project.shop.goods.controller.request.ReviewEditRequest;
+import com.project.shop.member.domain.Member;
 
 public class ReviewFactory {
 

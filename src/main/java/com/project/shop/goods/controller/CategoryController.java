@@ -1,7 +1,7 @@
 package com.project.shop.goods.controller;
 
-import com.project.shop.goods.domain.request.CategoryCreateRequest;
-import com.project.shop.goods.domain.response.CategoryResponse;
+import com.project.shop.goods.controller.request.CategoryCreateRequest;
+import com.project.shop.goods.controller.response.CategoryResponse;
 import com.project.shop.goods.service.Impl.CategoryServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

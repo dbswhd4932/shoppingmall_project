@@ -1,10 +1,8 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.member.domain.request.RoleCreateRequest;
-import com.project.shop.member.domain.response.RoleResponse;
+import com.project.shop.member.controller.request.RoleCreateRequest;
+import com.project.shop.member.controller.response.RoleResponse;
 import com.project.shop.member.service.Impl.RoleServiceImpl;
-import com.project.shop.member.service.RoleService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

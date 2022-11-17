@@ -1,11 +1,8 @@
 package com.project.shop.goods.repository;
 
-import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.goods.domain.response.GoodsResponse;
-import org.springframework.data.domain.Page;
+import com.project.shop.goods.domain.Goods;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 

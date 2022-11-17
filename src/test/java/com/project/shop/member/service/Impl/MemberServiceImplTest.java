@@ -1,10 +1,10 @@
 package com.project.shop.member.service.Impl;
 
 import com.project.shop.factory.MemberFactory;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.MemberEditRequest;
-import com.project.shop.member.domain.request.MemberSignupRequest;
-import com.project.shop.member.domain.response.MemberResponse;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.MemberEditRequest;
+import com.project.shop.member.controller.request.MemberSignupRequest;
+import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

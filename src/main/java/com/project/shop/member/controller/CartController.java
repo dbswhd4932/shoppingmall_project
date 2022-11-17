@@ -1,11 +1,7 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.CartCreateRequest;
-import com.project.shop.member.domain.response.CartResponse;
-import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.member.controller.request.CartCreateRequest;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

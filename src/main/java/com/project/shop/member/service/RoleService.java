@@ -1,7 +1,7 @@
 package com.project.shop.member.service;
 
-import com.project.shop.member.domain.request.RoleCreateRequest;
-import com.project.shop.member.domain.response.RoleResponse;
+import com.project.shop.member.controller.request.RoleCreateRequest;
+import com.project.shop.member.controller.response.RoleResponse;
 
 import java.util.List;
 

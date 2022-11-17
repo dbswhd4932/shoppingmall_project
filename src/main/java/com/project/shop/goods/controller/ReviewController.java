@@ -2,14 +2,11 @@ package com.project.shop.goods.controller;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.domain.request.ReviewCreateRequest;
-import com.project.shop.goods.domain.request.ReviewEditRequest;
-import com.project.shop.goods.domain.response.ReviewResponse;
+import com.project.shop.goods.controller.request.ReviewCreateRequest;
+import com.project.shop.goods.controller.request.ReviewEditRequest;
+import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.service.Impl.ReviewServiceImpl;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.response.MemberResponse;
 import com.project.shop.member.repository.MemberRepository;
-import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

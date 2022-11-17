@@ -2,13 +2,12 @@ package com.project.shop.member.service.Impl;
 
 import com.project.shop.factory.CardFactory;
 import com.project.shop.factory.MemberFactory;
-import com.project.shop.member.domain.entity.Card;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.CardCreateRequest;
-import com.project.shop.member.domain.response.CardResponse;
+import com.project.shop.member.domain.Card;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.CardCreateRequest;
+import com.project.shop.member.controller.response.CardResponse;
 import com.project.shop.member.repository.CardRepository;
 import com.project.shop.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -102,7 +100,7 @@ class CardServiceImplTest {
         cardService.cardDelete(card.getId());
 
         //then
-        assertThat(cardRepository.findAll()).isEmpty();
+        verify(cardRepository).delete(card);
 
     }
 

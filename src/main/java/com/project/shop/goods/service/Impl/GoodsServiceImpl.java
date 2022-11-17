@@ -2,11 +2,11 @@ package com.project.shop.goods.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.goods.domain.enetity.Image;
-import com.project.shop.goods.domain.request.GoodsCreateRequest;
-import com.project.shop.goods.domain.request.GoodsEditRequest;
-import com.project.shop.goods.domain.response.GoodsResponse;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Image;
+import com.project.shop.goods.controller.request.GoodsCreateRequest;
+import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.service.GoodsService;

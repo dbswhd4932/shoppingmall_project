@@ -1,13 +1,12 @@
 package com.project.shop.member.service.Impl;
 
-import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.domain.enetity.Goods;
+import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.repository.GoodsRepository;
-import com.project.shop.member.domain.entity.Cart;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.CartCreateRequest;
-import com.project.shop.member.domain.response.CartResponse;
+import com.project.shop.member.domain.Cart;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.CartCreateRequest;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.service.CartService;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.project.shop.global.error.ErrorCode.*;
 
@@ -64,26 +62,26 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartResponse> cartFindMember(Long memberId) {
         List<Cart> cartList = cartRepository.findByMemberId(memberId);
-        List<CartResponse> cartResponseList = new ArrayList<>();
-        for (Cart cart : cartList) {
-            if (cart.getMember().getId().equals(memberId)) {
-                cartResponseList.add(CartResponse.toCartResponse(cart));
-            }
-        }
-        if (cartResponseList.isEmpty()) {
+
+        List<CartResponse> list = new ArrayList<>();
+
+        if (cartList.isEmpty()) {
             throw new BusinessException(NOT_FOUND_CART);
         } else {
-            return cartResponseList;
+            for (Cart cart : cartList) {
+                list.add(CartResponse.toCartResponse(cart));
+            }
+            return list;
         }
     }
 
-    // 장바구니 상품 선택 삭제
+    // 장바구니 상품 삭제
     @Override
     public void cartDeleteGoods(Long cartId, Long goodsId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_CART));
 
-        if ( cart.getGoodsId().equals(goodsId)) {
+        if (cart.getGoodsId().equals(goodsId)) {
             cartRepository.deleteById(cart.getId());
         } else {
             throw new BusinessException(NOT_FOUND_GOODS);

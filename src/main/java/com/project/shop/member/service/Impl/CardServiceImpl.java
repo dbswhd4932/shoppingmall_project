@@ -2,10 +2,10 @@ package com.project.shop.member.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.member.domain.entity.Card;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.CardCreateRequest;
-import com.project.shop.member.domain.response.CardResponse;
+import com.project.shop.member.domain.Card;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.CardCreateRequest;
+import com.project.shop.member.controller.response.CardResponse;
 import com.project.shop.member.repository.CardRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.service.CardService;

@@ -1,11 +1,10 @@
 package com.project.shop.goods.service.Impl;
 
 import com.project.shop.factory.GoodsFactory;
-import com.project.shop.factory.MemberFactory;
-import com.project.shop.goods.domain.enetity.Category;
-import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.goods.domain.request.GoodsCreateRequest;
-import com.project.shop.goods.domain.response.GoodsResponse;
+import com.project.shop.goods.domain.Category;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.controller.request.GoodsCreateRequest;
+import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import org.junit.jupiter.api.Disabled;
@@ -19,13 +18,10 @@ import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -100,8 +96,6 @@ class GoodsServiceImplTest {
         Goods goods2 = GoodsFactory.createGoods();
         String keyword = "테스트상품";
 
-        given(goodsRepository.findAll()).willReturn(List.of(goods1, goods2));
-        // keyword 로 검색하면 goods1 과 goods2가 리턴된다.
         given(goodsRepository.findGoodsByGoodsNameContaining(keyword)).willReturn(List.of(goods1, goods2));
 
         //when

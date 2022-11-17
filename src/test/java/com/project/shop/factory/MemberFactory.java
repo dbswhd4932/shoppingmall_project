@@ -1,7 +1,7 @@
 package com.project.shop.factory;
 
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.MemberSignupRequest;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.MemberSignupRequest;
 
 public class MemberFactory {
 

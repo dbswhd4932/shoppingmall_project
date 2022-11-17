@@ -1,9 +1,7 @@
 package com.project.shop.order.controller;
 
-import com.project.shop.member.service.CartService;
-import com.project.shop.member.service.Impl.CartServiceImpl;
-import com.project.shop.order.domain.entity.request.OrderCreateRequest;
-import com.project.shop.order.domain.entity.response.OrderResponse;
+import com.project.shop.order.controller.request.OrderCreateRequest;
+import com.project.shop.order.controller.response.OrderResponse;
 import com.project.shop.order.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

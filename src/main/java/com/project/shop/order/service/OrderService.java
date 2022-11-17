@@ -1,9 +1,7 @@
 package com.project.shop.order.service;
 
-import com.project.shop.member.domain.entity.Cart;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.order.domain.entity.request.OrderCreateRequest;
-import com.project.shop.order.domain.entity.response.OrderResponse;
+import com.project.shop.order.controller.request.OrderCreateRequest;
+import com.project.shop.order.controller.response.OrderResponse;
 
 import java.util.List;
 

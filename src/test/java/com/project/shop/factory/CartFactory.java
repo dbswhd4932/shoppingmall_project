@@ -1,9 +1,9 @@
 package com.project.shop.factory;
 
-import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.member.domain.entity.Cart;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.CartCreateRequest;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.member.domain.Cart;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.CartCreateRequest;
 
 public class CartFactory {
 

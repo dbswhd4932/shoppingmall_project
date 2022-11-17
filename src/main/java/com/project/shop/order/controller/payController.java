@@ -1,6 +1,6 @@
 package com.project.shop.order.controller;
 
-import com.project.shop.order.domain.entity.request.PayCreateRequest;
+import com.project.shop.order.controller.request.PayCreateRequest;
 import com.project.shop.order.service.impl.PayServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

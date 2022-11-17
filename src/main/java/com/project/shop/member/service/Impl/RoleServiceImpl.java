@@ -2,9 +2,9 @@ package com.project.shop.member.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.member.domain.entity.Role;
-import com.project.shop.member.domain.request.RoleCreateRequest;
-import com.project.shop.member.domain.response.RoleResponse;
+import com.project.shop.member.domain.Role;
+import com.project.shop.member.controller.request.RoleCreateRequest;
+import com.project.shop.member.controller.response.RoleResponse;
 import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.RoleService;
 import lombok.RequiredArgsConstructor;

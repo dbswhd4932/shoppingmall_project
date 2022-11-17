@@ -1,8 +1,8 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.member.domain.request.MemberEditRequest;
-import com.project.shop.member.domain.request.MemberSignupRequest;
-import com.project.shop.member.domain.response.MemberResponse;
+import com.project.shop.member.controller.request.MemberEditRequest;
+import com.project.shop.member.controller.request.MemberSignupRequest;
+import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.service.Impl.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

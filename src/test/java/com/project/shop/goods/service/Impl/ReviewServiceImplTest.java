@@ -3,19 +3,16 @@ package com.project.shop.goods.service.Impl;
 import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.factory.ReviewFactory;
-import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.goods.domain.enetity.Review;
-import com.project.shop.goods.domain.request.ReviewCreateRequest;
-import com.project.shop.goods.domain.request.ReviewEditRequest;
-import com.project.shop.goods.domain.response.ReviewResponse;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Review;
+import com.project.shop.goods.controller.request.ReviewCreateRequest;
+import com.project.shop.goods.controller.request.ReviewEditRequest;
+import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ReviewRepository;
-import com.project.shop.member.domain.entity.Member;
+import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
-import com.project.shop.order.domain.entity.Order;
-import com.project.shop.order.domain.entity.Pay;
 import com.project.shop.order.repository.PayRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +25,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceImplTest {

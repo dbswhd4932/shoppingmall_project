@@ -1,20 +1,17 @@
 package com.project.shop.order.service.impl;
 
-import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.member.domain.entity.Card;
+import com.project.shop.member.domain.Card;
 import com.project.shop.member.repository.CardRepository;
-import com.project.shop.order.domain.entity.Order;
-import com.project.shop.order.domain.entity.Pay;
-import com.project.shop.order.domain.entity.request.PayCreateRequest;
+import com.project.shop.order.domain.Order;
+import com.project.shop.order.domain.Pay;
+import com.project.shop.order.controller.request.PayCreateRequest;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayRepository;
 import com.project.shop.order.service.PayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.project.shop.global.error.ErrorCode.NOT_FOUND_CARD;
 import static com.project.shop.global.error.ErrorCode.NOT_FOUND_ORDERS;

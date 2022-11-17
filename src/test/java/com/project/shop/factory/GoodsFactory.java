@@ -1,7 +1,7 @@
 package com.project.shop.factory;
 
-import com.project.shop.goods.domain.enetity.Category;
-import com.project.shop.goods.domain.enetity.Goods;
+import com.project.shop.goods.domain.Category;
+import com.project.shop.goods.domain.Goods;
 
 public class GoodsFactory {
 

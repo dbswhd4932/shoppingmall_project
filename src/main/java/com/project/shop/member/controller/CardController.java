@@ -1,7 +1,7 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.member.domain.request.CardCreateRequest;
-import com.project.shop.member.domain.response.CardResponse;
+import com.project.shop.member.controller.request.CardCreateRequest;
+import com.project.shop.member.controller.response.CardResponse;
 import com.project.shop.member.service.Impl.CardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

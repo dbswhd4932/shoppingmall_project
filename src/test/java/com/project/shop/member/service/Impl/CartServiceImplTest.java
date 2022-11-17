@@ -3,15 +3,14 @@ package com.project.shop.member.service.Impl;
 import com.project.shop.factory.CartFactory;
 import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
-import com.project.shop.goods.domain.enetity.Goods;
+import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.repository.GoodsRepository;
-import com.project.shop.member.domain.entity.Cart;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.CartCreateRequest;
-import com.project.shop.member.domain.response.CartResponse;
+import com.project.shop.member.domain.Cart;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.CartCreateRequest;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,20 +65,19 @@ class CartServiceImplTest {
 
     @Test
     @DisplayName("장바구니 회원별 조회")
-    @Disabled
-        // todo
     void cartFindTest() {
         //given
         Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
         Cart cart = CartFactory.cartCreate(member, goods);
-        given(cartRepository.findById(member.getId())).willReturn(Optional.of(cart));
+
+        given(cartRepository.findByMemberId(member.getId())).willReturn(List.of(cart));
 
         //when
-        List<CartResponse> result = cartService.cartFindMember(member.getId());
+        List<CartResponse> cartResponseList = cartService.cartFindMember(member.getId());
 
         //then
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(cartResponseList.size()).isEqualTo(1);
     }
 
     @Test
@@ -92,9 +88,9 @@ class CartServiceImplTest {
         Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
         Cart cart = CartFactory.cartCreate(member, goods);
-        goodsRepository.save(goods);
-        given(goodsRepository.save(goods)).willReturn(goods);
-        given(cartRepository.findById(member.getId())).willReturn(Optional.of(cart));
+
+        given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
+        given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
 
         //when
         cartService.cartDeleteGoods(cart.getId(), goods.getId());

@@ -1,9 +1,8 @@
 package com.project.shop.goods.service;
 
-import com.project.shop.goods.domain.request.ReviewCreateRequest;
-import com.project.shop.goods.domain.request.ReviewEditRequest;
-import com.project.shop.goods.domain.response.ReviewResponse;
-import com.project.shop.member.domain.entity.Member;
+import com.project.shop.goods.controller.request.ReviewCreateRequest;
+import com.project.shop.goods.controller.request.ReviewEditRequest;
+import com.project.shop.goods.controller.response.ReviewResponse;
 
 import java.util.List;
 

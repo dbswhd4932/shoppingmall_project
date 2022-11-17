@@ -1,8 +1,8 @@
 package com.project.shop.goods.controller;
 
-import com.project.shop.goods.domain.request.GoodsCreateRequest;
-import com.project.shop.goods.domain.request.GoodsEditRequest;
-import com.project.shop.goods.domain.response.GoodsResponse;
+import com.project.shop.goods.controller.request.GoodsCreateRequest;
+import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

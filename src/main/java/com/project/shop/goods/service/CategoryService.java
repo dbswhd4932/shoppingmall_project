@@ -1,7 +1,7 @@
 package com.project.shop.goods.service;
 
-import com.project.shop.goods.domain.request.CategoryCreateRequest;
-import com.project.shop.goods.domain.response.CategoryResponse;
+import com.project.shop.goods.controller.request.CategoryCreateRequest;
+import com.project.shop.goods.controller.response.CategoryResponse;
 
 import java.util.List;
 

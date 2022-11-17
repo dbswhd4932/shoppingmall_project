@@ -1,8 +1,8 @@
 package com.project.shop.factory;
 
-import com.project.shop.member.domain.entity.Card;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.CardCreateRequest;
+import com.project.shop.member.domain.Card;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.CardCreateRequest;
 
 public class CardFactory {
 

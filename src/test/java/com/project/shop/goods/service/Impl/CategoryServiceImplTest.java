@@ -1,10 +1,9 @@
 package com.project.shop.goods.service.Impl;
 
-import com.project.shop.goods.domain.enetity.Category;
-import com.project.shop.goods.domain.request.CategoryCreateRequest;
-import com.project.shop.goods.domain.response.CategoryResponse;
+import com.project.shop.goods.domain.Category;
+import com.project.shop.goods.controller.request.CategoryCreateRequest;
+import com.project.shop.goods.controller.response.CategoryResponse;
 import com.project.shop.goods.repository.CategoryRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;

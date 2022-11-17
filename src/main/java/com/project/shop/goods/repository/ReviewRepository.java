@@ -1,6 +1,6 @@
 package com.project.shop.goods.repository;
 
-import com.project.shop.goods.domain.enetity.Review;
+import com.project.shop.goods.domain.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -2,8 +2,8 @@ package com.project.shop.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.shop.factory.MemberFactory;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.MemberSignupRequest;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.service.Impl.MemberServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 

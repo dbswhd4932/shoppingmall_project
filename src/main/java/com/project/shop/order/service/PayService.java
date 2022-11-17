@@ -1,6 +1,6 @@
 package com.project.shop.order.service;
 
-import com.project.shop.order.domain.entity.request.PayCreateRequest;
+import com.project.shop.order.controller.request.PayCreateRequest;
 
 public interface PayService {
 

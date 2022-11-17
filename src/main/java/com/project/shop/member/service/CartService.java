@@ -1,9 +1,7 @@
 package com.project.shop.member.service;
 
-import com.project.shop.goods.domain.enetity.Goods;
-import com.project.shop.member.domain.entity.Member;
-import com.project.shop.member.domain.request.CartCreateRequest;
-import com.project.shop.member.domain.response.CartResponse;
+import com.project.shop.member.controller.request.CartCreateRequest;
+import com.project.shop.member.controller.response.CartResponse;
 
 import java.util.List;
 
