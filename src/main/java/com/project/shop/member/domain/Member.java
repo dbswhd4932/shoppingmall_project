@@ -61,6 +61,7 @@ public class Member extends BaseTimeEntity {
     // 회원 생성
     public static Member create(MemberSignupRequest memberSignupRequest) {
         return Member.builder()
+                .loginId(memberSignupRequest.getLoginId())
                 .password(memberSignupRequest.getPassword())
                 .name(memberSignupRequest.getName())
                 .zipcode(memberSignupRequest.getZipcode())

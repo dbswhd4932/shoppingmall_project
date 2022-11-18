@@ -26,7 +26,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 
-@Configuration
+//@Configuration
 @RequiredArgsConstructor
 public class SwaggerConfig implements WebMvcConfigurer {
     /**

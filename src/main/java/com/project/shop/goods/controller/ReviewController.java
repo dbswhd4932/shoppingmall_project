@@ -7,6 +7,7 @@ import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.service.Impl.ReviewServiceImpl;
 import com.project.shop.member.repository.MemberRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
