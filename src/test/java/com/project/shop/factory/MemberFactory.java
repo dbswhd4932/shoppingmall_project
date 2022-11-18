@@ -21,7 +21,6 @@ public class MemberFactory {
 
     public static MemberSignupRequest createSignupRequestDto() {
         MemberSignupRequest memberSignupRequest = MemberSignupRequest.builder()
-                .loginId("loginId")
                 .password("1234")
                 .name("name")
                 .zipcode("123-123")

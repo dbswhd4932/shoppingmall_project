@@ -2,10 +2,7 @@ package com.project.shop.goods.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -38,5 +35,9 @@ public class Review extends BaseTimeEntity {
     // 리뷰 수정
     public void edit(ReviewEditRequest reviewEditRequest) {
         this.comment = reviewEditRequest.getComment();
+    }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 }

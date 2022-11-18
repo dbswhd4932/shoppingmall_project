@@ -20,7 +20,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class CategoryServiceImplTest {
+class CategoryService {
 
     @InjectMocks
     CategoryServiceImpl categoryService;

@@ -1,16 +1,18 @@
 package com.project.shop.order.domain;
 
+import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.Goods;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.function.Supplier;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "order_item")
 @Entity
-public class OrderItem {
+public class OrderItem extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id")

@@ -12,6 +12,10 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.order.domain.Order;
+import com.project.shop.order.domain.OrderItem;
+import com.project.shop.order.domain.OrderStatus;
+import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.PayRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +31,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceImplTest {
@@ -39,30 +43,24 @@ class ReviewServiceImplTest {
     ReviewRepository reviewRepository;
 
     @Mock
-    MemberRepository memberRepository;
-
-    @Mock
-    GoodsRepository goodsRepository;
-
-    @Mock
-    PayRepository payRepository;
+    OrderItemRepository orderItemRepository;
 
 
-    @Test // todo
-    @Disabled
+    @Test
     @DisplayName("리뷰 생성")
     void reviewCreateTest() {
         //given
-        Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-        given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
-        ReviewCreateRequest reviewCreateRequest = ReviewFactory.reviewCreateRequest(member,goods);
+        Order order = Order.builder().memberId(1L).name("수취인").phone("010").zipcode("우편번호")
+                .detailAddress("상세주소").requirement("요청사항").totalPrice(1000).status(OrderStatus.COMPLETE).build();
+        OrderItem orderItem = OrderItem.builder().memberId(1L).goods(goods).order(order).amount(10).orderPrice(1000).build();
+        ReviewCreateRequest request = ReviewCreateRequest.builder().orderItemId(orderItem.getId()).memberId(1L).comment("댓글").build();
+        given(orderItemRepository.findById(orderItem.getId())).willReturn(Optional.of(orderItem));
+
         //when
-        reviewService.reviewCreate(reviewCreateRequest);
+        reviewService.reviewCreate(request);
+
         //then
-        verify(memberRepository).findById(member.getId());
-        verify(goodsRepository).findById(goods.getId());
         verify(reviewRepository).save(any());
     }
 
@@ -75,55 +73,50 @@ class ReviewServiceImplTest {
         Review review1 = ReviewFactory.createReview(member, goods);
         Review review2 = ReviewFactory.createReview(member, goods);
         given(reviewRepository.findAll()).willReturn(List.of(review1, review2));
+
         //when
         List<ReviewResponse> reviewResponses = reviewService.reviewFindAll();
+
         //then
         assertThat(reviewResponses.size()).isEqualTo(2);
     }
 
     @Test
-    @Disabled // todo ??
     @DisplayName("리뷰 회원별 조회")
     void reviewFindMember() {
         //given
         Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
         Review review = ReviewFactory.createReview(member, goods);
-
-        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-        given(reviewRepository.findById(review.getId())).willReturn(Optional.of(review));
+        given(reviewRepository.findByMemberId(member.getId())).willReturn(List.of(review));
 
         //when
         List<ReviewResponse> reviewResponses = reviewService.reviewFindMember(member.getId());
+
         //then
         assertThat(reviewResponses.size()).isEqualTo(1);
 
     }
 
     @Test
-    @Disabled // todo ??
     @DisplayName("리뷰 수정")
     void reviewEditTest(){
         //given
-        Long reviewId = 1L;
-        Long memberId = 1L;
         Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        ReviewEditRequest editRequest = ReviewFactory.reviewEditRequest("테스트 리뷰 변경");
         Review review = ReviewFactory.createReview(member, goods);
-
-        given(memberRepository.findById(reviewId)).willReturn(Optional.of(member));
-        given(reviewRepository.findById(memberId)).willReturn(Optional.of(review));
+        ReviewEditRequest editRequest = ReviewFactory.reviewEditRequest("테스트 리뷰 변경");
+        given(reviewRepository.findById(review.getId())).willReturn(Optional.of(review));
+        review.setMemberId(1L);
 
         //when
-        reviewService.reviewEdit(reviewId, memberId, editRequest);
+        reviewService.reviewEdit(review.getId(), 1L, editRequest);
 
         //then
         verify(reviewRepository).findById(review.getId());
     }
 
     @Test
-    @Disabled
     @DisplayName("리뷰 삭제")
     void reviewDeleteTest(){
         //given
@@ -131,10 +124,14 @@ class ReviewServiceImplTest {
         Goods goods = GoodsFactory.createGoods();
         Review review = ReviewFactory.createReview(member, goods);
         given(reviewRepository.findById(review.getId())).willReturn(Optional.of(review));
+        review.setMemberId(1L);
+
         //when
-        reviewService.reviewDelete(review.getId(),member.getId());
+        reviewService.reviewDelete(review.getId(), 1L);
+
         //then
         verify(reviewRepository).delete(review);
+
     }
 
 }

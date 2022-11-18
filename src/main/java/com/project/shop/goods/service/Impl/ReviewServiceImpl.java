@@ -72,7 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
         List<Review> reviewList = reviewRepository.findByMemberId(memberId);
 
         if (!reviewList.isEmpty()) {
-            return reviewList.stream().map(review -> ReviewResponse.toReviewResponse(review))
+            return reviewList.stream().map(ReviewResponse::toReviewResponse)
                     .collect(Collectors.toList());
         } else {
             throw new BusinessException(NOT_FOUND_REVIEW);

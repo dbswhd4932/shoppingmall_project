@@ -50,7 +50,7 @@ public class Order extends BaseTimeEntity {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Builder
-    public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice) {
+    public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice , OrderStatus status) {
         this.memberId = memberId;
         this.name = name;
         this.phone = phone;

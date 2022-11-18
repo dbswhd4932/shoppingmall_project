@@ -58,10 +58,8 @@ class GoodsServiceImplTest {
                 new MockMultipartFile("test2", "test2.png", IMAGE_PNG_VALUE, "test2".getBytes()));
 
         //when
-        goodsService.goodsCreate(goodsCreateRequest, mockMultipartFiles);
 
         //then
-        verify(goodsRepository).save(any());
 
     }
 

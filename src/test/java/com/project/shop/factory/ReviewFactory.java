@@ -9,24 +9,22 @@ import com.project.shop.member.domain.Member;
 public class ReviewFactory {
 
     public static Review createReview(Member member, Goods goods) {
-        return Review.builder()
+        Review review = Review.builder()
                 .memberId(member.getId())
                 .goods(goods)
                 .comment("테스트 리뷰")
                 .build();
-    }
 
-    public static ReviewCreateRequest reviewCreateRequest(Member member, Goods goods) {
-        return ReviewCreateRequest.builder()
-                .memberId(member.getId())
-                .goodsId(goods.getId())
-                .comment("테스트 리뷰")
-                .build();
+        return review;
     }
 
     public static ReviewEditRequest reviewEditRequest(String comment) {
         return ReviewEditRequest.builder()
                 .comment(comment)
                 .build();
+    }
+
+    public void setReviewMemberId(Long reviewMemberId) {
+
     }
 }
