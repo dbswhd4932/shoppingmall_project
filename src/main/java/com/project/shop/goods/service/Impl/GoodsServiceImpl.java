@@ -50,9 +50,11 @@ public class GoodsServiceImpl implements GoodsService {
         goodsRepository.save(goods);
 
         // 옵션 정보저장
-        Option option = Option.toOption(optionCreateRequest);
-        option.setGoods(goods);
-        optionRepository.save(option);
+        if (optionCreateRequest != null) {
+            Option option = Option.toOption(optionCreateRequest);
+            option.setGoods(goods);
+            optionRepository.save(option);
+        }
 
         // 이미지 정보 저장
         for (MultipartFile file : files) {
@@ -105,7 +107,7 @@ public class GoodsServiceImpl implements GoodsService {
     // 상품 수정
     // todo 이미지 수정 구현필요
     @Override
-    public void goodsEdit(Long goodsId , GoodsEditRequest goodsEditRequest) {
+    public void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
 

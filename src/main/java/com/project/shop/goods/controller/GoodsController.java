@@ -30,7 +30,7 @@ public class GoodsController {
     @ResponseStatus(HttpStatus.CREATED)
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart List<MultipartFile> files,
-                            @RequestPart OptionCreateRequest optionCreateRequest) throws IOException {
+                            @RequestPart(required = false) OptionCreateRequest optionCreateRequest) throws IOException {
         goodsService.goodsCreate(goodsCreateRequest, files, optionCreateRequest);
     }
 
