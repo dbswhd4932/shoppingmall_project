@@ -39,23 +39,16 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰생성 - 결제한 사람만 리뷰 작성이 가능
     @Override
     public void reviewCreate(ReviewCreateRequest reviewCreateRequest) {
-        // 주문_상품 DB 에서 요청회원의 주문이 있는지 확인
         OrderItem orderItem = orderItemRepository.findById(reviewCreateRequest.getOrderItemId())
                 .orElseThrow(() -> new BusinessException(NO_BUY_ORDER));
 
-        // 주문_상품 의 회원과 리뷰 요청의 회원이 일치 && 주문상태가 결제완료 상태일때 리뷰 작성 가능
-        if (orderItem.getMemberId().equals(reviewCreateRequest.getMemberId())
-                && orderItem.getOrder().getStatus() == OrderStatus.COMPLETE) {
-            Review review = Review.builder()
-                    .memberId(orderItem.getMemberId())
-                    .goods(orderItem.getGoods())
-                    .comment(reviewCreateRequest.getComment())
-                    .build();
+        Review review = Review.builder()
+                .memberId(reviewCreateRequest.getMemberId())
+                .goods(orderItem.getGoods())
+                .comment(reviewCreateRequest.getComment())
+                .build();
 
-            reviewRepository.save(review);
-        } else {
-            throw new BusinessException(NO_BUY_ORDER);
-        }
+        reviewRepository.save(review);
     }
 
     // 리뷰 전체조회
@@ -66,30 +59,14 @@ public class ReviewServiceImpl implements ReviewService {
                 .stream().map(ReviewResponse::toReviewResponse).collect(Collectors.toList());
     }
 
-    // 리뷰 회원별 조회
-    @Override
-    public List<ReviewResponse> reviewFindMember(Long memberId) {
-        List<Review> reviewList = reviewRepository.findByMemberId(memberId);
-
-        if (!reviewList.isEmpty()) {
-            return reviewList.stream().map(ReviewResponse::toReviewResponse)
-                    .collect(Collectors.toList());
-        } else {
-            throw new BusinessException(NOT_FOUND_REVIEW);
-        }
-
-    }
-
     // 리뷰 수정
     @Override
     public void reviewEdit(Long reviewId, Long memberId, ReviewEditRequest reviewEditRequest) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
-        if (review.getMemberId().equals(memberId)) {
-            review.edit(reviewEditRequest);
-        } else {
-            throw new BusinessException(ErrorCode.NOT_MATCH_REVIEW);
-        }
+        // 해당 회원이 작성한 리뷰가 아니면 예외
+        if (!review.getMemberId().equals(memberId)) throw new BusinessException(ErrorCode.NOT_MATCH_REVIEW);
+        review.edit(reviewEditRequest);
     }
 
     // 리뷰 삭제
@@ -97,11 +74,8 @@ public class ReviewServiceImpl implements ReviewService {
     public void reviewDelete(Long reviewId, Long memberId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
-
-        if (review.getMemberId().equals(memberId)) {
-            reviewRepository.delete(review);
-        } else {
-            throw new BusinessException(CANT_DELETE_REVIEW);
-        }
+        // 해당 회원이 작성한 리뷰가 아니면 예외
+        if (!review.getMemberId().equals(memberId))  throw new BusinessException(CANT_DELETE_REVIEW);
+        reviewRepository.delete(review);
     }
 }

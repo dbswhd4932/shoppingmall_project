@@ -14,8 +14,6 @@ public interface ReviewService {
     // 리뷰 전체조회
     List<ReviewResponse> reviewFindAll();
 
-    // 리뷰 회원 별 조회
-    List<ReviewResponse> reviewFindMember(Long memberId);
 
     // 리뷰 수정
     void reviewEdit(Long reviewId, Long memberId, ReviewEditRequest reviewEditRequest);

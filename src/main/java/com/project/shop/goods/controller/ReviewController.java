@@ -37,15 +37,6 @@ public class ReviewController {
         return reviewService.reviewFindAll();
     }
 
-    // 리뷰 회원 별 조회
-    @GetMapping("/reviews")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ReviewResponse> reviewFindMember(Long memberId) {
-
-        return reviewService.reviewFindMember(memberId);
-    }
-
-
     // 리뷰 수정
     @PutMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
