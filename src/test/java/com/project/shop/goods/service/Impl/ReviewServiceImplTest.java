@@ -81,23 +81,6 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    @DisplayName("리뷰 회원별 조회")
-    void reviewFindMember() {
-        //given
-        Member member = MemberFactory.createMember();
-        Goods goods = GoodsFactory.createGoods();
-        Review review = ReviewFactory.createReview(goods);
-        given(reviewRepository.findByMemberId(member.getId())).willReturn(List.of(review));
-
-        //when
-        List<ReviewResponse> reviewResponses = reviewService.reviewFindMember(member.getId());
-
-        //then
-        assertThat(reviewResponses.size()).isEqualTo(1);
-
-    }
-
-    @Test
     @DisplayName("리뷰 수정")
     void reviewEditTest(){
         //given

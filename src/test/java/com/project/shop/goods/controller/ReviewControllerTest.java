@@ -60,22 +60,6 @@ class ReviewControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("리뷰 회원별 조회")
-    void reviewFindMemberTest() throws Exception {
-        //given
-        Goods goods = GoodsFactory.createGoods();
-        Review review = Review.builder().memberId(1L).goods(goods).comment("리뷰").build();
-
-        //when then
-        String json = objectMapper.writeValueAsString(review);
-        mockMvc.perform(get("/api/reviews")
-                        .contentType(APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk());
-
-    }
-
-    @Test
     @Disabled // todo 재구현 후 테스트진행
     @DisplayName("리뷰 수정")
     void reviewEditTest() throws Exception {
