@@ -37,7 +37,4 @@ public class Review extends BaseTimeEntity {
         this.comment = reviewEditRequest.getComment();
     }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
-    }
 }

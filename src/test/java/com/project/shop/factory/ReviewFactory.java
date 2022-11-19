@@ -8,9 +8,9 @@ import com.project.shop.member.domain.Member;
 
 public class ReviewFactory {
 
-    public static Review createReview(Member member, Goods goods) {
+    public static Review createReview(Goods goods) {
         Review review = Review.builder()
-                .memberId(member.getId())
+                .memberId(1L)
                 .goods(goods)
                 .comment("테스트 리뷰")
                 .build();

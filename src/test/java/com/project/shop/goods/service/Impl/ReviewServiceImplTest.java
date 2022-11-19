@@ -68,10 +68,9 @@ class ReviewServiceImplTest {
     @DisplayName("리뷰 전체조회")
     void reviewFindAll() {
         //given
-        Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        Review review1 = ReviewFactory.createReview(member, goods);
-        Review review2 = ReviewFactory.createReview(member, goods);
+        Review review1 = ReviewFactory.createReview(goods);
+        Review review2 = ReviewFactory.createReview(goods);
         given(reviewRepository.findAll()).willReturn(List.of(review1, review2));
 
         //when
@@ -87,7 +86,7 @@ class ReviewServiceImplTest {
         //given
         Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        Review review = ReviewFactory.createReview(member, goods);
+        Review review = ReviewFactory.createReview(goods);
         given(reviewRepository.findByMemberId(member.getId())).willReturn(List.of(review));
 
         //when
@@ -102,12 +101,11 @@ class ReviewServiceImplTest {
     @DisplayName("리뷰 수정")
     void reviewEditTest(){
         //given
-        Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        Review review = ReviewFactory.createReview(member, goods);
+        Review review = ReviewFactory.createReview(goods);
         ReviewEditRequest editRequest = ReviewFactory.reviewEditRequest("테스트 리뷰 변경");
         given(reviewRepository.findById(review.getId())).willReturn(Optional.of(review));
-        review.setMemberId(1L);
+
 
         //when
         reviewService.reviewEdit(review.getId(), 1L, editRequest);
@@ -120,11 +118,9 @@ class ReviewServiceImplTest {
     @DisplayName("리뷰 삭제")
     void reviewDeleteTest(){
         //given
-        Member member = MemberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        Review review = ReviewFactory.createReview(member, goods);
+        Review review = ReviewFactory.createReview(goods);
         given(reviewRepository.findById(review.getId())).willReturn(Optional.of(review));
-        review.setMemberId(1L);
 
         //when
         reviewService.reviewDelete(review.getId(), 1L);
