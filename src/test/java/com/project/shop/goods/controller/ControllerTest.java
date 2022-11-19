@@ -1,6 +1,7 @@
 package com.project.shop.goods.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.Impl.ReviewServiceImpl;
 import com.project.shop.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class ControllerTest {
 
     @MockBean
     MemberRepository memberRepository;
+
+    @MockBean
+    ReviewRepository reviewRepository;
 
 
 }
