@@ -11,6 +11,7 @@ import com.project.shop.goods.repository.ReplyRepository;
 import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.ReplyService;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,16 +30,16 @@ public class ReplyServiceImpl implements ReplyService {
 
     // 대댓글 생성
     @Override
-    public void replyCreate(ReplyCreateRequest reviewReplyCreateRequest) {
-        Review review = reviewRepository.findById(reviewReplyCreateRequest.getReviewId())
+    public void replyCreate(ReplyCreateRequest replyCreateRequest) {
+        Review review = reviewRepository.findById(replyCreateRequest.getReviewId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
 
-        if (!review.getGoods().getMemberId().equals(reviewReplyCreateRequest.getProductMemberId()))
+        if (!review.getGoods().getMemberId().equals(replyCreateRequest.getProductMemberId()))
             throw new BusinessException(NOT_SELLING_GOODS);
 
         Reply reply = Reply.builder()
                 .review(review)
-                .comment(reviewReplyCreateRequest.getReplyComment())
+                .comment(replyCreateRequest.getReplyComment())
                 .build();
 
         replyRepository.save(reply);
@@ -49,8 +50,9 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional(readOnly = true)
     public List<ReplyResponse> replyFind(Long reviewId) {
-        List<Reply> byReviewId = replyRepository.findByReviewId(reviewId);
-        return byReviewId.stream().map(ReplyResponse::toReplyResponse).collect(toList());
+        List<Reply> replyList = replyRepository.findByReviewId(reviewId);
+        return replyList.stream()
+                .map(reply -> ReplyResponse.toReplyResponse(reply)).collect(toList());
     }
 
     // 대댓글 수정

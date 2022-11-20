@@ -8,6 +8,7 @@ public class GoodsFactory {
     public static Goods createGoods() {
 
         return Goods.builder()
+                .memberId(1L)
                 .goodsName("테스트상품")
                 .category(new Category("테스트카테고리"))
                 .price(1000)
