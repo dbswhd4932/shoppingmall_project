@@ -35,14 +35,14 @@ public class ReplyController {
     // 대댓글 수정
     @PutMapping("/reply/{replyId}")
     @ResponseStatus(HttpStatus.OK)
-    public void replyEdit(@PathVariable("replyId") Long replyId, @RequestBody @Valid ReplyEditRequest request) {
-        replyService.replyUpdate(replyId, request);
+    public void replyEdit(@PathVariable("replyId") Long replyId, Long goodsMemberId, @RequestBody @Valid ReplyEditRequest request) {
+        replyService.replyUpdate(replyId, goodsMemberId, request);
     }
 
     // 대댓글 삭제
     @DeleteMapping("/reply/{replyId}")
     @ResponseStatus(HttpStatus.OK)
-    public void replyDelete(@PathVariable("replyId") Long replyId, Long productMemberId) {
-        replyService.replyDelete(replyId,productMemberId);
+    public void replyDelete(@PathVariable("replyId") Long replyId, Long goodsMemberId) {
+        replyService.replyDelete(replyId,goodsMemberId);
     }
 }

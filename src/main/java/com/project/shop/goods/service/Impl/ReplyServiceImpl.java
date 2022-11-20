@@ -16,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.project.shop.global.error.ErrorCode.NOT_FOUND_REPLY;
-import static com.project.shop.global.error.ErrorCode.NOT_SELLING_GOODS;
+import static com.project.shop.global.error.ErrorCode.*;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -34,16 +33,16 @@ public class ReplyServiceImpl implements ReplyService {
         Review review = reviewRepository.findById(reviewReplyCreateRequest.getReviewId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
 
-        if (review.getGoods().getMemberId().equals(reviewReplyCreateRequest.getProductMemberId())) {
-            Reply reply = Reply.builder()
-                    .review(review)
-                    .comment(reviewReplyCreateRequest.getReplyComment())
-                    .build();
-
-            replyRepository.save(reply);
-        } else {
+        if (!review.getGoods().getMemberId().equals(reviewReplyCreateRequest.getProductMemberId()))
             throw new BusinessException(NOT_SELLING_GOODS);
-        }
+
+        Reply reply = Reply.builder()
+                .review(review)
+                .comment(reviewReplyCreateRequest.getReplyComment())
+                .build();
+
+        replyRepository.save(reply);
+
     }
 
     // 대댓글 조회
@@ -56,23 +55,27 @@ public class ReplyServiceImpl implements ReplyService {
 
     // 대댓글 수정
     @Override
-    public void replyUpdate(Long replyId, ReplyEditRequest reviewReplyEditRequest) {
+    public void replyUpdate(Long replyId, Long goodsMemberId, ReplyEditRequest reviewReplyEditRequest) {
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
+
+        if (!reply.getReview().getGoods().getMemberId().equals(goodsMemberId))
+            throw new BusinessException(NOT_WRITE_REPLY);
+
         reply.edit(reviewReplyEditRequest.getComment());
     }
 
     // 대댓글 삭제
     @Override
-    public void replyDelete(Long replyId, Long productMemberId) {
+    public void replyDelete(Long replyId, Long goodsMemberId) {
+
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
 
-        if (reply.getReview().getGoods().getMemberId().equals(productMemberId)) {
-            replyRepository.delete(reply);
-        } else {
+        if (!reply.getReview().getGoods().getMemberId().equals(goodsMemberId))
             throw new BusinessException(NOT_SELLING_GOODS);
-        }
+
+        replyRepository.delete(reply);
 
     }
 }

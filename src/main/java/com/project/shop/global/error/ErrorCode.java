@@ -37,7 +37,8 @@ public enum ErrorCode {
     CANT_DELETE_REVIEW(HttpStatus.BAD_REQUEST, "삭제할 수 없는 리뷰입니다."),
 
     // 대댓글
-    NOT_FOUND_REPLY(HttpStatus.BAD_REQUEST, "대댓글을 찾을 수 없습니다."),
+    NOT_FOUND_REPLY(HttpStatus.BAD_REQUEST, "댓글을 찾을 수 없습니다."),
+    NOT_WRITE_REPLY(HttpStatus.BAD_REQUEST, "작성한 댓글이 아닙니다."),
 
     // 주문
     NOT_FOUND_ORDERS(HttpStatus.BAD_REQUEST, "존재하는 주문이 없습니다."),

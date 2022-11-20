@@ -17,9 +17,9 @@ public interface ReplyService {
     List<ReplyResponse> replyFind(Long reviewId);
 
     // 리뷰 대댓글 수정
-    void replyUpdate(Long replyId, ReplyEditRequest reviewReplyEditRequest);
+    void replyUpdate(Long replyId, Long goodsMemberId, ReplyEditRequest reviewReplyEditRequest);
 
     // 리뷰 대댓글 삭제
-    void replyDelete(Long replyId, Long productMemberId);
+    void replyDelete(Long replyId, Long goodsMemberId);
 
 }
