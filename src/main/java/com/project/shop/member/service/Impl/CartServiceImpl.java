@@ -37,16 +37,9 @@ public class CartServiceImpl implements CartService {
         Goods goods = goodsRepository.findById(cartCreateRequest.getGoodsId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
 
-        // 장바구니에 원래 있는 상품이면 개수, 금액 추가
-        List<Cart> cartList = cartRepository.findByMemberId(memberId);
-        if (cartList.size() != 0) {
-            for (Cart cart : cartList) {
-                if (cart.getGoodsId().equals(goods.getId())) {
-                    cart.addAmount(cart, goods, cartCreateRequest);
-                    return;
-                }
-            }
-        }
+        // 장바구니에 존재하는 상품이면 "장바구니에 존재하는 상품입니다" 예외 발생
+        boolean present = cartRepository.findByGoodsId(goods.getId()).isPresent();
+        if (present) throw new BusinessException(DUPLICATE_GOODS);
 
         Cart cart = Cart.builder()
                 .member(member)
@@ -58,33 +51,28 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
-    // 장바구니 회원 별 조회
+    // 장바구니 조회
     @Override
     public List<CartResponse> cartFindMember(Long memberId) {
         List<Cart> cartList = cartRepository.findByMemberId(memberId);
+        if (cartList.isEmpty()) throw new BusinessException(NOT_FOUND_CART);
 
         List<CartResponse> list = new ArrayList<>();
 
-        if (cartList.isEmpty()) {
-            throw new BusinessException(NOT_FOUND_CART);
-        } else {
-            for (Cart cart : cartList) {
-                list.add(CartResponse.toCartResponse(cart));
-            }
-            return list;
+        for (Cart cart : cartList) {
+            list.add(CartResponse.toCartResponse(cart));
         }
+        return list;
+
     }
 
     // 장바구니 상품 삭제
     @Override
     public void cartDeleteGoods(Long cartId, Long goodsId) {
-        Cart cart = cartRepository.findById(cartId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_CART));
+        Cart cart = cartRepository.findByIdAndGoodsId(cartId, goodsId)
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
 
-        if (cart.getGoodsId().equals(goodsId)) {
-            cartRepository.deleteById(cart.getId());
-        } else {
-            throw new BusinessException(NOT_FOUND_GOODS);
-        }
+        cartRepository.deleteById(cart.getId());
+
     }
 }
