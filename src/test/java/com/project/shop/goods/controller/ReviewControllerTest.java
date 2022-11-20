@@ -1,13 +1,12 @@
 package com.project.shop.goods.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.shop.factory.GoodsFactory;
-import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
-import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
-import com.project.shop.member.domain.Member;
+import com.project.shop.goods.repository.ReviewRepository;
+import com.project.shop.goods.service.Impl.ReviewServiceImpl;
+import com.project.shop.member.repository.MemberRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ReviewController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class ReviewControllerTest extends ControllerTest {
+class ReviewControllerTest extends ControllerSetting {
+
+    @MockBean
+    ReviewServiceImpl reviewService;
+
+    @MockBean
+    MemberRepository memberRepository;
+
+    @MockBean
+    ReviewRepository reviewRepository;
 
     @Test
     @DisplayName("리뷰생성")
