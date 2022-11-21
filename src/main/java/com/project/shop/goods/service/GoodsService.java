@@ -19,7 +19,7 @@ public interface GoodsService {
     List<GoodsResponse> goodsFindAll(Pageable pageable);
 
     // 상품 검색 기능
-    List<GoodsResponse> goodsFindKeyword(String keyword);
+    List<GoodsResponse> goodsFindKeyword(Pageable pageable, String keyword);
 
     // 상품 수정
     void goodsEdit(Long goodsId , GoodsEditRequest goodsEditRequest);

@@ -45,8 +45,8 @@ public class GoodsController {
     // 상품 검색 (키워드)
     @GetMapping("/goods/{keyword}")
     @ResponseStatus(HttpStatus.OK)
-    public List<GoodsResponse> goodsFindKeyword(@PathVariable String keyword) {
-        return goodsService.goodsFindKeyword(keyword);
+    public List<GoodsResponse> goodsFindKeyword(@PathVariable String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return goodsService.goodsFindKeyword(pageable, keyword);
     }
 
     // 상품 수정

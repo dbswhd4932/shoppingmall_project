@@ -11,6 +11,8 @@ import com.project.shop.member.repository.MemberRepository;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +37,7 @@ public class ReviewController {
     // 리뷰 전체조회
     @GetMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReviewResponse> reviewFindAll(Pageable pageable) {
+    public List<ReviewResponse> reviewFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return reviewService.reviewFindAll(pageable);
     }
 

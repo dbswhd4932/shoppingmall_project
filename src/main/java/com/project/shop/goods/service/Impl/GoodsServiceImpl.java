@@ -41,9 +41,9 @@ public class GoodsServiceImpl implements GoodsService {
         // 저장할 경로 지정
         String url = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
 
-        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
-            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
-        }
+//        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
+//            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
+//        }
 
         // 상품 정보저장
         Goods goods = Goods.toGoods(goodsCreateRequest);
@@ -57,22 +57,24 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
         // 이미지 정보 저장
-        for (MultipartFile file : files) {
-            // 랜덤 값 생성
-            UUID uuid = UUID.randomUUID();
-            // 파일 이름 앞에 붙이기
-            String fileName = uuid + "_" + file.getOriginalFilename();
-            // 파일 저장
-            File saveFile = new File(url, fileName);
-            file.transferTo(saveFile);
+        if (!files.isEmpty()) {
+            for (MultipartFile file : files) {
+                // 랜덤 값 생성
+                UUID uuid = UUID.randomUUID();
+                // 파일 이름 앞에 붙이기
+                String fileName = uuid + "_" + file.getOriginalFilename();
+                // 파일 저장
+                File saveFile = new File(url, fileName);
+                file.transferTo(saveFile);
 
-            Image image = Image.builder()
-                    .fileName(fileName)
-                    .fileUrl(url)
-                    .goods(goods)
-                    .build();
+                Image image = Image.builder()
+                        .fileName(fileName)
+                        .fileUrl(url)
+                        .goods(goods)
+                        .build();
 
-            imageRepository.save(image);
+                imageRepository.save(image);
+            }
         }
     }
 
@@ -89,9 +91,9 @@ public class GoodsServiceImpl implements GoodsService {
     // 상품 검색 ( 키워드 )
     @Override
     @Transactional(readOnly = true)
-    public List<GoodsResponse> goodsFindKeyword(String keyword) {
+    public List<GoodsResponse> goodsFindKeyword(Pageable pageable, String keyword) {
         // keyword 로 검색 후 모든 상품 찾기
-        List<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(keyword);
+        List<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword);
 
         List<GoodsResponse> list = new ArrayList<>();
         // 상품의 이미지 찾아서 응답에 추가 설정
@@ -112,7 +114,6 @@ public class GoodsServiceImpl implements GoodsService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
 
         goods.update(goodsEditRequest);
-
     }
 
     // 상품 삭제

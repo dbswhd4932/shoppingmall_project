@@ -1,6 +1,7 @@
 package com.project.shop.goods.repository;
 
 import com.project.shop.goods.domain.Goods;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     Optional<Goods> findByGoodsName(String goodsName);
 
     // 상품 검색 - 키워드
-    List<Goods> findGoodsByGoodsNameContaining(String keyword);
+    List<Goods> findGoodsByGoodsNameContaining(Pageable pageable, String keyword);
 
 
 }
