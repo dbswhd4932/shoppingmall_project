@@ -6,6 +6,7 @@ import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.service.Impl.ReviewServiceImpl;
+import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class ReviewController {
     }
 
     // 리뷰 전체조회
-    @GetMapping("/reviews/all")
+    @GetMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
     public List<ReviewResponse> reviewFindAll() {
         return reviewService.reviewFindAll();
@@ -41,15 +42,16 @@ public class ReviewController {
     @PutMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
     public void reviewEdit(@PathVariable("reviewId") Long reviewId, Long memberId, @RequestBody @Valid ReviewEditRequest reviewEditRequest) {
-        memberRepository.findById(memberId).orElseThrow(()-> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-        reviewService.reviewEdit(reviewId, memberId, reviewEditRequest);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        reviewService.reviewEdit(reviewId, member.getId(), reviewEditRequest);
     }
 
     // 리뷰 삭제
     @DeleteMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
     public void reviewDelete(@PathVariable("reviewId") Long reviewId, Long memberId) {
-        reviewService.reviewDelete(reviewId, memberId );
+        reviewService.reviewDelete(reviewId, memberId);
     }
 
 
