@@ -3,6 +3,7 @@ package com.project.shop.goods.service;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface ReviewService {
     void reviewCreate(ReviewCreateRequest reviewCreateRequest);
 
     // 리뷰 전체조회
-    List<ReviewResponse> reviewFindAll();
+    List<ReviewResponse> reviewFindAll(Pageable pageable);
 
 
     // 리뷰 수정

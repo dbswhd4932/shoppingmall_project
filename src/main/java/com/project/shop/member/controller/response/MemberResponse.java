@@ -3,6 +3,7 @@ package com.project.shop.member.controller.response;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.Role;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class MemberResponse {
 
     private String loginId;         //회원ID

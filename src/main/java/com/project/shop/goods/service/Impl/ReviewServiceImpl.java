@@ -20,6 +20,7 @@ import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,8 +55,8 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 전체조회
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponse> reviewFindAll() {
-        return reviewRepository.findAll()
+    public List<ReviewResponse> reviewFindAll(Pageable pageable) {
+        return reviewRepository.findAll(pageable)
                 .stream().map(ReviewResponse::toReviewResponse).collect(Collectors.toList());
     }
 

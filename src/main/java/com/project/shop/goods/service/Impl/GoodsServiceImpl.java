@@ -76,7 +76,7 @@ public class GoodsServiceImpl implements GoodsService {
         }
     }
 
-    // 상품 전체 검색 - 페이징 기능
+    // 상품 전체 검색
     @Override
     @Transactional(readOnly = true)
     public List<GoodsResponse> goodsFindAll(Pageable pageable) {
