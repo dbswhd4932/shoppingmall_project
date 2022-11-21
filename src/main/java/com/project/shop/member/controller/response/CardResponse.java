@@ -1,11 +1,15 @@
 package com.project.shop.member.controller.response;
 
 import com.project.shop.member.domain.Card;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CardResponse {
 
     private Long memberId;

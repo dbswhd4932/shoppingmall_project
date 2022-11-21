@@ -1,4 +1,4 @@
-package com.project.shop.goods.controller;
+package com.project.shop.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
