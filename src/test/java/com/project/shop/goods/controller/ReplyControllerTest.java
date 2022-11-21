@@ -116,4 +116,16 @@ class ReplyControllerTest extends ControllerSetting {
 
     }
 
+    @Test
+    @DisplayName("대댓글 삭제")
+    void replyDeleteTest() throws Exception {
+        //given
+        //when then
+        mockMvc.perform(delete("/api/reply/{replyId}", 1L)
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(replyService).replyDelete(any(), any());
+    }
+
 }
