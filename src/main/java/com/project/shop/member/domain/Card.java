@@ -1,6 +1,7 @@
 package com.project.shop.member.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
+import com.project.shop.member.controller.request.CardCreateRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,6 +36,16 @@ public class Card extends BaseTimeEntity {
         this.cardCompany = cardCompany;
         this.cardNumber = cardNumber;
         this.cardExpire = cardExpire;
+    }
+
+    // 카드 생성
+    public static Card createCard(Member member, CardCreateRequest cardCreateRequest) {
+        return Card.builder()
+                .member(member)
+                .cardCompany(cardCreateRequest.getCardCompany())
+                .cardNumber(cardCreateRequest.getCardNumber())
+                .cardExpire(cardCreateRequest.getCardExpire())
+                .build();
     }
 
 }

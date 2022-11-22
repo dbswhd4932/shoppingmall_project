@@ -71,7 +71,7 @@ class CartServiceImplTest {
         Goods goods = GoodsFactory.createGoods();
         Cart cart = CartFactory.cartCreate(member, goods);
 
-        given(cartRepository.findByMemberId(member.getId())).willReturn(List.of(cart));
+        given(cartRepository.findByMemberId(member.getId())).willReturn(Optional.of(List.of(cart)));
 
         //when
         List<CartResponse> cartResponseList = cartService.cartFindMember(member.getId());

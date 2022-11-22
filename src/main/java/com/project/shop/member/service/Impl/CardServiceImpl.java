@@ -29,13 +29,8 @@ public class CardServiceImpl implements CardService {
     public void cardCreate(CardCreateRequest cardCreateRequest) {
         Member member = memberRepository.findById(cardCreateRequest.getMemberId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-        Card card = Card.builder()
-                .member(member)
-                .cardCompany(cardCreateRequest.getCardCompany())
-                .cardNumber(cardCreateRequest.getCardNumber())
-                .cardExpire(cardCreateRequest.getCardExpire())
-                .build();
 
+        Card card = Card.createCard(member, cardCreateRequest);
         cardRepository.save(card);
     }
 

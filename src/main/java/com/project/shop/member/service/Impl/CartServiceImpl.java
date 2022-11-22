@@ -38,32 +38,24 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
 
         // 장바구니에 존재하는 상품이면 "장바구니에 존재하는 상품입니다" 예외 발생
-        boolean present = cartRepository.findByGoodsId(goods.getId()).isPresent();
-        if (present) throw new BusinessException(DUPLICATE_GOODS);
+        if (cartRepository.findByGoodsId(goods.getId()).isPresent())
+            throw new BusinessException(DUPLICATE_GOODS);
 
-        Cart cart = Cart.builder()
-                .member(member)
-                .goodsId(cartCreateRequest.getGoodsId())
-                .totalAmount(cartCreateRequest.getAmount())
-                .totalPrice(goods.getPrice() * cartCreateRequest.getAmount())
-                .build();
-
+        Cart cart = Cart.createCart(member, goods, cartCreateRequest);
         cartRepository.save(cart);
     }
 
     // 장바구니 조회
     @Override
     public List<CartResponse> cartFindMember(Long memberId) {
-        List<Cart> cartList = cartRepository.findByMemberId(memberId);
-        if (cartList.isEmpty()) throw new BusinessException(NOT_FOUND_CART);
+        List<Cart> carts = cartRepository.findByMemberId(memberId).orElseThrow(
+                () -> {throw new BusinessException(NOT_FOUND_CART);});
 
         List<CartResponse> list = new ArrayList<>();
-
-        for (Cart cart : cartList) {
+        for (Cart cart : carts) {
             list.add(CartResponse.toCartResponse(cart));
         }
         return list;
-
     }
 
     // 장바구니 상품 삭제
@@ -73,6 +65,5 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
 
         cartRepository.deleteById(cart.getId());
-
     }
 }

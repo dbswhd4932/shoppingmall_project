@@ -61,6 +61,7 @@ public class Order extends BaseTimeEntity {
         this.status = OrderStatus.COMPLETE;
     }
 
+    // 주문 생성
     public static Order toOrder(OrderCreateRequest orderCreateRequest, Cart cart) {
         return Order.builder()
                 .name(orderCreateRequest.getName())

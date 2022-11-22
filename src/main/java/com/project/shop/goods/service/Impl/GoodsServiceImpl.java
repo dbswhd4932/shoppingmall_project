@@ -41,9 +41,9 @@ public class GoodsServiceImpl implements GoodsService {
         // 저장할 경로 지정
         String url = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
 
-//        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
-//            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
-//        }
+        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
+        }
 
         // 상품 정보저장
         Goods goods = Goods.toGoods(goodsCreateRequest);
@@ -113,6 +113,8 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
 
+        // 상품 정보 변경 확인 메서드
+        goods.updateCheckChange();
         goods.update(goodsEditRequest);
     }
 
@@ -121,5 +123,6 @@ public class GoodsServiceImpl implements GoodsService {
     public void goodsDelete(Long goodsId) {
         goodsRepository.deleteById(goodsId);
     }
+
 
 }

@@ -11,7 +11,6 @@ import com.project.shop.goods.repository.ReplyRepository;
 import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,16 +33,9 @@ public class ReplyServiceImpl implements ReplyService {
         Review review = reviewRepository.findById(replyCreateRequest.getReviewId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
 
-        if (!review.getGoods().getMemberId().equals(replyCreateRequest.getProductMemberId()))
-            throw new BusinessException(NOT_SELLING_GOODS);
-
-        Reply reply = Reply.builder()
-                .review(review)
-                .comment(replyCreateRequest.getReplyComment())
-                .build();
-
+        review.checkSeller(replyCreateRequest);
+        Reply reply = Reply.createReply(review, replyCreateRequest);
         replyRepository.save(reply);
-
     }
 
     // 대댓글 조회
@@ -61,23 +53,17 @@ public class ReplyServiceImpl implements ReplyService {
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
 
-        if (!reply.getReview().getGoods().getMemberId().equals(goodsMemberId))
-            throw new BusinessException(NOT_WRITE_REPLY);
-
+        reply.checkReply(goodsMemberId);
         reply.edit(reviewReplyEditRequest.getComment());
     }
 
     // 대댓글 삭제
     @Override
     public void replyDelete(Long replyId, Long goodsMemberId) {
-
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
 
-        if (!reply.getReview().getGoods().getMemberId().equals(goodsMemberId))
-            throw new BusinessException(NOT_SELLING_GOODS);
-
+        reply.checkReply(goodsMemberId);
         replyRepository.delete(reply);
-
     }
 }

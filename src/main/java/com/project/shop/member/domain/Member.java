@@ -82,4 +82,5 @@ public class Member extends BaseTimeEntity {
         return this;
     }
 
+
 }

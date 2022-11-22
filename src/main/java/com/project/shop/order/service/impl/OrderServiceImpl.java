@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
                 break;
             }
         }
-        if ( pay == null ) throw new BusinessException(ErrorCode.NOT_FOUND_CARD);
+        if (pay == null) throw new BusinessException(ErrorCode.NOT_FOUND_CARD);
 
         // 주문 데이터 저장
         orderRepository.save(order);

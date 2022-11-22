@@ -41,13 +41,14 @@ public class Cart extends BaseTimeEntity {
         this.totalPrice = totalPrice;
     }
 
-    // 장바구니 같은 상품 존재 시 수량, 금액 증가
-    public void addAmount(Cart cart, Goods goods, CartCreateRequest request) {
-        int resultAmount = cart.getTotalAmount() + request.getAmount();
-        int resultPrice = cart.getTotalPrice() + (request.getAmount() * goods.getPrice());
-
-        this.totalAmount = resultAmount;
-        this.totalPrice = resultPrice;
-
+    // 장바구니 생성
+    public static Cart createCart(Member member, Goods goods, CartCreateRequest cartCreateRequest) {
+        return Cart.builder()
+                .member(member)
+                .goodsId(cartCreateRequest.getGoodsId())
+                .totalAmount(cartCreateRequest.getAmount())
+                .totalPrice(goods.getPrice() * cartCreateRequest.getAmount())
+                .build();
     }
+
 }

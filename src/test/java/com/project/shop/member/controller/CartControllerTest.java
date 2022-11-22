@@ -78,7 +78,7 @@ class CartControllerTest extends ControllerSetting{
                 .totalPrice(5000)
                 .build();
 
-        given(cartRepository.findByMemberId(cart.getMember().getId())).willReturn(List.of(cart));
+        given(cartRepository.findByMemberId(cart.getMember().getId())).willReturn(Optional.of(List.of(cart)));
         given(cartService.cartFindMember(cart.getMember().getId())).willReturn(List.of(cartResponse));
 
         //when then

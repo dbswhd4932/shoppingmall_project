@@ -47,6 +47,9 @@ public class Goods extends BaseTimeEntity {
     @OneToOne (cascade = CascadeType.ALL, mappedBy = "goods")
     private Option option;
 
+    // 업데이트 체크
+    private boolean updateCheck;
+
     @Builder
     public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images, Option option) {
         this.memberId = memberId;
@@ -74,6 +77,11 @@ public class Goods extends BaseTimeEntity {
         this.goodsName = goodsEditRequest.getGoodsName();
         this.description = goodsEditRequest.getDescription();
         this.price = goodsEditRequest.getPrice();
+    }
+
+    // 상품 정보 변경 확인
+    public void updateCheckChange() {
+        this.updateCheck = true;
     }
 
 }

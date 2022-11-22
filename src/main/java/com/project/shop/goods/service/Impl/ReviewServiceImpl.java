@@ -2,23 +2,14 @@ package com.project.shop.goods.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewResponse;
-import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.ReviewService;
-import com.project.shop.member.domain.Member;
-import com.project.shop.member.repository.MemberRepository;
-import com.project.shop.order.domain.Order;
 import com.project.shop.order.domain.OrderItem;
-import com.project.shop.order.domain.OrderStatus;
-import com.project.shop.order.domain.Pay;
 import com.project.shop.order.repository.OrderItemRepository;
-import com.project.shop.order.repository.OrderRepository;
-import com.project.shop.order.repository.PayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,12 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
         OrderItem orderItem = orderItemRepository.findById(reviewCreateRequest.getOrderItemId())
                 .orElseThrow(() -> new BusinessException(NO_BUY_ORDER));
 
-        Review review = Review.builder()
-                .memberId(reviewCreateRequest.getMemberId())
-                .goods(orderItem.getGoods())
-                .comment(reviewCreateRequest.getComment())
-                .build();
-
+        Review review = Review.createReview(orderItem, reviewCreateRequest);
         reviewRepository.save(review);
     }
 
@@ -65,8 +51,8 @@ public class ReviewServiceImpl implements ReviewService {
     public void reviewEdit(Long reviewId, Long memberId, ReviewEditRequest reviewEditRequest) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
-        // 해당 회원이 작성한 리뷰가 아니면 예외
-        if (!review.getMemberId().equals(memberId)) throw new BusinessException(ErrorCode.NOT_MATCH_REVIEW);
+
+        review.checkWhoWriteReview(memberId);
         review.edit(reviewEditRequest);
     }
 
@@ -75,8 +61,8 @@ public class ReviewServiceImpl implements ReviewService {
     public void reviewDelete(Long reviewId, Long memberId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
-        // 해당 회원이 작성한 리뷰가 아니면 예외
-        if (!review.getMemberId().equals(memberId))  throw new BusinessException(CANT_DELETE_REVIEW);
+
+        review.checkWhoWriteReview(memberId);
         reviewRepository.delete(review);
     }
 }

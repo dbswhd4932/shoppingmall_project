@@ -43,6 +43,7 @@ public class OrderItem extends BaseTimeEntity {
         this.orderPrice = orderPrice;
     }
 
+    // 주문_상품 생성
     public static OrderItem createOrderItem(Long memberId, Goods goods, int orderPrice , int amount, Order order) {
         return OrderItem.builder()
                 .memberId(memberId)
