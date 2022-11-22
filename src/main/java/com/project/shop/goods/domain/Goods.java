@@ -1,5 +1,6 @@
 package com.project.shop.goods.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
@@ -39,19 +40,20 @@ public class Goods extends BaseTimeEntity {
 
     private String description; //상품설명
 
-    // 상품 삭제 시 이미지 DB 도 같이 삭제
-    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
+    // 상품 삭제 시 이미지 DB 도 같이 삭제 , cascade 옵션
+    // null 처리된 자식을 delete -> orphanRemoval 옵션
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
     // pk 값 공유
-    @OneToOne (cascade = CascadeType.ALL, mappedBy = "goods")
-    private Option option;
+    @OneToMany (mappedBy = "goods", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> option = new ArrayList<>();
 
     // 업데이트 체크
     private boolean updateCheck;
 
     @Builder
-    public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images, Option option) {
+    public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images, List<Option> option) {
         this.memberId = memberId;
         this.goodsName = goodsName;
         this.category = category;
@@ -60,6 +62,7 @@ public class Goods extends BaseTimeEntity {
         this.images = images;
         this.option = option;
     }
+
 
     public static Goods toGoods(GoodsCreateRequest goodsCreateRequest) {
         return Goods.builder()
@@ -72,7 +75,7 @@ public class Goods extends BaseTimeEntity {
     }
 
     // 업데이트 ( 상품이름, 설명 , 가격 )
-    // todo 이미지 수정
+    // todo 이미지 수정 , 옵션  수정
     public void update(GoodsEditRequest goodsEditRequest) {
         this.goodsName = goodsEditRequest.getGoodsName();
         this.description = goodsEditRequest.getDescription();

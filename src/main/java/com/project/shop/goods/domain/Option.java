@@ -1,5 +1,6 @@
 package com.project.shop.goods.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.AccessLevel;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public class Option {
 
     private int addPrice;   // 추가금액
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "goods_id")
     private Goods goods;

@@ -84,7 +84,9 @@ public class GoodsServiceImpl implements GoodsService {
     public List<GoodsResponse> goodsFindAll(Pageable pageable) {
         Page<Goods> goods = goodsRepository.findAll(pageable);
         List<GoodsResponse> list = new ArrayList<>();
-        goods.forEach(g -> list.add(GoodsResponse.toGoodsResponse(g)));
+        for (Goods good : goods) {
+            list.add(GoodsResponse.toGoodsResponse(good));
+        }
         return list;
     }
 
@@ -110,8 +112,8 @@ public class GoodsServiceImpl implements GoodsService {
     // todo 이미지 수정 구현필요
     @Override
     public void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest) {
-        Goods goods = goodsRepository.findById(goodsId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
 
         // 상품 정보 변경 확인 메서드
         goods.updateCheckChange();
@@ -121,8 +123,9 @@ public class GoodsServiceImpl implements GoodsService {
     // 상품 삭제
     @Override
     public void goodsDelete(Long goodsId) {
-        goodsRepository.deleteById(goodsId);
+        Goods goods = goodsRepository.findById(goodsId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
+
+        goodsRepository.deleteById(goods.getId());
     }
-
-
 }

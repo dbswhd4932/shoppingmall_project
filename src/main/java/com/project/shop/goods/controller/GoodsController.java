@@ -61,6 +61,6 @@ public class GoodsController {
     @DeleteMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
     public void goodsDelete(@PathVariable("goodsId") Long goodsId) {
-        goodsService.goodsDelete(goodsId);
+        goodsService.goodsDelete(goodsId );
     }
 }
