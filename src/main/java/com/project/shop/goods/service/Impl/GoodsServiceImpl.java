@@ -35,9 +35,9 @@ public class GoodsServiceImpl implements GoodsService {
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
 
-    // 상품 등록 + 이미지 추가
+    // 상품 등록 + 이미지 추가 + 옵션 추가
     @Override
-    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files, OptionCreateRequest optionCreateRequest) throws IOException {
+    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files) throws IOException {
         // 저장할 경로 지정
         String url = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
 
@@ -50,10 +50,13 @@ public class GoodsServiceImpl implements GoodsService {
         goodsRepository.save(goods);
 
         // 옵션 정보저장
-        if (optionCreateRequest != null) {
-            Option option = Option.toOption(optionCreateRequest);
-            option.setGoods(goods);
-            optionRepository.save(option);
+
+        if (goodsCreateRequest.getOptionCreateRequest() != null) {
+            for (OptionCreateRequest optionCreateRequest : goodsCreateRequest.getOptionCreateRequest()) {
+                Option option = Option.toOption(optionCreateRequest);
+                option.setGoods(goods);
+                optionRepository.save(option);
+            }
         }
 
         // 이미지 정보 저장
@@ -115,8 +118,6 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = goodsRepository.findById(goodsId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
 
-        // 상품 정보 변경 확인 메서드
-        goods.updateCheckChange();
         goods.update(goodsEditRequest);
     }
 

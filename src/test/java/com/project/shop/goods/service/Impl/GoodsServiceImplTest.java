@@ -42,11 +42,6 @@ class GoodsServiceImplTest {
     @Mock
     GoodsRepository goodsRepository;
 
-    @Mock
-    ImageRepository imageRepository;
-
-    @Mock
-    OptionRepository optionRepository;
 
     @Test
     @Disabled
@@ -60,24 +55,12 @@ class GoodsServiceImplTest {
                 .price(10000)
                 .build();
 
-//        Map<String, String> map = new HashMap<>();
-//        map.put("색상","검정");
         Goods goods = Goods.toGoods(goodsCreateRequest);
-//        Option option = Option.builder().options(List.of(map)).build();
-//
-//        Image image = Image.builder()
-//                .fileName("ImageNameTest")
-//                .fileUrl("fileUrlTest")
-//                .goods(goods)
-//                .build();
         given(goodsRepository.save(goods)).willReturn(goods);
         given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
         given(goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName())).willReturn(null);
-//        given(goodsRepository.save(goods)).willReturn(goods);
-//        given(optionRepository.save(option)).willReturn(option);
-//        given(imageRepository.save(image)).willReturn(image);
         //when
-        goodsService.goodsCreate(refEq(goodsCreateRequest), Collections.emptyList(), null);
+//        goodsService.goodsCreate(refEq(goodsCreateRequest), Collections.emptyList(), null);
 
         //then
         verify(goodsRepository).save(goods);

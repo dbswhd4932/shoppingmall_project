@@ -13,7 +13,7 @@ import java.util.List;
 public interface GoodsService {
 
     // 상품 생성
-    void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files, OptionCreateRequest optionCreateRequest) throws IOException;
+    void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files) throws IOException;
 
     // 상품 전체 검색 - 페이징 기능
     List<GoodsResponse> goodsFindAll(Pageable pageable);

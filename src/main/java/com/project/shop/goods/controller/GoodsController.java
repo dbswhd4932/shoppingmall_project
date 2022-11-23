@@ -29,9 +29,8 @@ public class GoodsController {
     @PostMapping(value = "/goods", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
-                            @RequestPart List<MultipartFile> files,
-                            @RequestPart(required = false) OptionCreateRequest optionCreateRequest) throws IOException {
-        goodsService.goodsCreate(goodsCreateRequest, files, optionCreateRequest);
+                            @RequestPart List<MultipartFile> files) throws IOException {
+        goodsService.goodsCreate(goodsCreateRequest, files);
     }
 
     // 상품 전체 검색

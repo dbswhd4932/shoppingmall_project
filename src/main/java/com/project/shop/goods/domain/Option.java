@@ -31,7 +31,7 @@ public class Option {
 
     private int addPrice;   // 추가금액
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "goods_id")
     private Goods goods;

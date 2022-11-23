@@ -46,11 +46,9 @@ public class Goods extends BaseTimeEntity {
     private List<Image> images = new ArrayList<>();
 
     // pk 값 공유
-    @OneToMany (mappedBy = "goods", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Option> option = new ArrayList<>();
+    @OneToOne (mappedBy = "goods")
+    private Option option;
 
-    // 업데이트 체크
-    private boolean updateCheck;
 
     @Builder
     public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images) {
@@ -79,11 +77,6 @@ public class Goods extends BaseTimeEntity {
         this.goodsName = goodsEditRequest.getGoodsName();
         this.description = goodsEditRequest.getDescription();
         this.price = goodsEditRequest.getPrice();
-    }
-
-    // 상품 정보 변경 확인
-    public void updateCheckChange() {
-        this.updateCheck = true;
     }
 
 }
