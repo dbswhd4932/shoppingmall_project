@@ -9,11 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import javax.persistence.*;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Getter
@@ -25,9 +25,9 @@ public class Option {
     @Id
     private Long id;
 
-    @Type(type = "json")
+    @Type(type = "json") // map 을 Json 타입으로 컨버팅
     @Column(columnDefinition = "json")
-    private List<Map<String, String>> options;
+    private List<LinkedMultiValueMap<String, String>> options = new ArrayList<>();
 
     private int addPrice;   // 추가금액
 
@@ -37,7 +37,7 @@ public class Option {
     private Goods goods;
 
     @Builder
-    public Option(List<Map<String, String>> options, int addPrice, Goods goods) {
+    public Option(List<LinkedMultiValueMap<String, String>> options, int addPrice, Goods goods) {
         this.options = options;
         this.addPrice = addPrice;
         this.goods = goods;

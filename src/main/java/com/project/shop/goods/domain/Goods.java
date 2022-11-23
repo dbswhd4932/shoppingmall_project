@@ -53,14 +53,13 @@ public class Goods extends BaseTimeEntity {
     private boolean updateCheck;
 
     @Builder
-    public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images, List<Option> option) {
+    public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images) {
         this.memberId = memberId;
         this.goodsName = goodsName;
         this.category = category;
         this.price = price;
         this.description = description;
         this.images = images;
-        this.option = option;
     }
 
 

@@ -122,8 +122,8 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 상품 삭제
     @Override
-    public void goodsDelete(Long goodsId) {
-        Goods goods = goodsRepository.findById(goodsId)
+    public void goodsDelete(Long goodsId, Long memberId) {
+        Goods goods = goodsRepository.findByIdAndMemberId(goodsId, memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
 
         goodsRepository.deleteById(goods.getId());

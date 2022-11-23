@@ -60,7 +60,7 @@ public class GoodsController {
     // 상품 삭제
     @DeleteMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
-    public void goodsDelete(@PathVariable("goodsId") Long goodsId) {
-        goodsService.goodsDelete(goodsId );
+    public void goodsDelete(@PathVariable("goodsId") Long goodsId, Long memberId) {
+        goodsService.goodsDelete(goodsId, memberId);
     }
 }

@@ -25,6 +25,6 @@ public interface GoodsService {
     void goodsEdit(Long goodsId , GoodsEditRequest goodsEditRequest);
 
     // 상품 삭제
-    void goodsDelete(Long goodsId);
+    void goodsDelete(Long goodsId, Long memberId);
 
 }

@@ -1,17 +1,14 @@
 package com.project.shop.goods.controller.request;
 
-import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.repository.GoodsRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Type;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import javax.persistence.Column;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @NoArgsConstructor
@@ -22,6 +19,6 @@ public class OptionCreateRequest {
 
     @Type(type = "json")
     @Column(columnDefinition = "json")
-    private List<Map<String, String>> options;
+    private List<LinkedMultiValueMap<String, String>> options = new ArrayList<>();
 
 }
