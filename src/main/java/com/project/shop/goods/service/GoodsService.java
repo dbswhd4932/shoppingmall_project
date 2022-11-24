@@ -22,7 +22,7 @@ public interface GoodsService {
     List<GoodsResponse> goodsFindKeyword(Pageable pageable, String keyword);
 
     // 상품 수정
-    void goodsEdit(Long goodsId , GoodsEditRequest goodsEditRequest);
+    void goodsEdit(Long goodsId, Long memberId , GoodsEditRequest goodsEditRequest);
 
     // 상품 삭제
     void goodsDelete(Long goodsId, Long memberId);

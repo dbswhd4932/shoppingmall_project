@@ -2,6 +2,7 @@ package com.project.shop.goods.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
+import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
@@ -35,6 +36,14 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll()
                 .stream().map(CategoryResponse::toCategoryResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void categoryEdit(Long categoryId, CategoryEditRequest categoryEditRequest) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
+
+        category.edit(categoryEditRequest);
     }
 
     // 카테고리 삭제

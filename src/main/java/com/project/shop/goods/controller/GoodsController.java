@@ -52,8 +52,8 @@ public class GoodsController {
     // todo 이미지 수정 구현필요
     @PutMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
-    public void goodsEdit(@PathVariable("goodsId") Long goodsId, @RequestBody @Valid GoodsEditRequest goodsEditRequest) {
-        goodsService.goodsEdit(goodsId, goodsEditRequest);
+    public void goodsEdit(@PathVariable("goodsId") Long goodsId, Long memberId, @RequestBody @Valid GoodsEditRequest goodsEditRequest) {
+        goodsService.goodsEdit(goodsId, memberId, goodsEditRequest);
     }
 
     // 상품 삭제

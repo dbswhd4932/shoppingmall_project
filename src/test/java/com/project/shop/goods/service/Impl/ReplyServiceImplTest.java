@@ -10,7 +10,6 @@ import com.project.shop.goods.domain.Reply;
 import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.repository.ReplyRepository;
 import com.project.shop.goods.repository.ReviewRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -86,7 +84,7 @@ class ReplyServiceImplTest {
         given(replyRepository.findById(reply.getId())).willReturn(Optional.of(reply));
 
         //when
-        replyService.replyUpdate(reply.getId(),goods.getMemberId(), request);
+        replyService.replyEdit(reply.getId(),goods.getMemberId(), request);
 
         //then
         assertThat(reply.getComment()).isEqualTo(request.getComment());

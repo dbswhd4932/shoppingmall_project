@@ -1,6 +1,7 @@
 package com.project.shop.goods.controller;
 
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
+import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
 import com.project.shop.goods.service.Impl.CategoryServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,13 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryResponse> categoryFindAll() {
         return categoryService.categoryFindAll();
+    }
+
+    // 카테고리 수정
+    @PutMapping("/categories/{categoryId}/edit")
+    @ResponseStatus(HttpStatus.OK)
+    public void categoryEdit(@PathVariable("categoryId") Long categoryId, CategoryEditRequest categoryEditRequest) {
+        categoryService.categoryEdit(categoryId , categoryEditRequest);
     }
 
     // 카테고리 삭제

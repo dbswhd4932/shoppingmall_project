@@ -36,7 +36,7 @@ public class ReplyController {
     @PutMapping("/reply/{replyId}")
     @ResponseStatus(HttpStatus.OK)
     public void replyEdit(@PathVariable("replyId") Long replyId, Long goodsMemberId, @RequestBody @Valid ReplyEditRequest request) {
-        replyService.replyUpdate(replyId, goodsMemberId, request);
+        replyService.replyEdit(replyId, goodsMemberId, request);
     }
 
     // 대댓글 삭제

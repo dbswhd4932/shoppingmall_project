@@ -49,12 +49,12 @@ public class ReplyServiceImpl implements ReplyService {
 
     // 대댓글 수정
     @Override
-    public void replyUpdate(Long replyId, Long goodsMemberId, ReplyEditRequest reviewReplyEditRequest) {
+    public void replyEdit(Long replyId, Long goodsMemberId, ReplyEditRequest ReplyEditRequest) {
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
 
         reply.checkReply(goodsMemberId);
-        reply.edit(reviewReplyEditRequest.getComment());
+        reply.edit(ReplyEditRequest.getComment());
     }
 
     // 대댓글 삭제

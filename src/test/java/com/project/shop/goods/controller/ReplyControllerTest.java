@@ -4,7 +4,6 @@ import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.ReviewFactory;
 import com.project.shop.goods.controller.request.ReplyCreateRequest;
 import com.project.shop.goods.controller.request.ReplyEditRequest;
-import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReplyResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Reply;
@@ -12,18 +11,11 @@ import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ReplyRepository;
 import com.project.shop.goods.service.Impl.ReplyServiceImpl;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import springfox.documentation.spring.web.json.Json;
 
 import java.util.List;
 import java.util.Optional;
@@ -112,7 +104,7 @@ class ReplyControllerTest extends ControllerSetting {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(replyService).replyUpdate(any(), any(), refEq(replyEditRequest));
+        verify(replyService).replyEdit(any(), any(), refEq(replyEditRequest));
 
     }
 

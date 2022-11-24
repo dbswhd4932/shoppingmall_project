@@ -114,9 +114,9 @@ public class GoodsServiceImpl implements GoodsService {
     // 상품 수정
     // todo 이미지 수정 구현필요
     @Override
-    public void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest) {
-        Goods goods = goodsRepository.findById(goodsId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
+    public void goodsEdit(Long goodsId, Long memberId, GoodsEditRequest goodsEditRequest) {
+        Goods goods = goodsRepository.findByIdAndMemberId(goodsId, memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
 
         goods.update(goodsEditRequest);
     }
