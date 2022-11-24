@@ -34,7 +34,7 @@ public class CartController {
     // 장바구니 상품 선택 삭제
     @DeleteMapping("/carts/{cartId}")
     @ResponseStatus(HttpStatus.OK)
-    public void cartDeleteGoods(@PathVariable("cartId") Long cartId, Long goodsId) {
-        cartService.cartDeleteGoods(cartId,goodsId);
+    public void cartDeleteGoods(@PathVariable("cartId") Long cartId, Long goodsId, Long memberId) {
+        cartService.cartDeleteGoods(cartId, goodsId, memberId);
     }
 }

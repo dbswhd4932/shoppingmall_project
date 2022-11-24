@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -86,7 +85,7 @@ class CardControllerTest extends ControllerSetting {
                 .cardExpire("23-12")
                 .build();
 
-        given(cardService.cardFindByMemberId(cardResponse.getMemberId())).willReturn(List.of(cardResponse));
+        given(cardService.cardFindMember(cardResponse.getMemberId())).willReturn(List.of(cardResponse));
 
         // when then
         mockMvc.perform(get("/api/cards/{memberId}", cardResponse.getMemberId())

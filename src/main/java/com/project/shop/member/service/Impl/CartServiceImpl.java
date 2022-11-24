@@ -49,7 +49,9 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartResponse> cartFindMember(Long memberId) {
         List<Cart> carts = cartRepository.findByMemberId(memberId).orElseThrow(
-                () -> {throw new BusinessException(NOT_FOUND_CART);});
+                () -> {
+                    throw new BusinessException(NOT_FOUND_CART);
+                });
 
         List<CartResponse> list = new ArrayList<>();
         for (Cart cart : carts) {
@@ -60,8 +62,8 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 상품 삭제
     @Override
-    public void cartDeleteGoods(Long cartId, Long goodsId) {
-        Cart cart = cartRepository.findByIdAndGoodsId(cartId, goodsId)
+    public void cartDeleteGoods(Long cartId, Long goodsId, Long memberId) {
+        Cart cart = cartRepository.findByIdAndGoodsIdAndMemberId(cartId, goodsId, memberId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
 
         cartRepository.deleteById(cart.getId());

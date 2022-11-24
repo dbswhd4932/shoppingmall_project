@@ -45,7 +45,7 @@ public class CardServiceImpl implements CardService {
     // 카드 회원 별 조회
     @Transactional(readOnly = true)
     @Override
-    public List<CardResponse> cardFindByMemberId(Long memberId) {
+    public List<CardResponse> cardFindMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
@@ -55,8 +55,8 @@ public class CardServiceImpl implements CardService {
 
     // 카드 삭제
     @Override
-    public void cardDelete(Long cardId) {
-        Card card = cardRepository.findById(cardId)
+    public void cardDelete(Long cardId, Long memberId) {
+        Card card = cardRepository.findByIdAndMemberId(cardId, memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CARD));
 
         cardRepository.delete(card);

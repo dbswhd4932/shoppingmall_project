@@ -82,7 +82,7 @@ class CardServiceImplTest {
         given(cardRepository.findByMemberId(member.getId())).willReturn(List.of(card1, card2));
 
         //when
-        List<CardResponse> cardResponses = cardService.cardFindByMemberId(member.getId());
+        List<CardResponse> cardResponses = cardService.cardFindMember(member.getId());
 
         //then
         assertThat(cardResponses.size()).isEqualTo(2);

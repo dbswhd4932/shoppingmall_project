@@ -35,13 +35,13 @@ public class CardController {
     @GetMapping("/cards/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     public List<CardResponse> cardFindByMemberId(@PathVariable("memberId") Long memberId) {
-        return cardService.cardFindByMemberId(memberId);
+        return cardService.cardFindMember(memberId);
     }
 
     //카드 삭제
     @DeleteMapping("/cards/{cardId}")
     @ResponseStatus(HttpStatus.OK)
-    public void cardDelete(@PathVariable("cardId") Long cardId) {
-        cardService.cardDelete(cardId);
+    public void cardDelete(@PathVariable("cardId") Long cardId , Long memberId) {
+        cardService.cardDelete(cardId, memberId);
     }
 }
