@@ -21,16 +21,13 @@ public class OrderController {
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
     public void orderCreate(@RequestBody @Valid OrderCreateRequest orderCreateRequest, Long cartId, Long cardId) {
-        orderService.createOrder(orderCreateRequest, cartId, cardId);
+        orderService.createOrder(cardId, cartId, orderCreateRequest);
     }
 
     // 주문 회원별 조회 - 여러 주문이 있을 수 있다.
     @GetMapping("/orders")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponse> orderFindMember(Long memberId) {
-        orderService.orderFindMember(memberId);
-        return null;
+        return orderService.orderFindMember(memberId);
     }
-
-
 }

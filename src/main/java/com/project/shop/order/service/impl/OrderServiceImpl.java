@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
 
     // 주문생성
     @Override
-    public void createOrder(OrderCreateRequest orderCreateRequest, Long cartId, Long cardId) {
+    public void createOrder(Long cartId, Long cardId, OrderCreateRequest orderCreateRequest) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_CART));
 
