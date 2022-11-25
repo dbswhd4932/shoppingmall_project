@@ -1,16 +1,12 @@
 package com.project.shop.goods.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import com.project.shop.goods.domain.convert.OptionConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import javax.persistence.*;
 import java.util.*;
@@ -19,39 +15,42 @@ import java.util.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@TypeDef(name = "json", typeClass = JsonStringType.class)
-public class Option {
+public class Option extends BaseTimeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Type(type = "json") // map 을 Json 타입으로 컨버팅
-    @Column(columnDefinition = "json")
-    private List<LinkedMultiValueMap<String, String>> options = new ArrayList<>();
-
-    private int addPrice;   // 추가금액
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goods;
 
+    private String optionName; // 옵션이름
+
+    // 옵션값
+    @Convert(converter = OptionConverter.class)
+    private Map<String, Object> optionValue;
+
+    private int totalPrice;
+
+    private String description;
+
     @Builder
-    public Option(List<LinkedMultiValueMap<String, String>> options, int addPrice, Goods goods) {
-        this.options = options;
-        this.addPrice = addPrice;
+    public Option(Goods goods, String optionName, Map<String, Object> optionValue, int totalPrice, String description) {
         this.goods = goods;
+        this.optionName = optionName;
+        this.optionValue = optionValue;
+        this.totalPrice = totalPrice;
+        this.description = description;
     }
 
-    public static Option toOption(OptionCreateRequest optionCreateRequest) {
+    public static Option toOption(OptionCreateRequest optionCreateRequest, Goods goods) {
         return Option.builder()
-                .options(optionCreateRequest.getOptions())
-                .addPrice(optionCreateRequest.getAddPrice())
+                .goods(goods)
+                .optionName(optionCreateRequest.getOptionName())
+                .optionValue(optionCreateRequest.getOptionValue())
+                .totalPrice(optionCreateRequest.getTotalPrice())
+                .description(optionCreateRequest.getDescription())
                 .build();
     }
-
-    public void setGoods(Goods goods) {
-        this.goods = goods;
-    }
-
 }

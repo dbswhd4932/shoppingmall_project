@@ -1,6 +1,7 @@
 package com.project.shop.goods.controller.request;
 
 import com.project.shop.goods.domain.Category;
+import com.project.shop.goods.domain.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,8 +32,7 @@ public class GoodsCreateRequest {
     @Min(value = 1000 , message = "가격은 1000원 이상이어야 합니다.")
     private int price;
 
-    @Column(nullable = false)
-    private List<OptionCreateRequest> optionCreateRequest;
+    private OptionCreateRequest optionCreateRequest;
 
     private String description;
 

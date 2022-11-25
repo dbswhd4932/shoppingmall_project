@@ -2,7 +2,6 @@ package com.project.shop.goods.controller;
 
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
-import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import lombok.RequiredArgsConstructor;

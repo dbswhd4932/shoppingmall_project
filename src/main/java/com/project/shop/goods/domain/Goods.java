@@ -1,11 +1,8 @@
 package com.project.shop.goods.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
-import com.project.shop.goods.controller.request.OptionCreateRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,10 +41,6 @@ public class Goods extends BaseTimeEntity {
     // null 처리된 자식을 delete -> orphanRemoval 옵션
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
-
-    // pk 값 공유
-    @OneToOne (mappedBy = "goods")
-    private Option option;
 
 
     @Builder

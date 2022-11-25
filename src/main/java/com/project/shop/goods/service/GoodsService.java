@@ -2,7 +2,6 @@ package com.project.shop.goods.service;
 
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
-import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,24 +1,24 @@
 package com.project.shop.goods.controller.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
-import javax.persistence.Column;
-import java.util.*;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OptionCreateRequest {
 
-    private int addPrice;
+    private String optionName;
 
-    @Type(type = "json")
-    @Column(columnDefinition = "json")
-    private List<LinkedMultiValueMap<String, String>> options = new ArrayList<>();
+    private Map<String,Object> optionValue;
+
+    private int totalPrice;
+
+    private String description;
 
 }

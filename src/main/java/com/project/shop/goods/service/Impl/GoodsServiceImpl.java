@@ -50,14 +50,14 @@ public class GoodsServiceImpl implements GoodsService {
         goodsRepository.save(goods);
 
         // 옵션 정보저장
+//        for (OptionCreateRequest optionCreateRequest : goodsCreateRequest.getOptionCreateRequest()) {
+//            Option option = Option.toOption(optionCreateRequest, goods);
+//            optionRepository.save(option);
+//        }
 
-        if (goodsCreateRequest.getOptionCreateRequest() != null) {
-            for (OptionCreateRequest optionCreateRequest : goodsCreateRequest.getOptionCreateRequest()) {
-                Option option = Option.toOption(optionCreateRequest);
-                option.setGoods(goods);
-                optionRepository.save(option);
-            }
-        }
+        OptionCreateRequest optionCreateRequest = goodsCreateRequest.getOptionCreateRequest();
+        Option option = Option.toOption(optionCreateRequest, goods);
+        optionRepository.save(option);
 
         // 이미지 정보 저장
         if (!files.isEmpty()) {

@@ -1,18 +1,11 @@
 package com.project.shop.goods.service.Impl;
 
 import com.project.shop.factory.GoodsFactory;
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
-import com.project.shop.goods.domain.Image;
-import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.repository.GoodsRepository;
-import com.project.shop.goods.repository.ImageRepository;
-import com.project.shop.goods.repository.OptionRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,17 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 @ExtendWith(MockitoExtension.class)
 class GoodsServiceImplTest {
