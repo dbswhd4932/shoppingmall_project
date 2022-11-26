@@ -3,7 +3,6 @@ package com.project.shop.goods.controller;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
-import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import com.project.shop.goods.service.Impl.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -28,19 +25,20 @@ public class GoodsController {
     private final S3Service s3Service;
     private final GoodsServiceImpl goodsService;
 
-    // 상품 생성
+    // 상품 생성 , 이미지 O
     @PostMapping(value = "/goods")
     @ResponseStatus(HttpStatus.CREATED)
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart(required = false) List<MultipartFile> multipartFiles) throws IOException {
 
         if ( multipartFiles == null) {
-            throw new IllegalArgumentException("잘못된 content 입니다");
+            goodsService.goodsCreate(goodsCreateRequest);
+            return;
         }
 
         List<String> imgPaths = s3Service.upload(multipartFiles);
         System.out.println("img 경로들 : " + imgPaths);
-        goodsService.goodsCreate(goodsCreateRequest, imgPaths);
+        goodsService.goodsAndImageCreate(goodsCreateRequest, imgPaths);
     }
 
     // 상품 전체 검색

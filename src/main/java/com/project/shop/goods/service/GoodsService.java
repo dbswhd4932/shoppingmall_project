@@ -4,15 +4,16 @@ import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface GoodsService {
 
-    // 상품 생성
-    void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths);
+    // 상품 생성 , 이미지 X
+    void goodsCreate(GoodsCreateRequest goodsCreateRequest);
+
+    // 상품 생성 , 이미지 O
+    void goodsAndImageCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths);
 
     // 상품 전체 검색 - 페이징 기능
     List<GoodsResponse> goodsFindAll(Pageable pageable);

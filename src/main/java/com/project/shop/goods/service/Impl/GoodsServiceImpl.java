@@ -34,9 +34,24 @@ public class GoodsServiceImpl implements GoodsService {
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
 
+    @Override
+    public void goodsCreate(GoodsCreateRequest goodsCreateRequest) {
+        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
+        }
+
+        // 상품 정보저장
+        Goods goods = Goods.toGoods(goodsCreateRequest);
+        goodsRepository.save(goods);
+
+        OptionCreateRequest optionCreateRequest = goodsCreateRequest.getOptionCreateRequest();
+        Option option = Option.toOption(optionCreateRequest, goods);
+        optionRepository.save(option);
+    }
+
     // 상품 등록 + 이미지 추가 + 옵션 추가
     @Override
-    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
+    public void goodsAndImageCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
         if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);

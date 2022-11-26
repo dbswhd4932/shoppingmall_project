@@ -1,5 +1,6 @@
 package com.project.shop.goods.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
@@ -30,6 +31,7 @@ public class Goods extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;  //카테고리(다대일)
 
     @Column(nullable = false)
@@ -41,6 +43,9 @@ public class Goods extends BaseTimeEntity {
     // null 처리된 자식을 delete -> orphanRemoval 옵션
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
+    private List<Option> options = new ArrayList<>();
 
 
     @Builder
