@@ -18,11 +18,11 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+application-aws.yml
 .idea
 *.iws
 *.iml
 *.ipr
-application-aws.yml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
