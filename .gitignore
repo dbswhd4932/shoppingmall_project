@@ -22,7 +22,7 @@ bin/
 *.iws
 *.iml
 *.ipr
-.yml
+application-aws.yml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
