@@ -72,4 +72,11 @@ public class Goods extends BaseTimeEntity {
         this.price = goodsEditRequest.getPrice();
     }
 
+    // 이미지저장
+    public void setImages(String storedFileName){
+        for (Image image : images) {
+            image.setFileUrl(storedFileName);
+        }
+    }
+
 }

@@ -31,6 +31,7 @@ import java.util.UUID;
 @Transactional
 public class GoodsServiceImpl implements GoodsService {
 
+    private final S3Upload s3Upload;
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
@@ -39,7 +40,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files) throws IOException {
         // 저장할 경로 지정
-        String url = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
+//        String url = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
 
         if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
@@ -62,20 +63,11 @@ public class GoodsServiceImpl implements GoodsService {
         // 이미지 정보 저장
         if (!files.isEmpty()) {
             for (MultipartFile file : files) {
-                // 랜덤 값 생성
-                UUID uuid = UUID.randomUUID();
-                // 파일 이름 앞에 붙이기
-                String fileName = uuid + "_" + file.getOriginalFilename();
-                // 파일 저장
-                File saveFile = new File(url, fileName);
-                file.transferTo(saveFile);
-
-                Image image = Image.builder()
-                        .fileName(fileName)
-                        .fileUrl(url)
+                String storedFileName = s3Upload.upload(file, "images");
+                goods.setImages(storedFileName);
+                Image image = Image.builder().fileUrl(file.getOriginalFilename())
                         .goods(goods)
                         .build();
-
                 imageRepository.save(image);
             }
         }

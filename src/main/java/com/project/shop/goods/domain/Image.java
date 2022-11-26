@@ -35,5 +35,9 @@ public class Image {
         this.fileUrl = fileUrl;
         this.goods = goods;
     }
+
+    public void setFileUrl(String fileName) {
+        this.fileName = fileName;
+    }
 }
 
