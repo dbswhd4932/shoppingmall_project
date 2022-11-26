@@ -37,7 +37,6 @@ public class GoodsController {
         }
 
         List<String> imgPaths = s3Service.upload(multipartFiles);
-        System.out.println("img 경로들 : " + imgPaths);
         goodsService.goodsAndImageCreate(goodsCreateRequest, imgPaths);
     }
 

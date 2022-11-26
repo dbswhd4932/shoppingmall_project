@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -91,5 +92,11 @@ public class S3Service  {
             throw new IllegalArgumentException("파일 유효성 에러");
         }
         return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    // DeleteObject를 통해 S3 파일 삭제
+    public void deleteFile(String fileName){
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
+        s3Client.deleteObject(deleteObjectRequest);
     }
 }

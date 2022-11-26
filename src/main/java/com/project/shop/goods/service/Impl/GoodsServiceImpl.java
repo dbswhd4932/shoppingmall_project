@@ -14,12 +14,14 @@ import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.goods.service.GoodsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class GoodsServiceImpl implements GoodsService {
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     private final S3Service s3Service;
     private final GoodsRepository goodsRepository;
@@ -120,6 +125,14 @@ public class GoodsServiceImpl implements GoodsService {
     public void goodsDelete(Long goodsId, Long memberId) {
         Goods goods = goodsRepository.findByIdAndMemberId(goodsId, memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
+
+        // s3 이미지 삭제
+        List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
+        for (Image image : imageList) {
+            String fileName = image.getFileUrl().substring(bucket.length() + 41);
+            System.out.println("fileName확인 = " + fileName);
+            s3Service.deleteFile(fileName);
+        }
 
         goodsRepository.deleteById(goods.getId());
     }
