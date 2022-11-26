@@ -17,27 +17,22 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String fileName;    //사진이름
+//    @Column(nullable = false)
+//    private String fileName;    //사진이름
 
     @Column(nullable = false)   //사진경로
     private String fileUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
-    @JsonIgnore
     private Goods goods;
 
 
     @Builder
-    public Image(String fileName, String fileUrl, Goods goods) {
-        this.fileName = fileName;
+    public Image(String fileUrl, Goods goods) {
         this.fileUrl = fileUrl;
         this.goods = goods;
     }
 
-    public void setFileUrl(String fileName) {
-        this.fileName = fileName;
-    }
 }
 

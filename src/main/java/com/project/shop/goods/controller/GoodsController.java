@@ -3,7 +3,9 @@ package com.project.shop.goods.controller;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.service.Impl.GoodsServiceImpl;
+import com.project.shop.goods.service.Impl.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -22,14 +25,22 @@ import java.util.List;
 @RequestMapping("/api")
 public class GoodsController {
 
+    private final S3Service s3Service;
     private final GoodsServiceImpl goodsService;
 
     // 상품 생성
-    @PostMapping(value = "/goods", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/goods")
     @ResponseStatus(HttpStatus.CREATED)
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
-                            @RequestPart List<MultipartFile> files) throws IOException {
-        goodsService.goodsCreate(goodsCreateRequest, files);
+                            @RequestPart(required = false) List<MultipartFile> multipartFiles) throws IOException {
+
+        if ( multipartFiles == null) {
+            throw new IllegalArgumentException("잘못된 content 입니다");
+        }
+
+        List<String> imgPaths = s3Service.upload(multipartFiles);
+        System.out.println("img 경로들 : " + imgPaths);
+        goodsService.goodsCreate(goodsCreateRequest, imgPaths);
     }
 
     // 상품 전체 검색

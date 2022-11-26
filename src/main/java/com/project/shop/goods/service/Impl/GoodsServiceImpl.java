@@ -20,27 +20,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class GoodsServiceImpl implements GoodsService {
 
-    private final S3Upload s3Upload;
+    private final S3Service s3Service;
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
 
     // 상품 등록 + 이미지 추가 + 옵션 추가
     @Override
-    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> files) throws IOException {
-        // 저장할 경로 지정
-//        String url = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
+    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
         if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
@@ -50,26 +46,17 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = Goods.toGoods(goodsCreateRequest);
         goodsRepository.save(goods);
 
-        // 옵션 정보저장
-//        for (OptionCreateRequest optionCreateRequest : goodsCreateRequest.getOptionCreateRequest()) {
-//            Option option = Option.toOption(optionCreateRequest, goods);
-//            optionRepository.save(option);
-//        }
-
         OptionCreateRequest optionCreateRequest = goodsCreateRequest.getOptionCreateRequest();
         Option option = Option.toOption(optionCreateRequest, goods);
         optionRepository.save(option);
 
         // 이미지 정보 저장
-        if (!files.isEmpty()) {
-            for (MultipartFile file : files) {
-                String storedFileName = s3Upload.upload(file, "images");
-                goods.setImages(storedFileName);
-                Image image = Image.builder().fileUrl(file.getOriginalFilename())
-                        .goods(goods)
-                        .build();
-                imageRepository.save(image);
-            }
+        List<String> imgList = new ArrayList<>();
+        for (String imgUrl : imgPaths) {
+            Image image = Image.builder().fileUrl(imgUrl).goods(goods).build();
+            imageRepository.save(image);
+            imgList.add(image.getFileUrl());
+
         }
     }
 

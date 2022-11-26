@@ -39,18 +39,17 @@ public class Goods extends BaseTimeEntity {
 
     // 상품 삭제 시 이미지 DB 도 같이 삭제 , cascade 옵션
     // null 처리된 자식을 delete -> orphanRemoval 옵션
-    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
 
     @Builder
-    public Goods(Long memberId, String goodsName, Category category, int price, String description, List<Image> images) {
+    public Goods(Long memberId, String goodsName, Category category, int price, String description) {
         this.memberId = memberId;
         this.goodsName = goodsName;
         this.category = category;
         this.price = price;
         this.description = description;
-        this.images = images;
     }
 
 
@@ -70,13 +69,6 @@ public class Goods extends BaseTimeEntity {
         this.goodsName = goodsEditRequest.getGoodsName();
         this.description = goodsEditRequest.getDescription();
         this.price = goodsEditRequest.getPrice();
-    }
-
-    // 이미지저장
-    public void setImages(String storedFileName){
-        for (Image image : images) {
-            image.setFileUrl(storedFileName);
-        }
     }
 
 }
