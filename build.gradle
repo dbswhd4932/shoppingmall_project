@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.vladmihalcea:hibernate-types-52:2.20.0'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
 
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
