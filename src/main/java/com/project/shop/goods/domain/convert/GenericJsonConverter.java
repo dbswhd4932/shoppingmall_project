@@ -20,7 +20,7 @@ public class GenericJsonConverter<T> implements AttributeConverter<T, String> {
         try {
             return objectMapper.writeValueAsString(attribute);
         } catch (JsonProcessingException e) {
-            log.error("fail to serialize as object into Json : {}", attribute, e);
+            log.error("fail to serialize as object into Json : {}", attribute, e );
             throw new RuntimeException(e);
         }
     }
