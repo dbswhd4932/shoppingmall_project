@@ -26,7 +26,7 @@ public class GoodsResponse {
                 .goodsName(goods.getGoodsName())
                 .categoryName(goods.getCategory().getCategory())
                 .price(goods.getPrice())
-                .description(goods.getDescription())
+                .description(goods.getGoodsDescription())
                 .imageList(goods.getImages())
                 .build();
     }

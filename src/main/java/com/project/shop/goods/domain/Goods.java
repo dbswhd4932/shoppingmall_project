@@ -37,7 +37,7 @@ public class Goods extends BaseTimeEntity {
     @Column(nullable = false)
     private int price;      //상품가격
 
-    private String description; //상품설명
+    private String goodsDescription; //상품설명
 
     // 상품 삭제 시 이미지 DB 도 같이 삭제 , cascade 옵션
     // null 처리된 자식을 delete -> orphanRemoval 옵션
@@ -54,7 +54,7 @@ public class Goods extends BaseTimeEntity {
         this.goodsName = goodsName;
         this.category = category;
         this.price = price;
-        this.description = description;
+        this.goodsDescription = description;
     }
 
 
@@ -64,16 +64,16 @@ public class Goods extends BaseTimeEntity {
                 .memberId(goodsCreateRequest.getMemberId())
                 .category(goodsCreateRequest.getCategory())
                 .price(goodsCreateRequest.getPrice())
-                .description(goodsCreateRequest.getDescription())
+                .description(goodsCreateRequest.getGoodsDescription())
                 .build();
     }
 
     // 업데이트 ( 상품이름, 설명 , 가격 )
-    // todo 이미지 수정 , 옵션  수정
     public void update(GoodsEditRequest goodsEditRequest) {
         this.goodsName = goodsEditRequest.getGoodsName();
-        this.description = goodsEditRequest.getDescription();
+        this.goodsDescription = goodsEditRequest.getGoodsDescription();
         this.price = goodsEditRequest.getPrice();
+        this.category = goodsEditRequest.getCategory();
     }
 
 }

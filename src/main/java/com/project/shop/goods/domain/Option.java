@@ -33,7 +33,7 @@ public class Option extends BaseTimeEntity {
 
     private int totalPrice;
 
-    private String description;
+    private String optionDescription;
 
     @Builder
     public Option(Goods goods, String optionName, Map<String, Object> optionValue, int totalPrice, String description) {
@@ -41,7 +41,7 @@ public class Option extends BaseTimeEntity {
         this.optionName = optionName;
         this.optionValue = optionValue;
         this.totalPrice = totalPrice;
-        this.description = description;
+        this.optionDescription = description;
     }
 
     public static Option toOption(OptionCreateRequest optionCreateRequest, Goods goods) {
@@ -50,7 +50,10 @@ public class Option extends BaseTimeEntity {
                 .optionName(optionCreateRequest.getOptionName())
                 .optionValue(optionCreateRequest.getOptionValue())
                 .totalPrice(optionCreateRequest.getTotalPrice())
-                .description(optionCreateRequest.getDescription())
+                .description(optionCreateRequest.getOptionDescription())
                 .build();
     }
+
+
+
 }

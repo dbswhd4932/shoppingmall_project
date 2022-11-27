@@ -51,9 +51,12 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = Goods.toGoods(goodsCreateRequest);
         goodsRepository.save(goods);
 
-        OptionCreateRequest optionCreateRequest = goodsCreateRequest.getOptionCreateRequest();
-        Option option = Option.toOption(optionCreateRequest, goods);
-        optionRepository.save(option);
+        // 옵션 정보 저장
+        List<OptionCreateRequest> optionCreateRequest = goodsCreateRequest.getOptionCreateRequest();
+        for (OptionCreateRequest createRequest : optionCreateRequest) {
+            Option option = Option.toOption(createRequest, goods);
+            optionRepository.save(option);
+        }
 
         // 이미지 정보 저장
         List<String> imgList = new ArrayList<>();
@@ -97,6 +100,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 상품 수정
     // s3 이미지 삭제 + s3 이미지 생성
+    // 옵션 삭제 + 옵션 재생성
     @Override
     public void goodsEdit(Long goodsId, Long memberId, GoodsEditRequest goodsEditRequest, List<String> imgPaths) {
         Goods goods = goodsRepository.findByIdAndMemberId(goodsId, memberId)
@@ -104,6 +108,20 @@ public class GoodsServiceImpl implements GoodsService {
 
         goods.update(goodsEditRequest);
 
+        // 기존 옵션 삭제
+        List<Option> options = optionRepository.findAllByGoodsId(goodsId);
+        for (Option option : options) {
+            optionRepository.deleteById(option.getId());
+        }
+
+        // 상품 옵션 수정이 null 이 아니면 저장
+        if (goodsEditRequest.getOptionCreateRequest() != null) {
+            List<OptionCreateRequest> optionCreateRequest = goodsEditRequest.getOptionCreateRequest();
+            for (OptionCreateRequest createRequest : optionCreateRequest) {
+                Option option = Option.toOption(createRequest, goods);
+                optionRepository.save(option);
+            }
+        }
 
         // s3 이미지 삭제
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());

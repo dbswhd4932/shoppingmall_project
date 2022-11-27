@@ -19,6 +19,6 @@ public class OptionCreateRequest {
 
     private int totalPrice;
 
-    private String description;
+    private String optionDescription;
 
 }
