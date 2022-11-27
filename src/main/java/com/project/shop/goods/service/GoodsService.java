@@ -9,9 +9,6 @@ import java.util.List;
 
 public interface GoodsService {
 
-    // 상품 생성 , 이미지 X
-    void goodsCreate(GoodsCreateRequest goodsCreateRequest);
-
     // 상품 생성 , 이미지 O
     void goodsAndImageCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths);
 
@@ -22,7 +19,7 @@ public interface GoodsService {
     List<GoodsResponse> goodsFindKeyword(Pageable pageable, String keyword);
 
     // 상품 수정
-    void goodsEdit(Long goodsId, Long memberId , GoodsEditRequest goodsEditRequest);
+    void goodsEdit(Long goodsId, Long memberId, GoodsEditRequest goodsEditRequest, List<String> imgPaths);
 
     // 상품 삭제
     void goodsDelete(Long goodsId, Long memberId);

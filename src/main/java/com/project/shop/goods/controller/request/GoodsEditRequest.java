@@ -25,6 +25,4 @@ public class GoodsEditRequest {
     @Min(value = 1000 , message = "가격은 1000원 이상이어야 합니다.")
     private int price;
 
-    private List<MultipartFile> Images = new ArrayList<>();
-
 }

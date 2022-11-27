@@ -21,6 +21,9 @@ public enum ErrorCode {
     DUPLICATE_GOODS(HttpStatus.BAD_REQUEST, "이미 존재하는 상품입니다."),
     NOT_BUY_GOODS(HttpStatus.BAD_REQUEST, "구매한 상품이 아닙니다."),
     NOT_SELLING_GOODS(HttpStatus.BAD_REQUEST, "판매하고 있는 상품이 아닙니다."),
+    REQUIRED_IMAGE(HttpStatus.BAD_REQUEST, "이미지는 필수로 등록해야 합니다."),
+    UPLOAD_ERROR_IMAGE(HttpStatus.BAD_REQUEST, "이미지 업로드 에러가 발생했습니다."),
+    VALID_ERROR_IMAGE(HttpStatus.BAD_REQUEST, "이미지 형식을 확인해주세요."),
 
     // 카드
     NOT_FOUND_CARD(HttpStatus.NOT_FOUND, "존재하지 않는 카드입니다."),

@@ -9,6 +9,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.project.shop.global.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +56,10 @@ public class S3Service  {
     public List<String> upload(List<MultipartFile> multipartFile) {
         List<String> imgUrlList = new ArrayList<>();
 
+        if (multipartFile == null) {
+            throw new BusinessException(REQUIRED_IMAGE);
+        }
+
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         for (MultipartFile file : multipartFile) {
             String fileName = createFileName(file.getOriginalFilename());
@@ -64,7 +72,7 @@ public class S3Service  {
                         .withCannedAcl(CannedAccessControlList.PublicRead));
                 imgUrlList.add(s3Client.getUrl(bucket, fileName).toString());
             } catch(IOException e) {
-                throw new IllegalArgumentException("이미지 업로드 에러발생");
+                throw new BusinessException(UPLOAD_ERROR_IMAGE);
             }
         }
         return imgUrlList;
@@ -78,7 +86,7 @@ public class S3Service  {
     // 파일 유효성 검사
     private String getFileExtension(String fileName) {
         if (fileName.length() == 0) {
-            throw new IllegalArgumentException("파일 유효성 에러");
+            throw new BusinessException(VALID_ERROR_IMAGE);
         }
         ArrayList<String> fileValidate = new ArrayList<>();
         fileValidate.add(".jpg");
@@ -89,7 +97,7 @@ public class S3Service  {
         fileValidate.add(".PNG");
         String idxFileName = fileName.substring(fileName.lastIndexOf("."));
         if (!fileValidate.contains(idxFileName)) {
-            throw new IllegalArgumentException("파일 유효성 에러");
+            throw new BusinessException(VALID_ERROR_IMAGE);
         }
         return fileName.substring(fileName.lastIndexOf("."));
     }

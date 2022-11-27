@@ -39,22 +39,7 @@ public class GoodsServiceImpl implements GoodsService {
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
 
-    @Override
-    public void goodsCreate(GoodsCreateRequest goodsCreateRequest) {
-        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
-            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
-        }
-
-        // 상품 정보저장
-        Goods goods = Goods.toGoods(goodsCreateRequest);
-        goodsRepository.save(goods);
-
-        OptionCreateRequest optionCreateRequest = goodsCreateRequest.getOptionCreateRequest();
-        Option option = Option.toOption(optionCreateRequest, goods);
-        optionRepository.save(option);
-    }
-
-    // 상품 등록 + 이미지 추가 + 옵션 추가
+    // 상품 등록 + 이미지 추가(필수) + 옵션 추가
     @Override
     public void goodsAndImageCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
@@ -111,13 +96,34 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 수정
-    // todo 이미지 수정 구현필요
+    // s3 이미지 삭제 + s3 이미지 생성
     @Override
-    public void goodsEdit(Long goodsId, Long memberId, GoodsEditRequest goodsEditRequest) {
+    public void goodsEdit(Long goodsId, Long memberId, GoodsEditRequest goodsEditRequest, List<String> imgPaths) {
         Goods goods = goodsRepository.findByIdAndMemberId(goodsId, memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
 
         goods.update(goodsEditRequest);
+
+        // s3 이미지 삭제
+        List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
+        for (Image image : imageList) {
+            String fileName = image.getFileUrl().substring(bucket.length() + 41);
+            s3Service.deleteFile(fileName);
+        }
+
+        List<Image> images = imageRepository.findByGoodsId(goodsId);
+        for (Image image : images) {
+            imageRepository.deleteById(image.getId());
+        }
+
+        // 이미지 정보 저장
+        List<String> imgList = new ArrayList<>();
+        for (String imgUrl : imgPaths) {
+            Image image = Image.builder().fileUrl(imgUrl).goods(goods).build();
+            imageRepository.save(image);
+            imgList.add(image.getFileUrl());
+
+        }
     }
 
     // 상품 삭제
@@ -130,7 +136,6 @@ public class GoodsServiceImpl implements GoodsService {
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
         for (Image image : imageList) {
             String fileName = image.getFileUrl().substring(bucket.length() + 41);
-            System.out.println("fileName확인 = " + fileName);
             s3Service.deleteFile(fileName);
         }
 

@@ -31,11 +31,6 @@ public class GoodsController {
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart(required = false) List<MultipartFile> multipartFiles) throws IOException {
 
-        if ( multipartFiles == null) {
-            goodsService.goodsCreate(goodsCreateRequest);
-            return;
-        }
-
         List<String> imgPaths = s3Service.upload(multipartFiles);
         goodsService.goodsAndImageCreate(goodsCreateRequest, imgPaths);
     }
@@ -56,11 +51,14 @@ public class GoodsController {
     }
 
     // 상품 수정
-    // todo 이미지 수정 구현필요
     @PutMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
-    public void goodsEdit(@PathVariable("goodsId") Long goodsId, Long memberId, @RequestBody @Valid GoodsEditRequest goodsEditRequest) {
-        goodsService.goodsEdit(goodsId, memberId, goodsEditRequest);
+    public void goodsEdit(@PathVariable("goodsId") Long goodsId, Long memberId,
+                          @RequestPart @Valid GoodsEditRequest goodsEditRequest,
+                          @RequestPart(required = false) List<MultipartFile> multipartFiles) {
+
+        List<String> imgPaths = s3Service.upload(multipartFiles);
+        goodsService.goodsEdit(goodsId, memberId, goodsEditRequest,imgPaths);
     }
 
     // 상품 삭제
