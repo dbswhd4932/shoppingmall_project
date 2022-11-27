@@ -10,7 +10,7 @@ import java.util.List;
 public interface GoodsService {
 
     // 상품 생성 , 이미지 O
-    void goodsAndImageCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths);
+    void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths);
 
     // 상품 전체 검색 - 페이징 기능
     List<GoodsResponse> goodsFindAll(Pageable pageable);

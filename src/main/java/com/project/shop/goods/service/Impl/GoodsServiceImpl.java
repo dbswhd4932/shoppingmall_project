@@ -41,7 +41,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 상품 등록 + 이미지 추가(필수) + 옵션 추가
     @Override
-    public void goodsAndImageCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
+    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
         if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
@@ -103,6 +103,7 @@ public class GoodsServiceImpl implements GoodsService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
 
         goods.update(goodsEditRequest);
+
 
         // s3 이미지 삭제
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());

@@ -32,7 +32,7 @@ public class GoodsController {
                             @RequestPart(required = false) List<MultipartFile> multipartFiles) throws IOException {
 
         List<String> imgPaths = s3Service.upload(multipartFiles);
-        goodsService.goodsAndImageCreate(goodsCreateRequest, imgPaths);
+        goodsService.goodsCreate(goodsCreateRequest, imgPaths);
     }
 
     // 상품 전체 검색
