@@ -88,5 +88,21 @@ class CardServiceImplTest {
         assertThat(cardResponses.size()).isEqualTo(2);
     }
 
+    @Test
+    @DisplayName("카드 삭제")
+    void cardDeleteTest() {
+        //given
+        Member member = MemberFactory.createMember();
+        Card card = CardFactory.cardCreate(member);
+        given(cardRepository.findByIdAndMemberId(card.getId(), member.getId()))
+                .willReturn(Optional.of(card));
+
+        //when
+        cardService.cardDelete(card.getId(), member.getId());
+
+        //then
+        verify(cardRepository).delete(card);
+    }
+
 
 }

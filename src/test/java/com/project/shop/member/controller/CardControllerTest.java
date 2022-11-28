@@ -1,7 +1,10 @@
 package com.project.shop.member.controller;
 
+import com.project.shop.factory.MemberFactory;
 import com.project.shop.member.controller.request.CardCreateRequest;
 import com.project.shop.member.controller.response.CardResponse;
+import com.project.shop.member.domain.Card;
+import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CardRepository;
 import com.project.shop.member.service.Impl.CardServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +19,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +47,7 @@ class CardControllerTest extends ControllerSetting {
 
         //when then
         mockMvc.perform(post("/api/cards")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cardCreateRequest)))
                 .andExpect(status().isCreated());
 
@@ -67,7 +71,7 @@ class CardControllerTest extends ControllerSetting {
 
         //when then
         mockMvc.perform(get("/api/cards")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].cardCompany").value("카드회사"))
                 .andExpect(jsonPath("$.[0].cardNumber").value("1234-1234-1234-1234"))
@@ -89,8 +93,22 @@ class CardControllerTest extends ControllerSetting {
 
         // when then
         mockMvc.perform(get("/api/cards/{memberId}", cardResponse.getMemberId())
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].cardCompany").value("카드회사"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("카드 삭제")
+    void cardDeleteTest() throws Exception {
+        //given
+        Member member = MemberFactory.createMember();
+        //when
+        mockMvc.perform(delete("/api/cards/{cardId}", 1L)
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        //then
+        verify(cardService).cardDelete(1L, member.getId());
     }
 }
