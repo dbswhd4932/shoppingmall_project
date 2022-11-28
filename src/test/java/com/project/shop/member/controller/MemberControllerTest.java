@@ -10,6 +10,7 @@ import com.project.shop.member.service.Impl.MemberServiceImpl;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -37,7 +38,6 @@ class MemberControllerTest extends ControllerSetting {
     MemberRepository memberRepository;
 
     @Test
-    @Disabled
     @DisplayName("회원 생성")
     void memberSignUpTest() throws Exception {
         //given
@@ -52,14 +52,14 @@ class MemberControllerTest extends ControllerSetting {
                 .role(new Role(1L, "USER"))
                 .build();
 
-
-        //when then
+        //when
         mockMvc.perform(post("/api/members")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberSignupRequest)))
                 .andExpect(status().isCreated());
 
-        verify(memberService).memberSignup(refEq(memberSignupRequest));
+        //then
+        verify(memberService).memberSignup(any());
 
     }
 
