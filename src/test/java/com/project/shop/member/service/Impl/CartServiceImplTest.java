@@ -80,4 +80,21 @@ class CartServiceImplTest {
         assertThat(cartResponseList.size()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("장바구니 삭제")
+    void cartDeleteGoodsTest() {
+        //given
+        Member member = MemberFactory.createMember();
+        Goods goods = GoodsFactory.createGoods();
+        Cart cart = CartFactory.cartCreate(member, goods);
+        given(cartRepository.findByIdAndGoodsIdAndMemberId(cart.getId(), goods.getId(), member.getId()))
+                .willReturn(Optional.of(cart));
+
+        //when
+        cartService.cartDeleteGoods(cart.getId(), goods.getId(), member.getId());
+
+        //then
+        verify(cartRepository).deleteById(cart.getId());
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.project.shop.member.controller;
 
+import com.project.shop.factory.CartFactory;
+import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
+import com.project.shop.goods.domain.Goods;
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.domain.Cart;
@@ -33,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(CartController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class CartControllerTest extends ControllerSetting{
+class CartControllerTest extends ControllerSetting {
 
     @MockBean
     CartServiceImpl cartService;
@@ -52,11 +55,11 @@ class CartControllerTest extends ControllerSetting{
 
         //when then
         mockMvc.perform(post("/api/carts")
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(cartCreateRequest)))
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartCreateRequest)))
                 .andExpect(status().isCreated());
 
-        verify(cartService).cartAddGoods(refEq(cartCreateRequest),any());
+        verify(cartService).cartAddGoods(refEq(cartCreateRequest), any());
     }
 
     @Test
@@ -83,11 +86,27 @@ class CartControllerTest extends ControllerSetting{
 
         //when then
         mockMvc.perform(get("/api/carts")
-                .contentType(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].totalAmount").value(5))
                 .andExpect(jsonPath("$.[0].totalPrice").value(5000))
                 .andExpect(status().isOk());
 
     }
+
+    @Test
+    @DisplayName("장바구니 삭제")
+    void cartDeleteGoodsTest() throws Exception {
+        //given
+        Member member = MemberFactory.createMember();
+        Goods goods = GoodsFactory.createGoods();
+
+        //when then
+        mockMvc.perform(delete("/api/carts/{cartId}", 1L)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(cartService).cartDeleteGoods(1L, goods.getId(), member.getId());
+    }
+
 
 }
