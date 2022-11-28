@@ -120,15 +120,11 @@ public class GoodsServiceImpl implements GoodsService {
             }
         }
 
-        // s3 이미지 삭제
+        // s3 , 이미지DB 삭제
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
         for (Image image : imageList) {
             String fileName = image.getFileUrl().substring(bucket.length() + 41);
             s3Service.deleteFile(fileName);
-        }
-        // 이미지 DB 삭제
-        List<Image> images = imageRepository.findByGoodsId(goodsId);
-        for (Image image : images) {
             imageRepository.deleteById(image.getId());
         }
 
