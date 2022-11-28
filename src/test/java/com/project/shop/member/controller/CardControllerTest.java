@@ -93,18 +93,4 @@ class CardControllerTest extends ControllerSetting {
                 .andExpect(jsonPath("$.[0].cardCompany").value("카드회사"))
                 .andExpect(status().isOk());
     }
-
-    @Test
-    @DisplayName("카드 삭제")
-    void cardDeleteTest() throws Exception {
-        // given
-        Long cardId = 1L;
-
-        // when then
-        mockMvc.perform(delete("/api/cards/{memberId}", cardId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(cardService).cardDelete(cardId);
-    }
 }

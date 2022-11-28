@@ -45,7 +45,7 @@ class ReviewControllerTest extends ControllerSetting {
     ReviewRepository reviewRepository;
 
     @Test
-    @DisplayName("리뷰생성")
+    @DisplayName("리뷰 생성")
     void viewCreateTest() throws Exception {
         //given
         ReviewCreateRequest reviewCreateRequest = ReviewCreateRequest.builder()

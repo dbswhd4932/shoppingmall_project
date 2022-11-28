@@ -19,10 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +36,7 @@ public class GoodsServiceImpl implements GoodsService {
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
 
-    // 상품 등록 + 이미지 추가(필수) + 옵션 추가
+    // 상품 등록 + 이미지 추가(필수) + 옵션 추가(필수X)
     @Override
     public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
@@ -129,7 +126,7 @@ public class GoodsServiceImpl implements GoodsService {
             String fileName = image.getFileUrl().substring(bucket.length() + 41);
             s3Service.deleteFile(fileName);
         }
-
+        // 이미지 DB 삭제
         List<Image> images = imageRepository.findByGoodsId(goodsId);
         for (Image image : images) {
             imageRepository.deleteById(image.getId());

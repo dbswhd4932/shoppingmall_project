@@ -64,7 +64,7 @@ class CartServiceImplTest {
     }
 
     @Test
-    @DisplayName("장바구니 회원별 조회")
+    @DisplayName("장바구니 조회")
     void cartFindTest() {
         //given
         Member member = MemberFactory.createMember();
@@ -80,24 +80,4 @@ class CartServiceImplTest {
         assertThat(cartResponseList.size()).isEqualTo(1);
     }
 
-    @Test
-    @Disabled // todo
-    @DisplayName("장바구니 상품 삭제")
-    void cartDeleteGoodsTesT() {
-        //given
-        Member member = MemberFactory.createMember();
-        Goods goods = GoodsFactory.createGoods();
-        Cart cart = CartFactory.cartCreate(member, goods);
-
-        given(cartRepository.findById(cart.getId())).willReturn(Optional.of(cart));
-        given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
-
-        //when
-        cartService.cartDeleteGoods(cart.getId(), goods.getId());
-
-        //then
-        verify(cartRepository).deleteById(cart.getId());
-
-
-    }
 }

@@ -90,18 +90,4 @@ class CartControllerTest extends ControllerSetting{
 
     }
 
-    @Test
-    @DisplayName("장바구니 상품 삭제")
-    void cartDeleteGoodsTest() throws Exception {
-        //given
-        //when then
-        mockMvc.perform(delete("/api/carts/{cartId}", 1L)
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(cartService).cartDeleteGoods(any(), any());
-
-    }
-
-
 }
