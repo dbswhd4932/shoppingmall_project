@@ -18,9 +18,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class MemberSignupRequest {
 
+    @NotNull(message = "로그인 아이디를 입력하세요.")
     private String loginId;         // 로그인아이디
 
-    @Min(value = 2, message = "2글자 이상 입력하세요.")
+    @NotNull(message = "비밀번호를 입력하세요.")
     private String password;        //비밀번호
 
     @NotNull(message = "이름을 입력하세요.")

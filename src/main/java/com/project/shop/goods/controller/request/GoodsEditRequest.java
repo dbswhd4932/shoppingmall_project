@@ -1,5 +1,6 @@
 package com.project.shop.goods.controller.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.shop.goods.domain.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

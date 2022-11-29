@@ -42,7 +42,7 @@ public class Member extends BaseTimeEntity {
 
     private LocalDateTime deletedAt;//회원탈퇴시간
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
 

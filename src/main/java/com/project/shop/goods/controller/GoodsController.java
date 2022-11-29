@@ -1,8 +1,11 @@
 package com.project.shop.goods.controller;
 
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import com.project.shop.goods.service.Impl.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +27,22 @@ public class GoodsController {
 
     private final S3Service s3Service;
     private final GoodsServiceImpl goodsService;
+    private final GoodsRepository goodsRepository;
 
     // 상품 생성 , 이미지 O
     @PostMapping(value = "/goods")
     @ResponseStatus(HttpStatus.CREATED)
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
-                            @RequestPart(required = false) List<MultipartFile> multipartFiles) throws IOException {
+                            @RequestPart List<MultipartFile> multipartFiles) throws IOException {
 
-        List<String> imgPaths = s3Service.upload(multipartFiles);
-        goodsService.goodsCreate(goodsCreateRequest, imgPaths);
+        //todo 여기서 예외처리를 해도되나?? controller 에서 repository 의존..
+        // 원래는 GoodsServiceImpl 에서 구현했으나, 실패해도 s3 가 저장되어버린다. 44번줄
+        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
+        }
+
+        List<String> imgPaths = s3Service.upload(multipartFiles); // s3 저장
+       goodsService.goodsCreate(goodsCreateRequest, imgPaths);
     }
 
     // 상품 전체 검색
@@ -57,8 +67,13 @@ public class GoodsController {
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
                           @RequestPart(required = false) List<MultipartFile> multipartFiles) {
 
+        // todo controller 에서 repository 의존
+        if (goodsRepository.findByGoodsName(goodsEditRequest.getGoodsName()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
+        }
+
         List<String> imgPaths = s3Service.upload(multipartFiles);
-        goodsService.goodsEdit(goodsId, memberId, goodsEditRequest,imgPaths);
+        goodsService.goodsEdit(goodsId, memberId, goodsEditRequest, imgPaths);
     }
 
     // 상품 삭제

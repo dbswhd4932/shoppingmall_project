@@ -73,7 +73,6 @@ public class Goods extends BaseTimeEntity {
         this.goodsName = goodsEditRequest.getGoodsName();
         this.goodsDescription = goodsEditRequest.getGoodsDescription();
         this.price = goodsEditRequest.getPrice();
-        this.category = goodsEditRequest.getCategory();
     }
 
 }

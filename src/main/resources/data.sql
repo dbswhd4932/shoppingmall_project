@@ -17,7 +17,7 @@ insert into CARD ( card_company, card_expire, card_number, member_id )
 values ('국민','23-12','1234-1234-1234-1234',1);
 
 insert into CARD ( card_company, card_expire, card_number, member_id )
-values ('우리','23-12','4312-4321-4312-4132',1);
+values ('우리','23-12','4312-4321-4312-4132',2);
 
 -- 상품 추가
 --insert into GOODS (member_id, goods_name, price, description, category_id) values (1,'나이키1' , '10000', '설명1', 1);

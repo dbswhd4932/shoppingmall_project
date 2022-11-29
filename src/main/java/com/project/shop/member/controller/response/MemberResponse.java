@@ -1,11 +1,14 @@
 package com.project.shop.member.controller.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Embedded;
 
 
 @Getter

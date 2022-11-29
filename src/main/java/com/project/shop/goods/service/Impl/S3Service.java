@@ -86,7 +86,7 @@ public class S3Service  {
     // 파일 유효성 검사
     private String getFileExtension(String fileName) {
         if (fileName.length() == 0) {
-            throw new BusinessException(VALID_ERROR_IMAGE);
+            throw new BusinessException(REQUIRED_IMAGE);
         }
         ArrayList<String> fileValidate = new ArrayList<>();
         fileValidate.add(".jpg");

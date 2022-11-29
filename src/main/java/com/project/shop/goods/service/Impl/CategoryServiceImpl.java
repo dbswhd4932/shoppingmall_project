@@ -43,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
 
-        category.edit(categoryEditRequest);
+        category.editCategory(categoryEditRequest);
     }
 
     // 카테고리 삭제

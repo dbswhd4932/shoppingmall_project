@@ -1,5 +1,6 @@
 package com.project.shop.goods.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.request.CategoryEditRequest;
 import lombok.AccessLevel;
@@ -20,6 +21,7 @@ public class Category {
     private Long id;                 //카테고리번호(PK)
 
     @Column(unique = true)
+    @JsonIgnore
     private String category;    //메인카테고리
 
     @Builder
@@ -34,7 +36,8 @@ public class Category {
     }
 
     // 카테고리 수정
-    public void edit(CategoryEditRequest categoryEditRequest) {
+    public void editCategory(CategoryEditRequest categoryEditRequest) {
         this.category = categoryEditRequest.getCategory();
     }
+
 }
