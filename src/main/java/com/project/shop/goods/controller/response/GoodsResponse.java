@@ -2,6 +2,7 @@ package com.project.shop.goods.controller.response;
 
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
+import com.project.shop.goods.domain.Option;
 import lombok.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class GoodsResponse {
     private int price;
     private String description;
     private List<Image> imageList;
+    private List<Option> options;
 
     public static GoodsResponse toGoodsResponse(Goods goods) {
         return GoodsResponse.builder()
@@ -28,6 +30,7 @@ public class GoodsResponse {
                 .price(goods.getPrice())
                 .description(goods.getGoodsDescription())
                 .imageList(goods.getImages())
+                .options(goods.getOptions())
                 .build();
     }
 }

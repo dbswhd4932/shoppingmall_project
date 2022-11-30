@@ -1,5 +1,6 @@
 package com.project.shop.goods.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.domain.convert.OptionConverter;
@@ -21,6 +22,7 @@ public class Option extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goods_id")
     private Goods goods;
