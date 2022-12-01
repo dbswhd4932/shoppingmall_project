@@ -14,6 +14,13 @@ configurations {
     }
 }
 
+// 아임포트 설정
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -30,6 +37,18 @@ dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
+    // 아임포트 설정
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    // Retrofit2
+    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
+
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+    // webClint 설정
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
