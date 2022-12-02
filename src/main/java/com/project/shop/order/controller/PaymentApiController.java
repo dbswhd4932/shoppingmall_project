@@ -22,4 +22,9 @@ public class PaymentApiController {
         iamportservice.getToken(authData);
     }
 
+    @GetMapping("/payments/${imp_uid}")
+    public void getPayments(@PathVariable("imp_uid") String imp_uid) {
+
+    }
+
 }

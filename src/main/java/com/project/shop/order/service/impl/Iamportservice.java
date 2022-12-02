@@ -1,6 +1,8 @@
 package com.project.shop.order.service.impl;
 
 import com.project.shop.order.controller.request.AuthData;
+import com.project.shop.order.controller.response.IamportResponse;
+import com.project.shop.order.controller.response.Payment;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class Iamportservice {
     }
 */
 
+
+
     public void getToken(AuthData authData) throws JSONException, ProtocolException {
         // JSON 데이터만들기
         JSONObject jsonObject = new JSONObject();
@@ -33,7 +37,7 @@ public class Iamportservice {
             URL url = new URL(host_url);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-type","application/json");
+            conn.setRequestProperty("Content-type", "application/json");
 
             //POST 방식으로 스트링을 통한 JSON 전송
             conn.setDoOutput(true);
@@ -50,7 +54,7 @@ public class Iamportservice {
 
             //HTTP 응답 코드 수신
             int responseCode = conn.getResponseCode();
-            if ( responseCode == 400 ) {
+            if (responseCode == 400) {
                 System.out.println("400:명령을 실행 오류");
             } else if (responseCode == 500) {
                 System.out.println("500 : 서버 에러");
@@ -62,7 +66,9 @@ public class Iamportservice {
         }
     }
 
-    //todo 재구현하고싶다.
+}
+
+    //todo 재구현??
    /*
    public String getToken2(AuthData authData) throws JSONException {
         HttpHeaders headers = new HttpHeaders(); // header 생성
@@ -90,7 +96,6 @@ public class Iamportservice {
         return value;
     }
     */
-}
 
 
 
