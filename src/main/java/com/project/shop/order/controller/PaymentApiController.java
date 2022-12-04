@@ -1,34 +1,36 @@
 package com.project.shop.order.controller;
 
-import com.project.shop.order.controller.request.AuthData;
-import com.project.shop.order.service.impl.Iamportservice;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.AccessToken;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.ProtocolException;
 
 @Slf4j
 @RestController
 @RequestMapping("/api")
 public class PaymentApiController {
 
-    private final Iamportservice iamportservice;
     private IamportClient api;
 
-    public PaymentApiController(Iamportservice iamportservice) {
-        this.iamportservice = iamportservice;
+    @Value("${imp_key}")
+    private String api_key;
+    @Value("${imp_secret}")
+    private String api_secretKey;
+
+    public PaymentApiController() {
         this.api = new IamportClient("3264831242187573", "Qcc7UPisFbLFbUpihBKGGY6zsqJXGt1FoROR7BXGoSxh9jvQs6OHGTbJzZQ1yjiqPdEMx7zRKIBahfsN");
     }
 
-    @PostMapping("/user/getToken")
-    public void getToken(@RequestBody AuthData authData) throws JSONException, ProtocolException {
-        iamportservice.getToken(authData);
+    // 토큰받기
+    @GetMapping("/getToken")
+    public IamportResponse<AccessToken> getAuth() throws IamportResponseException, IOException {
+        return api.getAuth();
     }
 
     // imp_uid 로 결제 내용 조회
@@ -36,9 +38,4 @@ public class PaymentApiController {
     public IamportResponse<Payment> paymentByImpUid(@PathVariable("imp_uid") String imp_uid) throws IamportResponseException, IOException {
         return api.paymentByImpUid(imp_uid);
     }
-
-
-
-
-
 }

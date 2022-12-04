@@ -10,15 +10,13 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
+//todo 필요없는것 같음.
 @Service
 public class Iamportservice {
 
-/*
-    @PostConstruct
-    public void initWebClient() {
-        webClient = WebClient.create(IMPORT_TOKEN_URL);
+    public void savePayData() {
+
     }
-*/
 
     public void getToken(AuthData authData) throws JSONException, ProtocolException {
         // JSON 데이터만들기
