@@ -1,8 +1,6 @@
 package com.project.shop.order.service.impl;
 
 import com.project.shop.order.controller.request.AuthData;
-import com.project.shop.order.controller.response.IamportResponse;
-import com.project.shop.order.controller.response.Payment;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -22,10 +20,9 @@ public class Iamportservice {
     }
 */
 
-
-
     public void getToken(AuthData authData) throws JSONException, ProtocolException {
         // JSON 데이터만들기
+        System.out.println("getToken");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("imp_key", authData.getApi_key());
         jsonObject.put("imp_secret", authData.getApi_secret());
@@ -67,35 +64,6 @@ public class Iamportservice {
     }
 
 }
-
-    //todo 재구현??
-   /*
-   public String getToken2(AuthData authData) throws JSONException {
-        HttpHeaders headers = new HttpHeaders(); // header 생성
-        headers.setContentType(MediaType.APPLICATION_JSON); // header JSON 설정
-
-        // json 객체로 변경 {"imp_key":"3264831242187573" , "imp_secret":"Qcc7UPisFbLFbUpihBKGGY6zsqJXGt1FoROR7BXGoSxh9jvQs6OHGTbJzZQ1yjiqPdEMx7zRKIBahfsN"}
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("imp_key", authData.getApi_key());
-        jsonObject.put("imp_secret", authData.getApi_secret());
-
-
-        System.out.println(jsonObject);
-        System.out.println(jsonObject.get("imp_key"));
-        System.out.println(jsonObject.get("imp_secret"));
-
-        String value = webClient
-                .post()
-                .uri(IMPORT_TOKEN_URL)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(jsonObject)) // 요청 body
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
-        return value;
-    }
-    */
 
 
 
