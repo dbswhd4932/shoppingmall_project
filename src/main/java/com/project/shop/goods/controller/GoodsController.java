@@ -6,6 +6,7 @@ import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.repository.GoodsRepository;
+import com.project.shop.goods.service.GoodsService;
 import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import com.project.shop.goods.service.Impl.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import java.util.List;
 public class GoodsController {
 
     private final S3Service s3Service;
-    private final GoodsServiceImpl goodsService;
+    private final GoodsService goodsService;
     private final GoodsRepository goodsRepository;
 
     // 상품 생성 , 이미지 O

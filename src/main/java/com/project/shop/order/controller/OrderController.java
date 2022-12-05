@@ -2,6 +2,7 @@ package com.project.shop.order.controller;
 
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.response.OrderResponse;
+import com.project.shop.order.service.OrderService;
 import com.project.shop.order.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class OrderController {
 
-    private final OrderServiceImpl orderService;
+    private final OrderService orderService;
 
     //주문 생성
     @PostMapping("/orders")

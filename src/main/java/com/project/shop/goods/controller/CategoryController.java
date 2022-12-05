@@ -3,6 +3,7 @@ package com.project.shop.goods.controller;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
+import com.project.shop.goods.service.CategoryService;
 import com.project.shop.goods.service.Impl.CategoryServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class CategoryController {
 
-    private final CategoryServiceImpl categoryService;
+    private final CategoryService categoryService;
 
     // 카테고리 생성
     @PostMapping("/categories")

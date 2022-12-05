@@ -2,6 +2,7 @@ package com.project.shop.member.controller;
 
 import com.project.shop.member.controller.request.CardCreateRequest;
 import com.project.shop.member.controller.response.CardResponse;
+import com.project.shop.member.service.CardService;
 import com.project.shop.member.service.Impl.CardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class CardController {
     
-    private final CardServiceImpl cardService;
+    private final CardService cardService;
 
     //카드 생성
     @PostMapping("/cards")

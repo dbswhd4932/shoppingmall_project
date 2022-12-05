@@ -4,6 +4,7 @@ import com.project.shop.goods.controller.request.ReplyCreateRequest;
 import com.project.shop.goods.controller.request.ReplyEditRequest;
 import com.project.shop.goods.controller.response.ReplyResponse;
 import com.project.shop.goods.service.Impl.ReplyServiceImpl;
+import com.project.shop.goods.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class ReplyController {
 
-    private final ReplyServiceImpl replyService;
+    private final ReplyService replyService;
 
     // 대댓글 생성
     @PostMapping("/reply")

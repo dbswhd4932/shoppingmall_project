@@ -4,6 +4,7 @@ import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.service.Impl.MemberServiceImpl;
+import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class MemberController {
 
-    private final MemberServiceImpl memberService;
+    private final MemberService memberService;
 
     //회원 생성
     @PostMapping("/members")
