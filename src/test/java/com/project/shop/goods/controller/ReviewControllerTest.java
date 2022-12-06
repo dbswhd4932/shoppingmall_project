@@ -64,7 +64,6 @@ class ReviewControllerTest extends ControllerSetting {
     }
 
     @Test
-    @Disabled
     @DisplayName("리뷰 전체조회")
     void reviewFindAll() throws Exception {
         //given
