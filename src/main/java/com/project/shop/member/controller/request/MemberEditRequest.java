@@ -24,7 +24,8 @@ public class MemberEditRequest {
     @NotNull(message = "상세주소를 입력하세요.")
     private String detailAddress;   //상세주소
 
-    @Email
+    @NotNull(message = "이메일을 입력해주세요.")
+    @Email(message = "이메일 형식에 맞지 않습니다.")
     private String email;           //이메일
 
     @NotNull(message = "전화번호를 입력하세요.")

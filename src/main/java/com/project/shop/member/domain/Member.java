@@ -6,6 +6,7 @@ import com.project.shop.member.controller.request.MemberSignupRequest;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 
 @Getter
@@ -35,6 +36,7 @@ public class Member extends BaseTimeEntity {
     private String detailAddress;   //상세주소
 
     @Column(nullable = false, length = 50, unique = true)
+    @Email
     private String email;           //이메일
 
     @Column(nullable = false, length = 20, unique = true)

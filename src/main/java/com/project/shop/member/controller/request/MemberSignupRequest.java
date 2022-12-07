@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 
 @Getter
@@ -19,6 +16,7 @@ import javax.validation.constraints.NotNull;
 public class MemberSignupRequest {
 
     @NotNull(message = "로그인 아이디를 입력하세요.")
+    @Size(min = 4, message = "로그인 아이디는 4글자 이상이어야 합니다.")
     private String loginId;         // 로그인아이디
 
     @NotNull(message = "비밀번호를 입력하세요.")

@@ -25,6 +25,7 @@ public class Cart extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(nullable = false)
     private Long goodsId;       // 상품 Id
 
     @Column(nullable = false)
