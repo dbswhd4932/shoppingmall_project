@@ -40,19 +40,11 @@ dependencies {
     // 아임포트 설정
     implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
-    // Retrofit2
-    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
-    // webClint 설정
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
     // 화면 test
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
