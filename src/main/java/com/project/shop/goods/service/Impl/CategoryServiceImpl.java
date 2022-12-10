@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.shop.global.error.ErrorCode.CATEGORY_NAME_DUPLICATED;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,6 +27,9 @@ public class CategoryServiceImpl implements CategoryService {
     // 카테고리 생성
     @Override
     public void categoryCreate(CategoryCreateRequest categoryCreateRequest) {
+        if (categoryRepository.findByCategory(categoryCreateRequest.getCategory()).isPresent()) {
+            throw new BusinessException(CATEGORY_NAME_DUPLICATED);
+        }
         Category category = Category.toCategory(categoryCreateRequest);
         categoryRepository.save(category);
     }
