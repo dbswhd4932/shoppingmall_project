@@ -20,12 +20,21 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    //회원 생성
+    //중복체크 먼저 하고나서 -> 회원 생성
     @PostMapping("/members")
     @ResponseStatus(HttpStatus.CREATED)
     public void memberSignup(@RequestBody @Valid MemberSignupRequest request) {
         memberService.memberSignup(request);
     }
+
+    //로그인 아이디 중복 체크
+    @GetMapping("/members/{loginId}/exist")
+    @ResponseStatus(HttpStatus.OK)
+    public void memberLoginIdDuplicateCheck(@PathVariable("loginId") String loginId) {
+        memberService.loginIdDuplicateCheck(loginId);
+    }
+
+    //이메일 중
 
     //회원 단건 조회
     @GetMapping("/members/{memberId}")

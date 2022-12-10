@@ -35,11 +35,11 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String detailAddress;   //상세주소
 
-    @Column(nullable = false, length = 50, unique = true)
+    @Column(nullable = false, length = 50)
     @Email
     private String email;           //이메일
 
-    @Column(nullable = false, length = 20, unique = true)
+    @Column(nullable = false, length = 20)
     private String phone;           //핸드폰번호
 
     private LocalDateTime deletedAt;//회원탈퇴시간

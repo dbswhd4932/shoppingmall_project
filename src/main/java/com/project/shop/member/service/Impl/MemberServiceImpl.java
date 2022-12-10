@@ -25,11 +25,16 @@ public class MemberServiceImpl implements MemberService {
     // 회원생성
     @Override
     public void memberSignup(MemberSignupRequest memberSignupRequest) {
-        if (memberRepository.findByLoginId(memberSignupRequest.getLoginId()).isPresent()) {
-            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
-        }
         Member member = Member.create(memberSignupRequest);
         memberRepository.save(member);
+    }
+
+    // 회원가입 중복체크
+    @Override
+    public void loginIdDuplicateCheck(String loginId) {
+        if(memberRepository.findByLoginId(loginId).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+        }
     }
 
     // 회원 1명 조회

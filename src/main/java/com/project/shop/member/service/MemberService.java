@@ -11,6 +11,9 @@ public interface MemberService {
     // 회원생성
     void memberSignup(MemberSignupRequest memberSignupRequest);
 
+    // 회원 중복체크
+    void loginIdDuplicateCheck(String loginId);
+
     // 회원 1명 조회
     MemberResponse memberFindOne(Long memberId);
 
