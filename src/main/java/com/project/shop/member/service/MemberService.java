@@ -1,5 +1,6 @@
 package com.project.shop.member.service;
 
+import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
@@ -13,6 +14,9 @@ public interface MemberService {
 
     // 회원 중복체크
     void loginIdDuplicateCheck(String loginId);
+
+    // 로그인
+    void login(LoginRequest loginRequest);
 
     // 회원 1명 조회
     MemberResponse memberFindOne(Long memberId);

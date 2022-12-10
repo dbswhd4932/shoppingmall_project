@@ -84,5 +84,8 @@ public class Member extends BaseTimeEntity {
         return this;
     }
 
-
+    // 회원 탈퇴 시 deletedAt 초기화
+    public void setDeletedAt() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

@@ -1,5 +1,6 @@
 package com.project.shop.member.controller;
 
+import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
@@ -34,7 +35,12 @@ public class MemberController {
         memberService.loginIdDuplicateCheck(loginId);
     }
 
-    //이메일 중
+    //todo 로그인 -> 시큐리티 적용(Token) 필요
+    @PostMapping("/members/login")
+    @ResponseStatus(HttpStatus.OK)
+    public void login(@Valid LoginRequest loginRequest) {
+        memberService.login(loginRequest);
+    }
 
     //회원 단건 조회
     @GetMapping("/members/{memberId}")
@@ -63,7 +69,5 @@ public class MemberController {
     public void memberDelete(@PathVariable("memberId") Long memberId) {
         memberService.memberDelete(memberId);
     }
-
-
 
 }

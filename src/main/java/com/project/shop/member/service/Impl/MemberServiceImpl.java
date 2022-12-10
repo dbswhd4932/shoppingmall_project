@@ -2,6 +2,7 @@ package com.project.shop.member.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
+import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
@@ -37,6 +38,19 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 로그인
+    @Override
+    public void login(LoginRequest loginRequest) {
+        memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
+                ()-> new IllegalArgumentException("아이디를 확인해주세요.")
+        );
+
+        memberRepository.findByPassword(loginRequest.getPassword()).orElseThrow(
+                ()-> new IllegalArgumentException("비밀번호를 확인해주세요.")
+        );
+
+    }
+
     // 회원 1명 조회
     @Transactional(readOnly = true)
     @Override
@@ -63,11 +77,11 @@ public class MemberServiceImpl implements MemberService {
         member.edit(memberEditRequest);
     }
 
-    // 회원 삭제
+    // 회원 탈퇴
     @Override
     public void memberDelete(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-        memberRepository.delete(member);
+        member.setDeletedAt();
     }
 }
