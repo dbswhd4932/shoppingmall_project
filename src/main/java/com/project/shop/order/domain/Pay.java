@@ -29,7 +29,10 @@ public class Pay extends BaseTimeEntity {
     private String cardNumber;      // 카드일련번호
 
     @Column(nullable = false)
-    private int payPrice;          //결제가격
+    private int payPrice;          // 결제가격
+
+    @Enumerated(EnumType.STRING)
+    private PayStatus payStatus;   // 결제상태
 
     @Builder
     public Pay(String cardCompany, String cardNumber, Order order, int payPrice) {
@@ -37,5 +40,6 @@ public class Pay extends BaseTimeEntity {
         this.cardNumber = cardNumber;
         this.order = order;
         this.payPrice = payPrice;
+        this.payStatus = PayStatus.COMPLETE;
     }
 }
