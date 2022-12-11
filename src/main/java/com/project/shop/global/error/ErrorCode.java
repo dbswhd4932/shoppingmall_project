@@ -50,9 +50,10 @@ public enum ErrorCode {
     NOT_FOUND_ORDERS(HttpStatus.NOT_FOUND, "존재하는 주문이 없습니다."),
     NO_BUY_ORDER(HttpStatus.BAD_REQUEST, "구매한 상품이 아닙니다."),
 
-
     // 결제
-    NOT_FOUND_PAY(HttpStatus.NOT_FOUND, "존재하는 결제가 없습니다.");
+    NOT_FOUND_PAY(HttpStatus.NOT_FOUND, "존재하는 결제가 없습니다."),
+    ALREADY_CANCEL_PAY(HttpStatus.BAD_REQUEST, "이미 취소된 결제입니다."),
+    NOT_EQUAL_MERCHANT_ID(HttpStatus.BAD_REQUEST, "가맹점 ID가 일치하지 않습니다.");
 
     ErrorCode(HttpStatus httpStatus, String message) {
         this.httpStatus = httpStatus;
