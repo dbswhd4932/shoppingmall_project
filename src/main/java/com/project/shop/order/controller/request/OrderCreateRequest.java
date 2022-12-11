@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -30,5 +31,16 @@ public class OrderCreateRequest {
 
     private String requirement;
 
+    @NotBlank(message = "아임포트 결제 ID 를 입력하세요.")
+    private String impUid;
+
+    @NotBlank(message = "가맹점 ID 를 입력하세요.")
+    private String merchantId;
+
+    @NotNull(message = "카드사를 입력하세요.")
+    private String cardCompany;
+
+    @NotNull(message = "카드일련번호를 입력하세요.")
+    private String cardNumber;
 
 }

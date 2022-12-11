@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Table(name = "orders")
@@ -41,16 +42,20 @@ public class Order extends BaseTimeEntity {
     private String requirement;     //요청사항
 
     @Column(nullable = false)
-    private int totalPrice;         //결제금액
+    private int totalPrice;        //결제금액
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;     //주문상태
+    private OrderStatus status;    //주문상태
+
+    private String impUid;         // 아임포트 발급 ID ex)imp_727855699150
+    private String merchantId;     // 가맹점 ID        ex)ORD20180131-0000014
+
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Builder
-    public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice , OrderStatus status) {
+    public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice, String impUid, String merchantId) {
         this.memberId = memberId;
         this.name = name;
         this.phone = phone;
@@ -59,23 +64,22 @@ public class Order extends BaseTimeEntity {
         this.requirement = requirement;
         this.totalPrice = totalPrice;
         this.status = OrderStatus.COMPLETE;
+        this.impUid = impUid;
+        this.merchantId = merchantId;
     }
 
     // 주문 생성
-    public static Order toOrder(OrderCreateRequest orderCreateRequest, Cart cart) {
+    public static Order toOrder(OrderCreateRequest orderCreateRequest, int payTotalPrice) {
         return Order.builder()
-                .name(orderCreateRequest.getName())
                 .memberId(orderCreateRequest.getMemberId())
+                .name(orderCreateRequest.getName())
                 .phone(orderCreateRequest.getPhone())
                 .zipcode(orderCreateRequest.getZipcode())
                 .detailAddress(orderCreateRequest.getDetailAddress())
                 .requirement(orderCreateRequest.getRequirement())
-                .totalPrice(cart.getTotalPrice())
+                .totalPrice(payTotalPrice)
+                .impUid(orderCreateRequest.getImpUid())
+                .merchantId(orderCreateRequest.getMerchantId())
                 .build();
-    }
-
-    // 주문에 같은 회원이 있을 경우 가격 증가
-    public void addTotalPrice(int addPrice) {
-        this.totalPrice += addPrice;
     }
 }
