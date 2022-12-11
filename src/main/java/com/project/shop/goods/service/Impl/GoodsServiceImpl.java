@@ -40,10 +40,6 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
-//        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
-//            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
-//        }
-
         // 상품 정보저장
         Goods goods = Goods.toGoods(goodsCreateRequest);
         goodsRepository.save(goods);

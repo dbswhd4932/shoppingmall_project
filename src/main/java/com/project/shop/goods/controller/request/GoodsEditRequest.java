@@ -23,7 +23,7 @@ public class GoodsEditRequest {
     private String goodsName;
 
     @NotNull(message = "카테고리를 입력하세요.")
-    private Category category;
+    private Long categoryId;
 
     @Min(value = 1000 , message = "가격은 1000원 이상이어야 합니다.")
     private int price;
