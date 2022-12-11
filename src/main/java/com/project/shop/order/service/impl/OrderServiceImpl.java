@@ -6,13 +6,13 @@ import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.repository.CartRepository;
-import com.project.shop.order.domain.Order;
-import com.project.shop.order.domain.OrderItem;
+import com.project.shop.order.controller.request.PayCancelRequest;
+import com.project.shop.order.domain.*;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.response.OrderResponse;
-import com.project.shop.order.domain.Pay;
 import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.OrderRepository;
+import com.project.shop.order.repository.PayCancelRepository;
 import com.project.shop.order.repository.PayRepository;
 import com.project.shop.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.shop.global.error.ErrorCode.ALREADY_CANCEL_PAY;
+import static com.project.shop.global.error.ErrorCode.NOT_EQUAL_MERCHANT_ID;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -34,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     private final GoodsRepository goodsRepository;
     private final OrderItemRepository orderItemRepository;
     private final PayRepository payRepository;
+    private final PayCancelRepository payCancelRepository;
 
     // 주문생성
     /*public void createOrder(Long cartId, OrderCreateRequest orderCreateRequest, PayCreateRequest payCreateRequest) {
@@ -121,5 +125,45 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return list;
+    }
+
+    // 가맹점 ID 조회
+    @Override
+    public String findMerchantId(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_ORDERS));
+
+        return order.getMerchantId();
+    }
+
+    // 결제취소
+    @Override
+    public void payCancel(Long payId, PayCancelRequest payCancelRequest) {
+        Pay pay = payRepository.findById(payId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_PAY));
+
+        if (pay.getPayStatus().equals(PayStatus.CANCEL)) {
+            throw new BusinessException(ALREADY_CANCEL_PAY);
+        }
+
+        if (!pay.getOrder().getMerchantId().equals(payCancelRequest.getMerchantId())) {
+            throw new BusinessException(NOT_EQUAL_MERCHANT_ID);
+        }
+
+        PayCancel payCancel = PayCancel.builder()
+                .order(pay.getOrder())
+                .merchantId(payCancelRequest.getMerchantId())
+                .cancelReason(payCancelRequest.getCancelReason())
+                .cancelPrice(pay.getPayPrice())
+                .cardCompany(pay.getCardCompany())
+                .cardNumber(pay.getCardNumber())
+                .build();
+
+        // 결제취소 DB 저장
+        payCancelRepository.save(payCancel);
+        // 결제 DB 상태 변경
+        pay.PayStatusChangeCancel();
+        // 주문 DB 상태 변경
+        pay.getOrder().orderStatusChangeCancel();
     }
 }

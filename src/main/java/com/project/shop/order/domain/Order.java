@@ -1,7 +1,6 @@
 package com.project.shop.order.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
-import com.project.shop.member.domain.Cart;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Table(name = "orders")
@@ -45,7 +43,7 @@ public class Order extends BaseTimeEntity {
     private int totalPrice;        //결제금액
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;    //주문상태
+    private OrderStatus orderStatus;    //주문상태
 
     private String impUid;         // 아임포트 발급 ID ex)imp_727855699150
     private String merchantId;     // 가맹점 ID        ex)ORD20180131-0000014
@@ -63,7 +61,7 @@ public class Order extends BaseTimeEntity {
         this.detailAddress = detailAddress;
         this.requirement = requirement;
         this.totalPrice = totalPrice;
-        this.status = OrderStatus.COMPLETE;
+        this.orderStatus = OrderStatus.COMPLETE;
         this.impUid = impUid;
         this.merchantId = merchantId;
     }
@@ -81,5 +79,10 @@ public class Order extends BaseTimeEntity {
                 .impUid(orderCreateRequest.getImpUid())
                 .merchantId(orderCreateRequest.getMerchantId())
                 .build();
+    }
+
+    // 주문 상태 변경
+    public void orderStatusChangeCancel() {
+        this.orderStatus = OrderStatus.CANCEL;
     }
 }

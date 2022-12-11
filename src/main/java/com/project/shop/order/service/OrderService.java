@@ -1,6 +1,7 @@
 package com.project.shop.order.service;
 
 import com.project.shop.order.controller.request.OrderCreateRequest;
+import com.project.shop.order.controller.request.PayCancelRequest;
 import com.project.shop.order.controller.response.OrderResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -17,6 +18,12 @@ public interface OrderService {
 
     // 주문 회원별 조회
     List<OrderResponse> orderFindMember(Long memberId, Pageable pageable);
+
+    // 가맹점 ID 조회
+    public String findMerchantId(Long orderId);
+
+    // 결제 취소
+    public void payCancel(Long payId, PayCancelRequest payCancelRequest);
 
     // 주문 수정 기능 X
     // 주문 삭제 기능 X

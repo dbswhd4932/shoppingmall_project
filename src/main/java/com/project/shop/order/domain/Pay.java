@@ -14,7 +14,8 @@ import javax.persistence.*;
 @Entity
 public class Pay extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pay_id")
     private Long id;                //결제번호(PK)
 
@@ -41,5 +42,10 @@ public class Pay extends BaseTimeEntity {
         this.order = order;
         this.payPrice = payPrice;
         this.payStatus = PayStatus.COMPLETE;
+    }
+
+    // 결제 상태 변경
+    public void PayStatusChangeCancel() {
+        this.payStatus = PayStatus.CANCEL;
     }
 }

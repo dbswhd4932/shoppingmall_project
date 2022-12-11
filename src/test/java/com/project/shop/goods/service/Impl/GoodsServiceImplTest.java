@@ -55,7 +55,6 @@ class GoodsServiceImplTest {
     void goodsCreateTest() {
         //given
         OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
-                .optionName("옵션이름")
                 .optionValue(null)
                 .totalPrice(12000)
                 .optionDescription("옵션설명").build();

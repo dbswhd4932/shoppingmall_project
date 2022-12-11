@@ -1,6 +1,7 @@
 package com.project.shop.order.controller;
 
 import com.project.shop.order.controller.request.OrderCreateRequest;
+import com.project.shop.order.controller.request.PayCancelRequest;
 import com.project.shop.order.controller.response.OrderResponse;
 import com.project.shop.order.domain.MerchantId;
 import com.project.shop.order.service.OrderService;
@@ -42,5 +43,20 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponse> orderFindMember(Long memberId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return orderService.orderFindMember(memberId, pageable);
+    }
+
+    // 가맹점 ID 조회하기
+    @GetMapping("/merchantId/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public String findMerchantId(@PathVariable("orderId") Long orderId) {
+        return orderService.findMerchantId(orderId);
+    }
+
+    // 결제 취소
+    @PostMapping("/payCancel/{payId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void payCancel(@PathVariable("payId") Long payId,
+                          @RequestBody PayCancelRequest payCancelRequest) {
+        orderService.payCancel(payId, payCancelRequest);
     }
 }
