@@ -1,6 +1,7 @@
 package com.project.shop.member.controller;
 
 import com.project.shop.member.controller.request.CartCreateRequest;
+import com.project.shop.member.controller.request.CartEditRequest;
 import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,13 @@ public class CartController {
     @ResponseStatus(HttpStatus.CREATED)
     public void cartAddGoods(@RequestBody @Valid CartCreateRequest request, Long memberId) {
         cartService.cartAddGoods(request, memberId);
+    }
+
+    // 장바구니 수정
+    @PutMapping("/carts/{cartId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void cartEdit(@PathVariable("cartId") Long cartId, @RequestBody CartEditRequest cartEditRequest) {
+        cartService.editCartItem(cartId, cartEditRequest);
     }
 
     // 장바구니 조회

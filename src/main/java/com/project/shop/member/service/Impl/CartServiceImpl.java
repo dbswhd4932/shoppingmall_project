@@ -3,6 +3,7 @@ package com.project.shop.member.service.Impl;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.repository.GoodsRepository;
+import com.project.shop.member.controller.request.CartEditRequest;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.controller.request.CartCreateRequest;
@@ -60,6 +61,18 @@ public class CartServiceImpl implements CartService {
             list.add(CartResponse.toCartResponse(cart));
         }
         return list;
+    }
+
+    // 장바구니 수량, 옵션 변경
+    @Override
+    public void editCartItem(Long cartId, CartEditRequest cartEditRequest) {
+        Cart cart = cartRepository.findById(cartId).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_CART));
+
+        Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_GOODS));
+
+        cart.edit(goods, cartEditRequest);
     }
 
     // 장바구니 상품 삭제

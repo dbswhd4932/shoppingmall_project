@@ -1,6 +1,7 @@
 package com.project.shop.member.service;
 
 import com.project.shop.member.controller.request.CartCreateRequest;
+import com.project.shop.member.controller.request.CartEditRequest;
 import com.project.shop.member.controller.response.CartResponse;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public interface CartService {
     List<CartResponse> cartFindMember(Long memberId);
 
     // 장바구니 수정
+    void editCartItem(Long cartId, CartEditRequest cartEditRequest);
 
     // 장바구니 상품 삭제
     void cartDeleteGoods(Long cartId, Long goodsId , Long memberId);

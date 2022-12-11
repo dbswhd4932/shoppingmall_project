@@ -3,6 +3,7 @@ package com.project.shop.member.domain;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.member.controller.request.CartCreateRequest;
+import com.project.shop.member.controller.request.CartEditRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,12 +35,15 @@ public class Cart extends BaseTimeEntity {
     @Column(nullable = false)
     private int totalPrice;     //장바구니 총 가격
 
+    private int optionNumber;   //옵션 번호
+
     @Builder
-    public Cart(Member member, Long goodsId, int totalAmount, int totalPrice) {
+    public Cart(Member member, Long goodsId, int totalAmount, int totalPrice, int optionNumber) {
         this.member = member;
         this.goodsId = goodsId;
         this.totalAmount = totalAmount;
         this.totalPrice = totalPrice;
+        this.optionNumber = optionNumber;
     }
 
     // 장바구니 생성
@@ -48,7 +52,7 @@ public class Cart extends BaseTimeEntity {
 
         // 옵션이 있는 상품이면 상품 최종 가격변경(기본상품 + 옵션가격)
         if (!goods.getOptions().isEmpty()) {
-            goodsTotalPrice = goods.getOptions().get(cartCreateRequest.getOptionNumber()).getTotalPrice();
+            goodsTotalPrice = goods.getOptions().get(cartCreateRequest.getOptionNumber()-1).getTotalPrice();
         }
 
         return Cart.builder()
@@ -56,7 +60,16 @@ public class Cart extends BaseTimeEntity {
                 .goodsId(cartCreateRequest.getGoodsId())
                 .totalAmount(cartCreateRequest.getAmount())
                 .totalPrice(goodsTotalPrice * cartCreateRequest.getAmount())
+                .optionNumber(cartCreateRequest.getOptionNumber())
                 .build();
+    }
+
+    // 장바구니 수량, 옵션 변경
+    public void edit(Goods goods, CartEditRequest cartEditRequest) {
+        int goodsTotalPrice = goods.getOptions().get(cartEditRequest.getOptionNumber()-1).getTotalPrice();
+        this.totalAmount = cartEditRequest.getAmount();
+        this.optionNumber = cartEditRequest.getOptionNumber();
+        this.totalPrice = goodsTotalPrice * (cartEditRequest.getAmount());
     }
 
 }
