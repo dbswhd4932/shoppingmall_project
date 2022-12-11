@@ -27,8 +27,6 @@ public class Option extends BaseTimeEntity {
     @JoinColumn(name = "goods_id")
     private Goods goods;
 
-    private String optionName; // 옵션이름
-
     // 옵션값
     @Convert(converter = OptionConverter.class)
     private Map<String, Object> optionValue;
@@ -38,9 +36,8 @@ public class Option extends BaseTimeEntity {
     private String optionDescription;
 
     @Builder
-    public Option(Goods goods, String optionName, Map<String, Object> optionValue, int totalPrice, String description) {
+    public Option(Goods goods, Map<String, Object> optionValue, int totalPrice, String description) {
         this.goods = goods;
-        this.optionName = optionName;
         this.optionValue = optionValue;
         this.totalPrice = totalPrice;
         this.optionDescription = description;
@@ -49,7 +46,6 @@ public class Option extends BaseTimeEntity {
     public static Option toOption(OptionCreateRequest optionCreateRequest, Goods goods) {
         return Option.builder()
                 .goods(goods)
-                .optionName(optionCreateRequest.getOptionName())
                 .optionValue(optionCreateRequest.getOptionValue())
                 .totalPrice(optionCreateRequest.getTotalPrice())
                 .description(optionCreateRequest.getOptionDescription())

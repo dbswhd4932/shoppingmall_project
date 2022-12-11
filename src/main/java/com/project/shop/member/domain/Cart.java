@@ -44,11 +44,18 @@ public class Cart extends BaseTimeEntity {
 
     // 장바구니 생성
     public static Cart createCart(Member member, Goods goods, CartCreateRequest cartCreateRequest) {
+        int goodsTotalPrice = goods.getPrice();
+
+        // 옵션이 있는 상품이면 상품 최종 가격변경(기본상품 + 옵션가격)
+        if (!goods.getOptions().isEmpty()) {
+            goodsTotalPrice = goods.getOptions().get(cartCreateRequest.getOptionNumber()).getTotalPrice();
+        }
+
         return Cart.builder()
                 .member(member)
                 .goodsId(cartCreateRequest.getGoodsId())
                 .totalAmount(cartCreateRequest.getAmount())
-                .totalPrice(goods.getPrice() * cartCreateRequest.getAmount())
+                .totalPrice(goodsTotalPrice * cartCreateRequest.getAmount())
                 .build();
     }
 

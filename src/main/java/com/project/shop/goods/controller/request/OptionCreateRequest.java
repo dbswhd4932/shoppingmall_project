@@ -13,8 +13,6 @@ import java.util.Map;
 @Builder
 public class OptionCreateRequest {
 
-    private String optionName;
-
     private Map<String,Object> optionValue;
 
     private int totalPrice;

@@ -31,15 +31,17 @@ public class CartServiceImpl implements CartService {
     // 장바구니 담기
     @Override
     public void cartAddGoods(CartCreateRequest cartCreateRequest, Long memberId) {
+        //todo 시큐리티 적용하면 제거
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
 
+        // CMS 시스템이 없으므로, 예외발생 할 수 있어 체크로직 추가
         Goods goods = goodsRepository.findById(cartCreateRequest.getGoodsId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
 
-        // 장바구니에 존재하는 상품이면 "장바구니에 존재하는 상품입니다" 예외 발생
+        // 장바구니에 존재하는 상품이면 "장바구니에 존재하는 상품입니다." 예외 발생
         if (cartRepository.findByGoodsId(goods.getId()).isPresent())
-            throw new BusinessException(DUPLICATE_GOODS);
+            throw new BusinessException(CART_IN_GOODS_DUPLICATED);
 
         Cart cart = Cart.createCart(member, goods, cartCreateRequest);
         cartRepository.save(cart);
