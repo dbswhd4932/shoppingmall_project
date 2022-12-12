@@ -2,7 +2,9 @@ package com.project.shop.member.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.member.controller.request.LoginRequest;
+import com.project.shop.member.controller.request.KakaoLoginRequest;
+import com.project.shop.member.controller.request.NoSocialLoginRequest;
+import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
@@ -26,6 +28,10 @@ public class MemberServiceImpl implements MemberService {
     // 회원생성
     @Override
     public void memberSignup(MemberSignupRequest memberSignupRequest) {
+        if(memberRepository.findByLoginId(memberSignupRequest.getLoginId()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+        }
+
         Member member = Member.create(memberSignupRequest);
         memberRepository.save(member);
     }
@@ -38,17 +44,28 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    // 로그인
+    // todo 일반 로그인
     @Override
-    public void login(LoginRequest loginRequest) {
-        memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
+    public void noSocialLogin(NoSocialLoginRequest noSocialLoginRequest) {
+        memberRepository.findByLoginId(noSocialLoginRequest.getLoginId()).orElseThrow(
                 ()-> new IllegalArgumentException("아이디를 확인해주세요.")
         );
 
-        memberRepository.findByPassword(loginRequest.getPassword()).orElseThrow(
+        memberRepository.findByPassword(noSocialLoginRequest.getPassword()).orElseThrow(
                 ()-> new IllegalArgumentException("비밀번호를 확인해주세요.")
         );
+    }
 
+    // todo 카카오 로그인
+    @Override
+    public void kakaoLogin(KakaoLoginRequest kakaoLoginRequest) {
+        Member member = Member.builder()
+                .loginId(kakaoLoginRequest.getKakaoLoginId())
+                .email(kakaoLoginRequest.getKakaoEmail())
+                .loginType(LoginType.KAKAO)
+                .build();
+
+        memberRepository.save(member);
     }
 
     // 회원 1명 조회

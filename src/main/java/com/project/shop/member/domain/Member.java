@@ -44,12 +44,15 @@ public class Member extends BaseTimeEntity {
 
     private LocalDateTime deletedAt;//회원탈퇴시간
 
+    @Enumerated(EnumType.STRING)
+    private LoginType loginType;    //로그인타입 ( NO_SOCIAL , KAKAO )
+
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
 
     @Builder
-    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, Role role) {
+    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType ,Role role) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -57,6 +60,7 @@ public class Member extends BaseTimeEntity {
         this.detailAddress = detailAddress;
         this.email = email;
         this.phone = phone;
+        this.loginType = loginType;
         this.role = role;
     }
 
@@ -70,6 +74,7 @@ public class Member extends BaseTimeEntity {
                 .detailAddress(memberSignupRequest.getDetailAddress())
                 .email(memberSignupRequest.getEmail())
                 .phone(memberSignupRequest.getPhone())
+                .loginType(LoginType.NO_SOCIAL)
                 .role(memberSignupRequest.getRole())
                 .build();
     }
