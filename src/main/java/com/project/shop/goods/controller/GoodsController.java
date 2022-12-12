@@ -36,8 +36,6 @@ public class GoodsController {
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart List<MultipartFile> multipartFiles) throws IOException {
 
-        //todo 여기서 예외처리를 해도되나?? controller 에서 repository 의존..
-        // 원래는 GoodsServiceImpl 에서 구현했으나, 실패해도 s3 가 저장되어버린다. 44번줄
         if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
         }

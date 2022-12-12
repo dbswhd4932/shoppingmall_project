@@ -32,7 +32,7 @@ public class CartServiceImpl implements CartService {
     // 장바구니 담기
     @Override
     public void cartAddGoods(CartCreateRequest cartCreateRequest, Long memberId) {
-        //todo 시큐리티 적용하면 제거
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
 

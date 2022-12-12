@@ -1,10 +1,10 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.member.controller.request.LoginRequest;
+import com.project.shop.member.controller.request.KakaoLoginRequest;
+import com.project.shop.member.controller.request.NoSocialLoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
-import com.project.shop.member.service.Impl.MemberServiceImpl;
 import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    //중복체크 먼저 하고나서 -> 회원 생성
+    //중복체크 먼저 하고나서 -> 회원 가입
     @PostMapping("/members")
     @ResponseStatus(HttpStatus.CREATED)
     public void memberSignup(@RequestBody @Valid MemberSignupRequest request) {
@@ -35,11 +35,18 @@ public class MemberController {
         memberService.loginIdDuplicateCheck(loginId);
     }
 
-    //todo 로그인 -> 시큐리티 적용(Token) 필요
+    //todo 일반 로그인 -> 시큐리티 적용(Token) 필요
     @PostMapping("/members/login")
     @ResponseStatus(HttpStatus.OK)
-    public void login(@Valid LoginRequest loginRequest) {
-        memberService.login(loginRequest);
+    public void login(@Valid NoSocialLoginRequest loginRequest) {
+        memberService.noSocialLogin(loginRequest);
+    }
+
+    //todo 소셜 로그인
+    @PostMapping("/members/kakaoLogin")
+    @ResponseStatus(HttpStatus.OK)
+    public void kakaoLogin(@Valid KakaoLoginRequest kakaoLoginRequest) {
+        memberService.kakaoLogin(kakaoLoginRequest);
     }
 
     //회원 단건 조회
