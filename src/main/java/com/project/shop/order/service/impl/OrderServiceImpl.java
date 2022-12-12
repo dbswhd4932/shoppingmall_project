@@ -24,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.project.shop.global.error.ErrorCode.ALREADY_CANCEL_PAY;
-import static com.project.shop.global.error.ErrorCode.NOT_EQUAL_MERCHANT_ID;
+import static com.project.shop.global.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -84,9 +83,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void buyAll(OrderCreateRequest orderCreateRequest) {
         List<Cart> carts = cartRepository.findByMemberId(orderCreateRequest.getMemberId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.CART_NO_PRODUCTS));
+                () -> new BusinessException(CART_NO_PRODUCTS));
 
-        int payTotalPrice = 0;
+        if (carts.isEmpty()) {
+            throw new BusinessException(CART_NO_PRODUCTS);
+        }
+
+            int payTotalPrice = 0;
         for (Cart cart : carts) {
             payTotalPrice += cart.getTotalPrice();
         }

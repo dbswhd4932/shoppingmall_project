@@ -13,7 +13,6 @@ import java.util.UUID;
 @Builder
 public class OrderCreateRequest {
 
-    @NotNull
     private Long memberId;
 
     @NotBlank(message = "수취인 이름을 입력하세요.")
