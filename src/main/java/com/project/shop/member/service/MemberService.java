@@ -14,7 +14,7 @@ public interface MemberService {
     void loginIdDuplicateCheck(String loginId);
 
     // 일반 로그인
-    JwtTokenDto noSocialLogin(LoginRequest loginRequest);
+    JwtTokenDto login(LoginRequest loginRequest);
 
     // 카카오 로그인
     void kakaoLogin(KakaoLoginRequest kakaoLoginRequest);

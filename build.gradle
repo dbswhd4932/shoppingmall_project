@@ -47,6 +47,11 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
+//자바 역직렬화 문제 해결 패키지
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

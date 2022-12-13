@@ -33,11 +33,12 @@ public class MemberController {
     }
 
     //todo 일반 로그인 -> 시큐리티 적용(Token) 필요
-    @PostMapping("/jwtToken")
+    @PostMapping("/auth/login")
     @ResponseStatus(HttpStatus.OK)
     public JwtTokenDto login(@RequestBody LoginRequest loginRequest) {
-        return memberService.noSocialLogin(loginRequest);
+        return memberService.login(loginRequest);
     }
+
 
     //todo 소셜 로그인
     @PostMapping("/members/kakaoLogin")

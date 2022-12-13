@@ -1,5 +1,9 @@
 package com.project.shop.global.common;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,10 +20,20 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTimeEntity {
 
-    @CreatedDate // 데이터 생성날짜를 자동으로 주입
-    @Column(updatable = false)
+    /**
+     * 만약 캐시로 사용할 객체에 LocalDateTime 타입의 값이 존재한다면
+     * , @JsonSerialize, @JsonDeserialize 어노테이션을 기입해줘야 한다.
+     */
+
+    @CreatedDate
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime cratedAt;
 
-    @LastModifiedDate // 데이터 수정날짜를 자동으로 주입
+    @LastModifiedDate
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Column(name = "updated_at", updatable = true)
     private LocalDateTime updatedAt;
 }

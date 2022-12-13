@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -71,10 +72,10 @@ public class Member extends BaseTimeEntity{
     }
 
     // 회원 생성
-    public static Member create(MemberSignupRequest memberSignupRequest) {
+    public static Member create(MemberSignupRequest memberSignupRequest, PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .loginId(memberSignupRequest.getLoginId())
-                .password(memberSignupRequest.getPassword())
+                .password(passwordEncoder.encode(memberSignupRequest.getPassword()))
                 .name(memberSignupRequest.getName())
                 .zipcode(memberSignupRequest.getZipcode())
                 .detailAddress(memberSignupRequest.getDetailAddress())

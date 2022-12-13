@@ -8,7 +8,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class JwtTokenDto {
-    private String grantType; // JWT 대한 인증타입 , Bearer 를 사용한다.
+    private String grantType;
     private String accessToken;
     private String refreshToken;
+    private Long accessTokenExpiresIn;
 }
