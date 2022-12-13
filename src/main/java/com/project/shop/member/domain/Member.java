@@ -4,16 +4,23 @@ import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +30,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 20, unique = true)
     private String loginId;         //회원ID
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String password;        //비밀번호
 
     @Column(nullable = false, length = 20)
@@ -47,12 +54,11 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;    //로그인타입 ( NO_SOCIAL , KAKAO )
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
 
     @Builder
-    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType ,Role role) {
+    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType, List<String> roles) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -61,7 +67,7 @@ public class Member extends BaseTimeEntity {
         this.email = email;
         this.phone = phone;
         this.loginType = loginType;
-        this.role = role;
+        this.roles = roles;
     }
 
     // 회원 생성
@@ -75,7 +81,7 @@ public class Member extends BaseTimeEntity {
                 .email(memberSignupRequest.getEmail())
                 .phone(memberSignupRequest.getPhone())
                 .loginType(LoginType.NO_SOCIAL)
-                .role(memberSignupRequest.getRole())
+                .roles(memberSignupRequest.getRoles())
                 .build();
     }
 
@@ -92,5 +98,9 @@ public class Member extends BaseTimeEntity {
     // 회원 탈퇴 시 deletedAt 초기화
     public void setDeletedAt() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void setEncryptedPwd(String encodePassword) {
+        this.password = encodePassword;
     }
 }

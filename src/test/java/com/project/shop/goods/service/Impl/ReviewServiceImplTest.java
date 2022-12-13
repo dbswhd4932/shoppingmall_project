@@ -56,7 +56,7 @@ class ReviewServiceImplTest {
         //given
         Goods goods = GoodsFactory.createGoods();
         Order order = Order.builder().memberId(1L).name("수취인").phone("010").zipcode("우편번호")
-                .detailAddress("상세주소").requirement("요청사항").totalPrice(1000).status(OrderStatus.COMPLETE).build();
+                .detailAddress("상세주소").requirement("요청사항").totalPrice(1000).build();
         OrderItem orderItem = OrderItem.builder().memberId(1L).goods(goods).order(order).amount(10).orderPrice(1000).build();
         ReviewCreateRequest request = ReviewCreateRequest.builder().orderItemId(orderItem.getId()).memberId(1L).comment("댓글").build();
         given(orderItemRepository.findById(orderItem.getId())).willReturn(Optional.of(orderItem));

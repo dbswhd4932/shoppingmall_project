@@ -1,9 +1,6 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.member.controller.request.KakaoLoginRequest;
-import com.project.shop.member.controller.request.NoSocialLoginRequest;
-import com.project.shop.member.controller.request.MemberEditRequest;
-import com.project.shop.member.controller.request.MemberSignupRequest;
+import com.project.shop.member.controller.request.*;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +33,10 @@ public class MemberController {
     }
 
     //todo 일반 로그인 -> 시큐리티 적용(Token) 필요
-    @PostMapping("/members/login")
+    @PostMapping("/jwtToken")
     @ResponseStatus(HttpStatus.OK)
-    public void login(@Valid NoSocialLoginRequest loginRequest) {
-        memberService.noSocialLogin(loginRequest);
+    public JwtTokenDto login(@RequestBody LoginRequest loginRequest) {
+        return memberService.noSocialLogin(loginRequest);
     }
 
     //todo 소셜 로그인
@@ -47,6 +44,12 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     public void kakaoLogin(@Valid KakaoLoginRequest kakaoLoginRequest) {
         memberService.kakaoLogin(kakaoLoginRequest);
+    }
+
+    @PostMapping("/logingogo")
+    @ResponseStatus(HttpStatus.OK)
+    public String noSocialLogin(@Valid LoginRequest loginRequest) {
+        return "왜안돼??";
     }
 
     //회원 단건 조회

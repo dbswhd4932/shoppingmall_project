@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embedded;
+import java.util.List;
 
 
 @Getter
@@ -24,7 +25,7 @@ public class MemberResponse {
     private String detailAddress;   //상세주소
     private String email;           //이메일
     private String phone;           //핸드폰번호
-    private Role role;              //권한
+    private List<String> roles;              //권한
 
     // Member -> MemberResponse 변환
     public MemberResponse toResponse(Member m) {
@@ -36,6 +37,6 @@ public class MemberResponse {
                 m.getDetailAddress(),
                 m.getEmail(),
                 m.getPhone(),
-                m.getRole());
+                m.getRoles());
     }
 }

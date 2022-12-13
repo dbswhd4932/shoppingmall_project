@@ -1,9 +1,6 @@
 package com.project.shop.member.service;
 
-import com.project.shop.member.controller.request.KakaoLoginRequest;
-import com.project.shop.member.controller.request.NoSocialLoginRequest;
-import com.project.shop.member.controller.request.MemberEditRequest;
-import com.project.shop.member.controller.request.MemberSignupRequest;
+import com.project.shop.member.controller.request.*;
 import com.project.shop.member.controller.response.MemberResponse;
 
 import java.util.List;
@@ -17,7 +14,7 @@ public interface MemberService {
     void loginIdDuplicateCheck(String loginId);
 
     // 일반 로그인
-    void noSocialLogin(NoSocialLoginRequest noSocialLoginRequest);
+    JwtTokenDto noSocialLogin(LoginRequest loginRequest);
 
     // 카카오 로그인
     void kakaoLogin(KakaoLoginRequest kakaoLoginRequest);

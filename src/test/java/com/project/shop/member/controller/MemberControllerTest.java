@@ -3,14 +3,10 @@ package com.project.shop.member.controller;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
-import com.project.shop.member.domain.Member;
-import com.project.shop.member.domain.Role;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.service.Impl.MemberServiceImpl;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -20,7 +16,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -49,7 +44,6 @@ class MemberControllerTest extends ControllerSetting {
                 .detailAddress("상세주소")
                 .email("test@naver.com")
                 .phone("010-1234-1234-")
-                .role(new Role(1L, "USER"))
                 .build();
 
         //when
@@ -75,7 +69,6 @@ class MemberControllerTest extends ControllerSetting {
                 .detailAddress("상세주소")
                 .email("test@naver.com")
                 .phone("010-1234-1234-")
-                .role(new Role(1L, "USER"))
                 .build();
 
         given(memberService.memberFindOne(1L)).willReturn(memberResponse);
@@ -100,7 +93,6 @@ class MemberControllerTest extends ControllerSetting {
                 .detailAddress("상세주소")
                 .email("test@naver.com")
                 .phone("010-1234-1234-")
-                .role(new Role(1L, "USER"))
                 .build();
 
         given(memberService.memberFindAll()).willReturn(List.of(memberResponse));

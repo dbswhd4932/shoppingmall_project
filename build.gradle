@@ -29,22 +29,25 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // jwt 추가
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
     // swagger dependency
     implementation "io.springfox:springfox-boot-starter:3.0.0"
     implementation "io.springfox:springfox-swagger-ui:3.0.0"
+
     // https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-52
     implementation 'com.vladmihalcea:hibernate-types-52:2.20.0'
+
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
-    // 아임포트 설정
-    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-
-    // 화면 test
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
