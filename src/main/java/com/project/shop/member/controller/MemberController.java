@@ -47,12 +47,6 @@ public class MemberController {
         memberService.kakaoLogin(kakaoLoginRequest);
     }
 
-    @PostMapping("/logingogo")
-    @ResponseStatus(HttpStatus.OK)
-    public String noSocialLogin(@Valid LoginRequest loginRequest) {
-        return "왜안돼??";
-    }
-
     //회원 단건 조회
     @GetMapping("/members/{memberId}")
     @ResponseStatus(HttpStatus.OK)

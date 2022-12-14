@@ -55,18 +55,22 @@ public class MemberServiceImpl implements MemberService {
 
     // todo 일반 로그인
     @Override
-    @Transactional
     public JwtTokenDto login(LoginRequest loginRequest) {
 
         memberRepository.findByLoginId(loginRequest.getLoginId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.CHECK_LOGINID_OR_PASSWORD));
 
+        // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
 
+        // 2. 실제 검증 (사용자 비밀번호 체크)
+        // authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
+        // 3. 인증기반으로 jwt 토큰생성
         JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
 
+        // 4. 리프레시 토큰 저장
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(authentication.getName())
                 .value(tokenDto.getRefreshToken())
@@ -74,40 +78,10 @@ public class MemberServiceImpl implements MemberService {
 
         refreshTokenRepository.save(refreshToken);
 
+        // 5. 토큰 리턴
         return tokenDto;
 
     }
-
-    @Transactional
-    public JwtTokenDto reissue(TokenRequestDto tokenRequestDto) {
-        // 1. Refresh Token 검증
-        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
-        }
-
-        // 2. Access Token 에서 Member ID 가져오기
-        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-
-        // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
-
-        // 4. Refresh Token 일치하는지 검사
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
-        }
-
-        // 5. 새로운 토큰 생성
-        JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
-
-        // 6. 저장소 정보 업데이트
-        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
-
-        // 토큰 발급
-        return tokenDto;
-    }
-
 
     // todo 카카오 로그인
     @Override
