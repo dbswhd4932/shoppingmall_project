@@ -1,23 +1,17 @@
 package com.project.shop.member.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+public enum Role {
+    ROLE_USER("ROLE_USER"),
+    ROLE_SELLER("ROLE_ANONYMOUS"),
+    ROLE_ADMIN("ROLE_ADMIN");
 
-import javax.persistence.*;
+    String role;
 
-@Entity
-@Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Role {
+    Role(String role) {
+        this.role = role;
+    }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Long id;
-
-    @JsonIgnore
-    private String role;
-
+    public String value() {
+        return role;
+    }
 }

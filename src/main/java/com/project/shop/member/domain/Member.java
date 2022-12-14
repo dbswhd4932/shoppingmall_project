@@ -55,11 +55,18 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private LoginType loginType;    //로그인타입 ( NO_SOCIAL , KAKAO )
 
-    @ElementCollection(fetch = FetchType.EAGER) // 2개이상의 ROLE 이 들어갈 수 있다. ex ) USER, SELLER
-    private List<String> roles = new ArrayList<>();
+    // 별도의 테이블 만들기 ( 값 타입 컬렉션 )
+    // 2개이상의 ROLE 이 들어갈 수 있다. ex ) USER, SELLER
+    @ElementCollection
+    @CollectionTable(
+            name = "member_roles",
+            joinColumns = @JoinColumn(name = "member_id")
+    )
+    @Enumerated(EnumType.STRING)
+    private List<Role> roles = new ArrayList<>();
 
     @Builder
-    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType, List<String> roles) {
+    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType, List<Role> roles) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;

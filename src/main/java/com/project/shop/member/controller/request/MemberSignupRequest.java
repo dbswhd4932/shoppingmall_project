@@ -1,6 +1,7 @@
 package com.project.shop.member.controller.request;
 
 import com.project.shop.member.domain.LoginType;
+import com.project.shop.member.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,7 +44,8 @@ public class MemberSignupRequest {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;    //로그인 타입
 
-    private List<String> roles;    // 권한타입
+    private List<Role> roles;    // 권한타입
 
 }
+
 
