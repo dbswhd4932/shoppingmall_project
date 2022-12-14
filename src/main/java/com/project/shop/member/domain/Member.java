@@ -55,7 +55,7 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private LoginType loginType;    //로그인타입 ( NO_SOCIAL , KAKAO )
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER) // 2개이상의 ROLE 이 들어갈 수 있다. ex ) USER, SELLER
     private List<String> roles = new ArrayList<>();
 
     @Builder
@@ -101,7 +101,4 @@ public class Member extends BaseTimeEntity{
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void setEncryptedPwd(String encodePassword) {
-        this.password = encodePassword;
-    }
 }
