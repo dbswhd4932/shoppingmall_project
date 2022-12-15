@@ -62,8 +62,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.CHECK_LOGINID_OR_PASSWORD));
 
         // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
 
         // 2. 실제 검증 (사용자 비밀번호 체크)
 //         authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
@@ -96,6 +95,24 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(member);
     }
+
+    @Override
+    public MemberResponse findMemberInfoById(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+        return new MemberResponse().toResponse(member);
+    }
+
+    // loginId 로 회원 정보 가져오기
+    @Override
+    @Transactional(readOnly = true)
+    public MemberResponse findMemberInfoLoginId(String loginId) {
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        return new MemberResponse().toResponse(member);
+    }
+
 
     // 회원 1명 조회
     @Transactional(readOnly = true)

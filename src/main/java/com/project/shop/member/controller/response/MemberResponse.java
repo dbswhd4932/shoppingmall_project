@@ -27,7 +27,7 @@ public class MemberResponse {
     private String detailAddress;   //상세주소
     private String email;           //이메일
     private String phone;           //핸드폰번호
-    private List<String> roles;    //권한
+    private Role roles;    //권한
 
     // Member -> MemberResponse 변환
     public MemberResponse toResponse(Member m) {
@@ -42,11 +42,7 @@ public class MemberResponse {
                 .roles(m.getRoles())
                 .build();
 
-//        memberResponse.setRoles(m.getRoles());
         return memberResponse;
     }
 
-    public void setRoles(List<String> roles) {
-        roles.add(roles.stream().map(role -> roles.add(role)).toString());
-    }
 }

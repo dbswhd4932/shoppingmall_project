@@ -1,5 +1,6 @@
 package com.project.shop.member.controller;
 
+import com.project.shop.global.util.SecurityUtil;
 import com.project.shop.member.controller.request.*;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.jwt.JwtTokenDto;
@@ -18,6 +19,20 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+
+    // 내 정보 가져오기
+    @GetMapping("/member/me")
+    public MemberResponse findMemberInfoById() {
+        return memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId());
+    }
+
+
+    // loginId 로 회원찾기
+    @GetMapping("/member/{loginId}")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponse findMemberInfoByLoginId(@PathVariable String logindId) {
+        return memberService.findMemberInfoLoginId(logindId);
+    }
 
     //중복체크 먼저 하고나서 -> 회원 가입
     @PostMapping("/members")
@@ -48,12 +63,6 @@ public class MemberController {
         memberService.kakaoLogin(kakaoLoginRequest);
     }
 
-    //회원 단건 조회
-    @GetMapping("/members/{memberId}")
-    @ResponseStatus(HttpStatus.OK)
-    public MemberResponse memberFindOne(@PathVariable("memberId") Long memberId) {
-        return memberService.memberFindOne(memberId);
-    }
 
     //회원 전체 조회
     @GetMapping("/members")

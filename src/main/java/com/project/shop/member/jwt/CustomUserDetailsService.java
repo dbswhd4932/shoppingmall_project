@@ -1,7 +1,5 @@
 package com.project.shop.member.jwt;
 
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +19,9 @@ import java.util.Collections;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PrincipalDetailService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
 
     // 시큐리티 세션 -> Authentication -> UserDetails
     @Override

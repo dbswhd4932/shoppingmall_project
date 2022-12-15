@@ -8,6 +8,12 @@ import java.util.List;
 
 public interface MemberService {
 
+    // 내정보찾기
+    MemberResponse findMemberInfoById(Long memberId);
+
+    // loginId 로 회원찾기
+    MemberResponse findMemberInfoLoginId(String loginId);
+
     // 회원생성
     void memberSignup(MemberSignupRequest memberSignupRequest);
 

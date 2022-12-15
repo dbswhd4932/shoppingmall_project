@@ -40,16 +40,13 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests() // 설정시작
                 .antMatchers("/h2-console/**").permitAll()
-//                .antMatchers("/api/members/**").permitAll() // 허용 URL
-//                .antMatchers("/api/goods/**").hasAnyRole("ADMIN", "USER")
-//                .antMatchers("/api/categories").hasRole("ADMIN")
                 .antMatchers("/api/members/**").permitAll()
-                .antMatchers("/api/goods/**").hasRole("USER")
+                .antMatchers("/api/goods/**").hasRole("ADMIN")
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .anyRequest().authenticated() // 이외는 인증필요
                 .and()
                 // 권한이나 인증이 필요한 곳에서 불리는 검증 필터
-                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .apply(new JwtSecurityConfig(tokenProvider));
 
         return http.build();
     }

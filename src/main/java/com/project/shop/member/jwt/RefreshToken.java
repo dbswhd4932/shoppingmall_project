@@ -13,13 +13,10 @@ import javax.persistence.*;
 public class RefreshToken {
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "rt_key")
+    @Column(name = "refreshToken_key")
     private String key;
 
-    @Column(name = "rt_value")
+    @Column(name = "refreshToken_value")
     private String value;
 
     @Builder
