@@ -1,19 +1,15 @@
 package com.project.shop.global.config;
 
 import com.project.shop.member.jwt.*;
-import com.project.shop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFilter;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @EnableWebSecurity
@@ -43,11 +39,17 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests() // 설정시작
-                .antMatchers("/**").permitAll() // 허용 URL
-                .anyRequest().permitAll() // 이외는 인증필요
+                .antMatchers("/h2-console/**").permitAll()
+//                .antMatchers("/api/members/**").permitAll() // 허용 URL
+//                .antMatchers("/api/goods/**").hasAnyRole("ADMIN", "USER")
+//                .antMatchers("/api/categories").hasRole("ADMIN")
+                .antMatchers("/api/members/**").permitAll()
+                .antMatchers("/api/goods/**").hasRole("USER")
+                .antMatchers(PERMIT_URL_ARRAY).permitAll()
+                .anyRequest().authenticated() // 이외는 인증필요
                 .and()
                 // 권한이나 인증이 필요한 곳에서 불리는 검증 필터
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -57,4 +59,19 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    private static final String[] PERMIT_URL_ARRAY = {
+            /* swagger v2 */
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            /* swagger v3 */
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
+
 }

@@ -18,10 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Table(name = "member")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-public class Member extends BaseTimeEntity{
+public class Member extends BaseTimeEntity implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,18 +56,13 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private LoginType loginType;    //로그인타입 ( NO_SOCIAL , KAKAO )
 
-    // 별도의 테이블 만들기 ( 값 타입 컬렉션 )
     // 2개이상의 ROLE 이 들어갈 수 있다. ex ) USER, SELLER
-    @ElementCollection
-    @CollectionTable(
-            name = "member_roles",
-            joinColumns = @JoinColumn(name = "member_id")
-    )
-    @Enumerated(EnumType.STRING)
-    private List<Role> roles = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
     @Builder
-    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType, List<Role> roles) {
+    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType, List<String> roles) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -108,4 +104,35 @@ public class Member extends BaseTimeEntity{
         this.deletedAt = LocalDateTime.now();
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getUsername() {
+        return loginId;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

@@ -1,11 +1,9 @@
 package com.project.shop.member.jwt;
 
-import com.project.shop.member.controller.request.JwtTokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.auth.AUTH;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,7 +50,7 @@ public class TokenProvider {
         Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 30분 60 * 30 * 1000
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())       //"sub":"name"
-                .claim(AUTHORITIES_KEY, authentication)      //"auth":"ROLE_USER"
+                .claim(AUTHORITIES_KEY, authentication)     //"auth":"ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)       //"exp":"12345678"
                 .signWith(key, SignatureAlgorithm.HS256)   //"alg":"HS256"
                 .compact();

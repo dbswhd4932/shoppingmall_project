@@ -2,6 +2,7 @@ package com.project.shop.member.controller;
 
 import com.project.shop.member.controller.request.*;
 import com.project.shop.member.controller.response.MemberResponse;
+import com.project.shop.member.jwt.JwtTokenDto;
 import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class MemberController {
     }
 
     //todo 일반 로그인 -> 시큐리티 적용(Token) 필요
-    @PostMapping("/auth/login")
+    @PostMapping("/members/login")
     @ResponseStatus(HttpStatus.OK)
     public JwtTokenDto login(@RequestBody LoginRequest loginRequest) {
         return memberService.login(loginRequest);

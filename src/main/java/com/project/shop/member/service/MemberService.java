@@ -2,6 +2,7 @@ package com.project.shop.member.service;
 
 import com.project.shop.member.controller.request.*;
 import com.project.shop.member.controller.response.MemberResponse;
+import com.project.shop.member.jwt.JwtTokenDto;
 
 import java.util.List;
 

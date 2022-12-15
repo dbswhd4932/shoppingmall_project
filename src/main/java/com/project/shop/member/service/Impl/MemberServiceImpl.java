@@ -6,6 +6,7 @@ import com.project.shop.member.controller.request.*;
 import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.controller.response.MemberResponse;
+import com.project.shop.member.jwt.JwtTokenDto;
 import com.project.shop.member.jwt.RefreshToken;
 import com.project.shop.member.jwt.RefreshTokenRepository;
 import com.project.shop.member.jwt.TokenProvider;
@@ -54,17 +55,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     // todo 일반 로그인
-    @Override
+    @Override              // String memberId, String password
     public JwtTokenDto login(LoginRequest loginRequest) {
 
         memberRepository.findByLoginId(loginRequest.getLoginId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.CHECK_LOGINID_OR_PASSWORD));
 
         // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
 
         // 2. 실제 검증 (사용자 비밀번호 체크)
-        // authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
+//         authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증기반으로 jwt 토큰생성

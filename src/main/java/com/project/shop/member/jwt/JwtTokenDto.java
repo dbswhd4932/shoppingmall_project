@@ -1,4 +1,4 @@
-package com.project.shop.member.controller.request;
+package com.project.shop.member.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
