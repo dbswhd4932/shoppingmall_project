@@ -42,7 +42,7 @@ public class CategoryController {
 
     // 카테고리 삭제
     @DeleteMapping("/categories/{categoryId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void categoryDelete(@PathVariable("categoryId") Long categoryId) {
         categoryService.categoryDelete(categoryId);
     }

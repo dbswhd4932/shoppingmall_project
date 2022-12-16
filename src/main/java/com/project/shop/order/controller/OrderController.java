@@ -54,7 +54,7 @@ public class OrderController {
 
     // 결제 취소
     @PostMapping("/payCancel/{payId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void payCancel(@PathVariable("payId") Long payId,
                           @RequestBody PayCancelRequest payCancelRequest) {
         orderService.payCancel(payId, payCancelRequest);

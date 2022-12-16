@@ -41,7 +41,7 @@ public class CardController {
 
     //카드 삭제
     @DeleteMapping("/cards/{cardId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cardDelete(@PathVariable("cardId") Long cardId , Long memberId) {
         cardService.cardDelete(cardId, memberId);
     }

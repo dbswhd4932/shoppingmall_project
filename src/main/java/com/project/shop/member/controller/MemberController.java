@@ -80,7 +80,7 @@ public class MemberController {
 
     //회원 삭제
     @DeleteMapping("/members/{memberId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void memberDelete(@PathVariable("memberId") Long memberId) {
         memberService.memberDelete(memberId);
     }

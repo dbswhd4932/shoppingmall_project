@@ -82,7 +82,7 @@ public class GoodsController {
 
     // 상품 삭제
     @DeleteMapping("/goods/{goodsId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void goodsDelete(@PathVariable("goodsId") Long goodsId, Long memberId) {
         goodsService.goodsDelete(goodsId, memberId);
     }

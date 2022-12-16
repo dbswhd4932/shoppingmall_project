@@ -42,7 +42,7 @@ public class ReplyController {
 
     // 대댓글 삭제
     @DeleteMapping("/reply/{replyId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void replyDelete(@PathVariable("replyId") Long replyId, Long goodsMemberId) {
         replyService.replyDelete(replyId,goodsMemberId);
     }
