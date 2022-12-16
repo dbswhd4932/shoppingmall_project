@@ -1,16 +1,13 @@
 package com.project.shop.goods.controller.request;
 
 import com.project.shop.goods.domain.Category;
-import com.project.shop.goods.domain.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -32,8 +29,10 @@ public class GoodsCreateRequest {
     @Min(value = 1000 , message = "가격은 1000원 이상이어야 합니다.")
     private int price;
 
+    @Column
     private List<OptionCreateRequest> optionCreateRequest;
 
+    @Column
     private String goodsDescription;
 
 }

@@ -18,6 +18,6 @@ public class CartEditRequest {
     @Positive(message = "구매 수량은 1개 이상만 가능합니다.")
     private int amount; // 구매 수량
 
-    private int optionNumber; // 옵션번호
+    private Long optionNumber; // 옵션번호
 
 }
