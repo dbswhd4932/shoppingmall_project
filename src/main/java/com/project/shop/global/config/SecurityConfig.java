@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .authorizeRequests() // 설정시작
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/members/**").permitAll()
-                .antMatchers("/api/goods/**").hasRole("ADMIN")
+                .antMatchers("/api/goods/**").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .anyRequest().authenticated() // 이외는 인증필요
                 .and()

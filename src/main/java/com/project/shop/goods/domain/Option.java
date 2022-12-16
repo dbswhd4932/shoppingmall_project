@@ -29,14 +29,14 @@ public class Option extends BaseTimeEntity {
 
     // 옵션값
     @Convert(converter = OptionConverter.class)
-    private Map<String, Object> optionValue;
+    private List<OptionCreate> optionValue;
 
     private int totalPrice;
 
     private String optionDescription;
 
     @Builder
-    public Option(Goods goods, Map<String, Object> optionValue, int totalPrice, String description) {
+    public Option(Goods goods, List<OptionCreate> optionValue, int totalPrice, String description) {
         this.goods = goods;
         this.optionValue = optionValue;
         this.totalPrice = totalPrice;

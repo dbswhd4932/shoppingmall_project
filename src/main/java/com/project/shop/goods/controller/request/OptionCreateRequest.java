@@ -1,10 +1,12 @@
 package com.project.shop.goods.controller.request;
 
+import com.project.shop.goods.domain.OptionCreate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -13,7 +15,7 @@ import java.util.Map;
 @Builder
 public class OptionCreateRequest {
 
-    private Map<String,Object> optionValue;
+    private List<OptionCreate> optionValue;
 
     private int totalPrice;
 
