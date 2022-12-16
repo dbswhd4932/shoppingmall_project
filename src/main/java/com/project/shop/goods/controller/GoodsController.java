@@ -7,7 +7,6 @@ import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.service.GoodsService;
-import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import com.project.shop.goods.service.Impl.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -51,12 +50,18 @@ public class GoodsController {
         return goodsService.goodsFindAll(pageable);
     }
 
+    // 상품 상세(정보) 조회
+    @GetMapping("/goods/detail/{goodsId}")
+    @ResponseStatus(HttpStatus.OK)
+    public GoodsResponse goodsDetailFind(@PathVariable("goodsId") Long goodsId) {
+        return goodsService.goodsDetailFind(goodsId);
+    }
 
     // 상품 검색 (키워드)
-    @GetMapping("/goods/{keyword}")
+    @GetMapping("/goods/keyword")
     @ResponseStatus(HttpStatus.OK)
-    public List<GoodsResponse> goodsFindKeyword(@PathVariable String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return goodsService.goodsFindKeyword(pageable, keyword);
+    public List<GoodsResponse> goodsFindKeyword(@RequestParam String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return goodsService.goodsFindKeyword(keyword, pageable);
     }
 
     // 상품 수정

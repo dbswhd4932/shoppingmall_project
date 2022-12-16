@@ -15,8 +15,11 @@ public interface GoodsService {
     // 상품 전체 검색 - 페이징 기능
     List<GoodsResponse> goodsFindAll(Pageable pageable);
 
+    // 상품 상세(정보) 조회
+    GoodsResponse goodsDetailFind(Long goodsId);
+
     // 상품 검색 기능
-    List<GoodsResponse> goodsFindKeyword(Pageable pageable, String keyword);
+    List<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable);
 
     // 상품 수정
     void goodsEdit(Long goodsId, Long memberId, GoodsEditRequest goodsEditRequest, List<String> imgPaths);

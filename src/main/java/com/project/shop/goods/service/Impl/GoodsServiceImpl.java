@@ -13,6 +13,8 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.goods.service.GoodsService;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -35,10 +37,15 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
+    private final MemberRepository memberRepository;
 
     // 상품 등록 + 이미지 추가(필수) + 옵션 추가(필수X)
     @Override
     public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
+
+        // 회원 존재여부 확인
+        memberRepository.findById(goodsCreateRequest.getMemberId()).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         // 상품 정보저장
         Goods goods = Goods.toGoods(goodsCreateRequest);
@@ -73,10 +80,19 @@ public class GoodsServiceImpl implements GoodsService {
         return list;
     }
 
+    // 상품 상세(정보)조회
+    @Override
+    public GoodsResponse goodsDetailFind(Long goodsId) {
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
+
+        return GoodsResponse.toGoodsResponse(goods);
+    }
+
     // 상품 검색 ( 키워드 )
     @Override
     @Transactional(readOnly = true)
-    public List<GoodsResponse> goodsFindKeyword(Pageable pageable, String keyword) {
+    public List<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable) {
         // keyword 로 검색 후 모든 상품 찾기
         List<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword);
 
