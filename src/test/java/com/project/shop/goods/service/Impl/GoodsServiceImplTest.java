@@ -112,7 +112,7 @@ class GoodsServiceImplTest {
                 .willReturn(List.of(goods));
 
         //when
-        List<GoodsResponse> goodsResponses = goodsService.goodsFindKeyword(pageable, keyword);
+        List<GoodsResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
 
         //then
         assertThat(goodsResponses.size()).isEqualTo(1);
