@@ -1,8 +1,7 @@
 package com.project.shop.member.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
-import com.project.shop.goods.domain.Goods;
-import com.project.shop.member.controller.request.CartCreateRequest;
+import com.project.shop.goods.domain.Option;
 import com.project.shop.member.controller.request.CartEditRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,8 +46,8 @@ public class Cart extends BaseTimeEntity {
     }
 
     // 장바구니 수량, 옵션 변경
-    public void edit(Goods goods, CartEditRequest cartEditRequest) {
-        int goodsTotalPrice = goods.getOptions().get((int) (cartEditRequest.getOptionNumber()-1)).getTotalPrice();
+    public void edit(Option option, CartEditRequest cartEditRequest) {
+        int goodsTotalPrice = option.getTotalPrice();
         this.totalAmount = cartEditRequest.getAmount();
         this.optionNumber = cartEditRequest.getOptionNumber();
         this.totalPrice = goodsTotalPrice * (cartEditRequest.getAmount());

@@ -25,18 +25,25 @@ public class CartController {
         cartService.cartAddGoods(request, memberId);
     }
 
-    // 장바구니 수정
-    @PutMapping("/carts/{cartId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void cartEdit(@PathVariable("cartId") Long cartId, @RequestBody CartEditRequest cartEditRequest) {
-        cartService.editCartItem(cartId, cartEditRequest);
-    }
-
     // 장바구니 조회
     @GetMapping("/carts")
     @ResponseStatus(HttpStatus.OK)
     public List<CartResponse> cartFind(Long memberId) {
         return cartService.cartFindMember(memberId);
+    }
+
+    // 상품 변경 여부 확인
+    @GetMapping("/carts/{cartId}/check")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean  checkGoodsInfoChange(@PathVariable("cartId") Long cartId) {
+        return cartService.checkGoodsInfoChange(cartId);
+    }
+
+    // 장바구니 수정
+    @PutMapping("/carts/{cartId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void cartEdit(@PathVariable("cartId") Long cartId, @RequestBody CartEditRequest cartEditRequest) {
+        cartService.editCartItem(cartId, cartEditRequest);
     }
 
     // 장바구니 상품 선택 삭제

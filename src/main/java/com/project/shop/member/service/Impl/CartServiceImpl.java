@@ -5,11 +5,11 @@ import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
+import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
-import com.project.shop.member.controller.request.CartCreateRequest;
-import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.service.CartService;
@@ -39,21 +39,24 @@ public class CartServiceImpl implements CartService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_MEMBER));
 
-        // CMS 시스템이 없으므로, 예외발생 할 수 있어 체크로직 추가
         Goods goods = goodsRepository.findById(cartCreateRequest.getGoodsId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_GOODS));
 
-        Option option = optionRepository.findById(cartCreateRequest.getOptionNumber()).orElseThrow(
-                () -> new IllegalArgumentException("존재하는 옵션이 없습니다."));
+        // 옵션이 있는 상품일 경우 optionRepository 에서 찾아서 초기화 해줍니다.
+        Option option = null;
+        if (!optionRepository.findByGoodsId(cartCreateRequest.getGoodsId()).isEmpty()) {
+            option = optionRepository.findByIdAndGoodsId(cartCreateRequest.getOptionNumber(), goods.getId()).orElseThrow(
+                    () -> new IllegalArgumentException("존재하는 옵션이 없습니다."));
+        }
 
-        // 장바구니에 존재하는 상품이면 "장바구니에 이미 담겨있는 상품입니다." 예외 발생
+        // 장바구니에 존재하는 상품이면 "장바구니에 이미 담겨있는 상품입니다." 예외 발생가 발생합니다.
         if (cartRepository.findByGoodsId(goods.getId()).isPresent())
             throw new BusinessException(CART_IN_GOODS_DUPLICATED);
 
         int goodsTotalPrice = goods.getPrice();
         // 옵션이 있는 상품이면 상품 최종 가격변경(기본상품 + 옵션가격)
         if (!goods.getOptions().isEmpty()) {
-            goodsTotalPrice = option.getTotalPrice();;
+            goodsTotalPrice = option.getTotalPrice();
         }
 
         Cart cart = Cart.builder()
@@ -85,7 +88,7 @@ public class CartServiceImpl implements CartService {
     /**
      * 상품 변경 여부를 확인할 수 있습니다.
      * 장바구니에서 상품 주문전에 해당 API 로 상품 변경 여부를 확인 후,
-     * 변경된 내역(이름, 가격 등)이 있을 경우 변경된 내용으로 적용되어 주문창으로 넘어갑니다.
+     * 변경된 내역(가격)이 있을 경우 변경된 내용으로 적용되어 주문창으로 넘어갑니다.
      * false = 변경 없음 / true = 변경 있음
      */
     @Override
@@ -95,16 +98,20 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findById(cartId).orElseThrow(
                 () -> new BusinessException(CART_NO_PRODUCTS));
 
-        Option option = optionRepository.findByIdAndGoodsId(cart.getOptionNumber(), cart.getGoodsId()).orElseThrow(
-                () -> new IllegalArgumentException("없는 옵션번호 입니다."));
-
-        /**
-         *  "기존 장바구니 전체 금액" 과 "현재 상품 옵션 금액 * 장바구니 수량" 이 다를 경우 금액이 수정된 것
-         *  EX ) A 상품 1번 옵션 2개 = 24000  가격변경 후 / A 상품 1번 옵션 2개 = 28000
-         */
-        if (cart.getTotalPrice() != (option.getTotalPrice() * cart.getTotalAmount())) {
-            result = true;
+        // 옵션이 없는 상품일 경우, 상품의 기본가격으로 비교합니다.
+        if (cart.getOptionNumber() == null) {
+            Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(
+                    () -> new BusinessException(NOT_FOUND_GOODS));
+            if (cart.getTotalPrice() != (goods.getPrice() * cart.getTotalAmount()))
+                return true;
         }
+        // 상품의 옵션이 변경되었으면 기존의 option 은 삭제되고 재생성됩니다.
+        // 그러므로, cart 의 option_number 와 같은 Option_Id 의 존재여부로 비교합니다.
+        if (cart.getOptionNumber() != null) {
+            if (optionRepository.findById(cart.getOptionNumber()).isEmpty())
+                result = true;
+        }
+
         return result;
     }
 
@@ -114,10 +121,10 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findById(cartId).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_CART));
 
-        Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_GOODS));
+        Option option = optionRepository.findById(cartEditRequest.getOptionNumber()).orElseThrow(
+                () -> new IllegalArgumentException("옵션이 존재하지 않습니다."));
 
-        cart.edit(goods, cartEditRequest);
+        cart.edit(option, cartEditRequest);
     }
 
     // 장바구니 상품 삭제

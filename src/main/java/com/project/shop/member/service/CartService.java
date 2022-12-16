@@ -14,6 +14,9 @@ public interface CartService {
     // 장바구니 조회
     List<CartResponse> cartFindMember(Long memberId);
 
+    // 상품 변경 여부 확인(True , False)
+    boolean checkGoodsInfoChange(Long goodsId);
+
     // 장바구니 수정
     void editCartItem(Long cartId, CartEditRequest cartEditRequest);
 

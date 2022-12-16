@@ -1,6 +1,5 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.factory.CartFactory;
 import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.domain.Goods;
@@ -9,22 +8,16 @@ import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
-import com.project.shop.member.repository.MemberRepository;
-import com.project.shop.member.service.CartService;
 import com.project.shop.member.service.Impl.CartServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
