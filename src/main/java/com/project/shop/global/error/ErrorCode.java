@@ -32,7 +32,7 @@ public enum ErrorCode {
     // 장바구니
     NOT_FOUND_CART(HttpStatus.NOT_FOUND, "존재하지 않는 장바구니 입니다."),
     CART_NO_PRODUCTS(HttpStatus.NOT_FOUND, "장바구니에 상품이 존재하지 않습니다."),
-    CART_IN_GOODS_DUPLICATED(HttpStatus.NOT_FOUND, "장바구니에 존재하는 상품입니다."),
+    CART_IN_GOODS_DUPLICATED(HttpStatus.NOT_FOUND, "장바구니에 이미 담겨있는 상품입니다."),
 
     // 카테고리
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다"),
