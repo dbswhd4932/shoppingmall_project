@@ -2,18 +2,17 @@ package com.project.shop.goods.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.controller.request.OptionCreateRequest;
-import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.goods.service.GoodsService;
-import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,13 +116,13 @@ public class GoodsServiceImpl implements GoodsService {
 
         goods.update(goodsEditRequest);
 
-        // 기존 옵션 삭제
-        List<Option> options = optionRepository.findAllByGoodsId(goodsId);
+//         기존 옵션 삭제
+        List<Option> options = optionRepository.findByGoodsId(goodsId);
         for (Option option : options) {
             optionRepository.deleteById(option.getId());
         }
 
-        // 상품 옵션 수정이 null 이 아니면 저장
+//         상품 옵션 수정이 null 이 아니면 저장
         if (goodsEditRequest.getOptionCreateRequest() != null) {
             List<OptionCreateRequest> optionCreateRequest = goodsEditRequest.getOptionCreateRequest();
             for (OptionCreateRequest createRequest : optionCreateRequest) {

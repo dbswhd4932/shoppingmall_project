@@ -1,16 +1,12 @@
 package com.project.shop.goods.controller.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.project.shop.goods.domain.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -29,6 +25,7 @@ public class GoodsEditRequest {
     private int price;
 
     private List<OptionCreateRequest> optionCreateRequest;
+
 
     private String goodsDescription;
 

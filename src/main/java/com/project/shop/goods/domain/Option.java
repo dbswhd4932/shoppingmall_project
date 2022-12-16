@@ -2,6 +2,7 @@ package com.project.shop.goods.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.shop.global.common.BaseTimeEntity;
+import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.domain.convert.OptionConverter;
 import lombok.AccessLevel;
@@ -51,7 +52,5 @@ public class Option extends BaseTimeEntity {
                 .description(optionCreateRequest.getOptionDescription())
                 .build();
     }
-
-
 
 }
