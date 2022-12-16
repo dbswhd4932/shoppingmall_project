@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .antMatchers("/api/members/**").permitAll()
                 .antMatchers("/api/goods/**").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
-                .anyRequest().authenticated() // 이외는 인증필요
+                .anyRequest().permitAll() // 이외는 인증필요
                 .and()
                 // 권한이나 인증이 필요한 곳에서 불리는 검증 필터
                 .apply(new JwtSecurityConfig(tokenProvider));
