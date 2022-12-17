@@ -29,7 +29,7 @@ public class GoodsController {
     private final GoodsService goodsService;
     private final GoodsRepository goodsRepository;
 
-    // 상품 생성 , 이미지 O
+    // 상품 생성
     @PostMapping(value = "/goods")
     @ResponseStatus(HttpStatus.CREATED)
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
@@ -43,21 +43,21 @@ public class GoodsController {
        goodsService.goodsCreate(goodsCreateRequest, imgPaths);
     }
 
-    // 상품 전체 검색
+    // 상품 전체 조회
     @GetMapping("/goods")
     @ResponseStatus(HttpStatus.OK)
     public List<GoodsResponse> goodsFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindAll(pageable);
     }
 
-    // 상품 상세(정보) 조회
-    @GetMapping("/goods/detail/{goodsId}")
+    // 상품 단품 상세 조회
+    @GetMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
     public GoodsResponse goodsDetailFind(@PathVariable("goodsId") Long goodsId) {
         return goodsService.goodsDetailFind(goodsId);
     }
 
-    // 상품 검색 (키워드)
+    // 상품 검색
     @GetMapping("/goods/keyword")
     @ResponseStatus(HttpStatus.OK)
     public List<GoodsResponse> goodsFindKeyword(@RequestParam String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
