@@ -1,20 +1,15 @@
 package com.project.shop.member.controller.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Embedded;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -27,7 +22,7 @@ public class MemberResponse {
     private String detailAddress;   //상세주소
     private String email;           //이메일
     private String phone;           //핸드폰번호
-    private Role roles;    //권한
+    private List<Role> roles = new ArrayList<>();
 
     // Member -> MemberResponse 변환
     public MemberResponse toResponse(Member m) {
@@ -39,10 +34,12 @@ public class MemberResponse {
                 .detailAddress(m.getDetailAddress())
                 .email(m.getEmail())
                 .phone(m.getPhone())
-                .roles(m.getRoles())
                 .build();
 
+        memberResponse.setRoles(m.getRoles());
+
         return memberResponse;
+
     }
 
 }

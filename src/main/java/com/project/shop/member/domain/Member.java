@@ -4,18 +4,13 @@ import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -51,16 +46,17 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private String phone;           //핸드폰번호
 
+    @Column
     private LocalDateTime deletedAt;//회원탈퇴시간
 
     @Enumerated(EnumType.STRING)
     private LoginType loginType;    //로그인타입 ( NO_SOCIAL , KAKAO )
 
-    @Enumerated(EnumType.STRING)
-    private Role roles;
+    @OneToMany(mappedBy = "member")
+    private List<Role> roles = new ArrayList<>();
 
     @Builder
-    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType, Role roles) {
+    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -69,7 +65,6 @@ public class Member extends BaseTimeEntity {
         this.email = email;
         this.phone = phone;
         this.loginType = loginType;
-        this.roles = roles;
     }
 
     // 회원 생성
@@ -83,7 +78,6 @@ public class Member extends BaseTimeEntity {
                 .email(memberSignupRequest.getEmail())
                 .phone(memberSignupRequest.getPhone())
                 .loginType(LoginType.NO_SOCIAL)
-                .roles(memberSignupRequest.getRoles())
                 .build();
     }
 

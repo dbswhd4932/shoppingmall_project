@@ -2,15 +2,21 @@ package com.project.shop.member.service.Impl;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.member.controller.request.*;
+import com.project.shop.member.controller.request.KakaoLoginRequest;
+import com.project.shop.member.controller.request.LoginRequest;
+import com.project.shop.member.controller.request.MemberEditRequest;
+import com.project.shop.member.controller.request.MemberSignupRequest;
+import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.Member;
-import com.project.shop.member.controller.response.MemberResponse;
+import com.project.shop.member.domain.Role;
+import com.project.shop.member.domain.RoleType;
 import com.project.shop.member.jwt.JwtTokenDto;
 import com.project.shop.member.jwt.RefreshToken;
 import com.project.shop.member.jwt.RefreshTokenRepository;
 import com.project.shop.member.jwt.TokenProvider;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,9 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -34,6 +37,7 @@ public class MemberServiceImpl implements MemberService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RoleRepository roleRepository;
 
     // 회원생성
     @Override
@@ -44,6 +48,15 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = Member.create(memberSignupRequest, passwordEncoder);
         memberRepository.save(member);
+
+        for (RoleType role : memberSignupRequest.getRoles()) {
+            Role saveRole = Role.builder()
+                    .roleType(role)
+                    .member(member)
+                    .build();
+
+            roleRepository.save(saveRole);
+        }
     }
 
     // 회원가입 중복체크
@@ -96,6 +109,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
+    // 회원 조회 (회원 ID)
     @Override
     public MemberResponse findMemberInfoById(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(
@@ -104,32 +118,14 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponse().toResponse(member);
     }
 
-    // loginId 로 회원 정보 가져오기
-    @Override
-    @Transactional(readOnly = true)
-    public MemberResponse findMemberInfoLoginId(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-        return new MemberResponse().toResponse(member);
-    }
-
-
     // 회원 1명 조회
     @Transactional(readOnly = true)
     @Override
-    public MemberResponse memberFindOne(Long memberId) {
+    public MemberResponse memberFindByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-        return new MemberResponse().toResponse(member);
-    }
 
-    // 회원 전체 조회
-    @Transactional(readOnly = true)
-    @Override
-    public List<MemberResponse> memberFindAll() {
-        List<MemberResponse> responseList = memberRepository.findAll()
-                .stream().map(member -> new MemberResponse().toResponse(member)).collect(Collectors.toList());
-        return responseList;
+        return new MemberResponse().toResponse(member);
     }
 
     // 회원 수정

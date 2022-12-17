@@ -1,8 +1,29 @@
 package com.project.shop.member.domain;
 
-public enum Role {
-    ROLE_USER,
-    ROLE_SELLER,
-    ROLE_ADMIN;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
+@Entity
+@NoArgsConstructor
+public class Role {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "roleType_id")
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @Builder
+    public Role(RoleType roleType, Member member) {
+        this.roleType = roleType;
+        this.member = member;
+    }
 }
