@@ -26,9 +26,7 @@ public class OrderController {
     // MerchantID UUID 생성
     @GetMapping("/merchantId")
     public MerchantId merchantIdCreate() {
-        return MerchantId.builder()
-                .merchantId(UUID.randomUUID())
-                .build();
+        return MerchantId.builder().merchantId(UUID.randomUUID()).build();
     }
 
     // 주문 생성
@@ -38,14 +36,14 @@ public class OrderController {
         orderService.cartOrder(orderCreateRequest);
     }
 
-    // 주문 회원별 조회 - 여러 주문이 있을 수 있다.
+    // 주문 조회
     @GetMapping("/orders")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderResponse> orderFindMember(Long memberId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return orderService.orderFindMember(memberId, pageable);
     }
 
-    // 가맹점 ID 조회하기
+    // MerchantID 조회하기
     @GetMapping("/merchantId/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public String findMerchantId(@PathVariable("orderId") Long orderId) {
@@ -55,8 +53,7 @@ public class OrderController {
     // 결제 취소
     @PostMapping("/payCancel/{payId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void payCancel(@PathVariable("payId") Long payId,
-                          @RequestBody PayCancelRequest payCancelRequest) {
+    public void payCancel(@PathVariable("payId") Long payId, @RequestBody PayCancelRequest payCancelRequest) {
         orderService.payCancel(payId, payCancelRequest);
     }
 }
