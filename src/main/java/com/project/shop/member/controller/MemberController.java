@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 @RestController
@@ -57,18 +56,11 @@ public class MemberController {
         return memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId());
     }
 
-    // 회원 조회
-    @GetMapping("/member/{loginId}")
+    // 회원 1명 조회
+    @GetMapping("/member/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse findMemberInfoByLoginId(@PathVariable("loginId") String loginId) {
-        return memberService.findMemberInfoLoginId(loginId);
-    }
-
-    //회원 전체 조회
-    @GetMapping("/members")
-    @ResponseStatus(HttpStatus.OK)
-    public List<MemberResponse> memberFindAll() {
-        return memberService.memberFindAll();
+    public MemberResponse memberFindByMemberId(@PathVariable("memberId") Long memberId) {
+        return memberService.memberFindByMemberId(memberId);
     }
 
     //회원 수정
