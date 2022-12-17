@@ -61,7 +61,7 @@ public class Goods extends BaseTimeEntity {
     }
 
 
-    public static Goods toGoods(GoodsCreateRequest goodsCreateRequest) {
+    public static Goods create(GoodsCreateRequest goodsCreateRequest) {
         return Goods.builder()
                 .goodsName(goodsCreateRequest.getGoodsName())
                 .memberId(goodsCreateRequest.getMemberId())

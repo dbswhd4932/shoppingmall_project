@@ -47,7 +47,7 @@ public class GoodsServiceImpl implements GoodsService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         // 상품 정보저장
-        Goods goods = Goods.toGoods(goodsCreateRequest);
+        Goods goods = Goods.create(goodsCreateRequest);
         goodsRepository.save(goods);
 
         // 옵션 정보 저장

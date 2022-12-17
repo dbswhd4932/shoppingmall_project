@@ -1,20 +1,14 @@
 package com.project.shop.goods.service.Impl;
 
 import com.project.shop.factory.GoodsFactory;
-import com.project.shop.factory.MemberFactory;
-import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
-import com.project.shop.goods.domain.Image;
-import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
-import com.project.shop.member.domain.Member;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,9 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,7 +62,7 @@ class GoodsServiceImplTest {
 
         List<String> impPaths = new ArrayList<>();
         impPaths.add("abcdefg.png");
-        Goods goods = Goods.toGoods(goodsCreateRequest);
+        Goods goods = Goods.create(goodsCreateRequest);
 
         //when
         goodsService.goodsCreate(goodsCreateRequest, impPaths);
