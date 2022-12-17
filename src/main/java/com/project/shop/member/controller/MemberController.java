@@ -1,7 +1,10 @@
 package com.project.shop.member.controller;
 
 import com.project.shop.global.util.SecurityUtil;
-import com.project.shop.member.controller.request.*;
+import com.project.shop.member.controller.request.KakaoLoginRequest;
+import com.project.shop.member.controller.request.LoginRequest;
+import com.project.shop.member.controller.request.MemberEditRequest;
+import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.jwt.JwtTokenDto;
 import com.project.shop.member.service.MemberService;
@@ -20,21 +23,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // 내 정보 가져오기
-    @GetMapping("/member/me")
-    public MemberResponse findMemberInfoById() {
-        return memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId());
-    }
-
-
-    // loginId 로 회원찾기
-    @GetMapping("/member/{loginId}")
-    @ResponseStatus(HttpStatus.OK)
-    public MemberResponse findMemberInfoByLoginId(@PathVariable String logindId) {
-        return memberService.findMemberInfoLoginId(logindId);
-    }
-
-    //중복체크 먼저 하고나서 -> 회원 가입
+    // 회원 가입
     @PostMapping("/members")
     @ResponseStatus(HttpStatus.CREATED)
     public void memberSignup(@RequestBody @Valid MemberSignupRequest request) {
@@ -55,7 +44,6 @@ public class MemberController {
         return memberService.login(loginRequest);
     }
 
-
     //todo 소셜 로그인
     @PostMapping("/members/kakaoLogin")
     @ResponseStatus(HttpStatus.OK)
@@ -63,6 +51,18 @@ public class MemberController {
         memberService.kakaoLogin(kakaoLoginRequest);
     }
 
+    // 내 정보 가져오기
+    @GetMapping("/member/me")
+    public MemberResponse findMemberInfoById() {
+        return memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId());
+    }
+
+    // 회원 조회
+    @GetMapping("/member/{loginId}")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponse findMemberInfoByLoginId(@PathVariable("loginId") String loginId) {
+        return memberService.findMemberInfoLoginId(loginId);
+    }
 
     //회원 전체 조회
     @GetMapping("/members")
@@ -84,5 +84,4 @@ public class MemberController {
     public void memberDelete(@PathVariable("memberId") Long memberId) {
         memberService.memberDelete(memberId);
     }
-
 }
