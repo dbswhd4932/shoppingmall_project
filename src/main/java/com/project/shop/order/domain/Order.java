@@ -25,6 +25,8 @@ public class Order extends BaseTimeEntity {
     @Column(nullable = false)
     private Long memberId;          //회원번호
 
+    private Long goodsId;           //주문상품번호
+
     @Column(nullable = false, length = 20)
     private String name;            //수취인 이름
 
@@ -32,22 +34,21 @@ public class Order extends BaseTimeEntity {
     private String phone;           //수취인 전화번호
 
     @Column(nullable = false)
-    private String zipcode;         //우편번호
+    private String zipcode;         //수취인 우편번호
 
     @Column(nullable = false)
-    private String detailAddress;   //상세주소
+    private String detailAddress;   //수취인 상세주소
 
     private String requirement;     //요청사항
 
     @Column(nullable = false)
-    private int totalPrice;        //결제금액
+    private int totalPrice;    //총 주문금액
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;    //주문상태
+   @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;//주문상태
 
     private String impUid;         // 아임포트 발급 ID ex)imp_727855699150
     private String merchantId;     // 가맹점 ID        ex)ORD20180131-0000014
-
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();

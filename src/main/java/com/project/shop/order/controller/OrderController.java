@@ -35,7 +35,7 @@ public class OrderController {
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
     public void orderCreate(@RequestBody @Valid OrderCreateRequest orderCreateRequest) {
-        orderService.buyAll(orderCreateRequest);
+        orderService.cartOrder(orderCreateRequest);
     }
 
     // 주문 회원별 조회 - 여러 주문이 있을 수 있다.

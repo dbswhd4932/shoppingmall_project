@@ -79,27 +79,30 @@ public class OrderServiceImpl implements OrderService {
         orderItemRepository.save(orderItem);
     }*/
 
-    // 장바구니 상품 전체 주문 생성
+    // 주문 생성
     @Override
-    public void buyAll(OrderCreateRequest orderCreateRequest) {
+    public void cartOrder(OrderCreateRequest orderCreateRequest) {
         List<Cart> carts = cartRepository.findByMemberId(orderCreateRequest.getMemberId()).orElseThrow(
                 () -> new BusinessException(CART_NO_PRODUCTS));
 
+        // 장바구니에 상품이 있는지 확인
         if (carts.isEmpty()) {
             throw new BusinessException(CART_NO_PRODUCTS);
         }
 
-            int payTotalPrice = 0;
-        for (Cart cart : carts) {
-            payTotalPrice += cart.getTotalPrice();
-        }
+//        int payTotalPrice = 0;
+//        for (Cart cart : carts) {
+//            payTotalPrice += cart.getTotalPrice();
+//        }
+
+        int orderPrice = orderCreateRequest.getTotalPrice();
+        Order order = Order.toOrder(orderCreateRequest, orderPrice);
 
         // 주문_상품 DB 저장
-        Order order = Order.toOrder(orderCreateRequest, payTotalPrice);
-        for (Cart cart : carts) {
-            Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(
-                    () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
-            OrderItem orderItem = OrderItem.createOrderItem(orderCreateRequest.getMemberId(), goods, cart.getTotalPrice(), cart.getTotalAmount(), order);
+        for (OrderCreateRequest.orderItemCreate orderItemCreate : orderCreateRequest.getOrderItemCreates()) {
+            Goods goods = goodsRepository.findById(orderItemCreate.getGoodsId()).orElseThrow(
+                    () -> new BusinessException(NOT_FOUND_GOODS));
+            OrderItem orderItem = OrderItem.createOrderItem(orderCreateRequest.getMemberId(), goods, orderItemCreate.getOrderPrice(), orderItemCreate.getAmount(), order);
             orderItemRepository.save(orderItem);
         }
 
@@ -110,9 +113,10 @@ public class OrderServiceImpl implements OrderService {
                 .cardCompany(orderCreateRequest.getCardCompany())
                 .cardNumber(orderCreateRequest.getCardNumber())
                 .order(order)
-                .payPrice(payTotalPrice)
+                .payPrice(orderPrice)
                 .build();
 
+        // 결제 DB 저장
         payRepository.save(pay);
     }
 

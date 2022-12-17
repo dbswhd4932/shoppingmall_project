@@ -35,8 +35,8 @@ public class OrderResponse {
                 .detailAddress(order.getDetailAddress())
                 .requirement(order.getRequirement())
                 .totalPrice(order.getTotalPrice())
-                .orderTime(order.getCratedAt())
                 .orderStatus(order.getOrderStatus())
+                .orderTime(order.getCratedAt())
                 .build();
     }
 }
