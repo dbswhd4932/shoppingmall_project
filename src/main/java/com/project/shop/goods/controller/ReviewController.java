@@ -5,11 +5,9 @@ import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewResponse;
-import com.project.shop.goods.service.Impl.ReviewServiceImpl;
 import com.project.shop.goods.service.ReviewService;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -57,6 +55,4 @@ public class ReviewController {
     public void reviewDelete(@PathVariable("reviewId") Long reviewId, Long memberId) {
         reviewService.reviewDelete(reviewId, memberId);
     }
-
-
 }
