@@ -34,7 +34,7 @@ public class CategoryController {
     }
 
     // 카테고리 수정
-    @PutMapping("/categories/{categoryId}/edit")
+    @PutMapping("/categories/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
     public void categoryEdit(@PathVariable("categoryId") Long categoryId, @RequestBody CategoryEditRequest categoryEditRequest) {
         categoryService.categoryEdit(categoryId , categoryEditRequest);
