@@ -26,16 +26,16 @@ public class CartController {
     }
 
     // 장바구니 조회
-    @GetMapping("/carts")
+    @GetMapping("/carts/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CartResponse> cartFind(Long memberId) {
+    public List<CartResponse> cartFind(@PathVariable("memberId") Long memberId) {
         return cartService.cartFindMember(memberId);
     }
 
     // 상품 변경 여부 확인
     @GetMapping("/carts/{cartId}/check")
     @ResponseStatus(HttpStatus.OK)
-    public boolean  checkGoodsInfoChange(@PathVariable("cartId") Long cartId) {
+    public boolean checkGoodsInfoChange(@PathVariable("cartId") Long cartId) {
         return cartService.checkGoodsInfoChange(cartId);
     }
 
