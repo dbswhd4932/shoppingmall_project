@@ -25,7 +25,7 @@ public class Order extends BaseTimeEntity {
     @Column(nullable = false)
     private Long memberId;          //회원번호
 
-    private Long goodsId;           //주문상품번호
+//    private Long goodsId;           //주문상품번호
 
     @Column(nullable = false, length = 20)
     private String name;            //수취인 이름
