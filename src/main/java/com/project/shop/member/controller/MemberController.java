@@ -23,7 +23,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 회원 가입
-    @PostMapping("/members")
+    @PostMapping("/members/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public void memberSignup(@RequestBody @Valid MemberSignupRequest request) {
         memberService.memberSignup(request);
