@@ -63,7 +63,9 @@ public class TokenProvider {
         log.info("authentication.getPrincipal() = {} " , authentication.getPrincipal());
         log.info("authentication.getDetails() = {} " , authentication.getDetails());
 
+
         String accessToken = Jwts.builder()
+                .setSubject(authentication.getName())
                 .claim(MEMBER_ID_CLAIM_KEY, authentication.getName())    //"memberId":"1"
                 .claim(AUTHORITIES_KEY, authorization)                  //"auth":"ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)                    //"exp":"12345678"
