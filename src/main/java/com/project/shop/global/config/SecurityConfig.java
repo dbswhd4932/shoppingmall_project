@@ -3,22 +3,33 @@ package com.project.shop.global.config;
 import com.project.shop.member.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true) // preAuthorize 어노테이션 추가하기 위해
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers(
+                "/h2-console/**"
+                , "/favicon.ico"
+                , "/error");
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -39,9 +50,10 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests() // 설정시작
-                .antMatchers("/h2-console/**").permitAll()
+//                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/members/**").permitAll()
                 .antMatchers("/api/goods/**").permitAll()
+                .antMatchers("/api/categories/**").hasRole("ADMIN")
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .anyRequest().permitAll() // 이외는 인증필요
                 .and()
