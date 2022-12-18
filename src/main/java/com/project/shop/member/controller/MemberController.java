@@ -10,6 +10,7 @@ import com.project.shop.member.jwt.JwtTokenDto;
 import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,6 +53,7 @@ public class MemberController {
 
     // 내 정보 가져오기
     @GetMapping("/member/me")
+    @PreAuthorize("hasAnyRole('USER')")
     public MemberResponse findMemberInfoById() {
         return memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId());
     }
@@ -66,13 +68,15 @@ public class MemberController {
     //회원 수정
     @PutMapping("/members/{memberId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('USER')")
     public void memberEdit(@PathVariable("memberId") Long memberId, @RequestBody @Valid MemberEditRequest memberEditRequest) {
         memberService.memberEdit(memberId, memberEditRequest);
     }
 
-    //회원 삭제
+    //회원 탈퇴
     @DeleteMapping("/members/{memberId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('USER')")
     public void memberDelete(@PathVariable("memberId") Long memberId) {
         memberService.memberDelete(memberId);
     }

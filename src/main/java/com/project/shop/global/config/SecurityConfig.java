@@ -53,7 +53,6 @@ public class SecurityConfig {
 //                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/members/**").permitAll()
                 .antMatchers("/api/goods/**").permitAll()
-                .antMatchers("/api/categories/**").hasRole("ADMIN")
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .anyRequest().permitAll() // 이외는 인증필요
                 .and()

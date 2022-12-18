@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,6 +30,7 @@ public class ReviewController {
     // 리뷰 생성
     @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('USER')")
     public void reviewCreate(@RequestBody @Valid ReviewCreateRequest reviewCreateRequest) {
         reviewService.reviewCreate(reviewCreateRequest);
     }
@@ -43,6 +45,7 @@ public class ReviewController {
     // 리뷰 수정
     @PutMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('USER')")
     public void reviewEdit(@PathVariable("reviewId") Long reviewId, Long memberId, @RequestBody @Valid ReviewEditRequest reviewEditRequest) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
@@ -52,6 +55,7 @@ public class ReviewController {
     // 리뷰 삭제
     @DeleteMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public void reviewDelete(@PathVariable("reviewId") Long reviewId, Long memberId) {
         reviewService.reviewDelete(reviewId, memberId);
     }

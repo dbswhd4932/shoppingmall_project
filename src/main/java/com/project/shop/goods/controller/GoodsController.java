@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +33,7 @@ public class GoodsController {
     // 상품 생성
     @PostMapping(value = "/goods")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('SELLER')")
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart List<MultipartFile> multipartFiles) throws IOException {
 
@@ -67,6 +69,7 @@ public class GoodsController {
     // 상품 수정
     @PutMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('SELLER')")
     public void goodsEdit(@PathVariable("goodsId") Long goodsId, Long memberId,
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
                           @RequestPart(required = false) List<MultipartFile> multipartFiles) {
@@ -83,6 +86,7 @@ public class GoodsController {
     // 상품 삭제
     @DeleteMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('SELLER')")
     public void goodsDelete(@PathVariable("goodsId") Long goodsId, Long memberId) {
         goodsService.goodsDelete(goodsId, memberId);
     }

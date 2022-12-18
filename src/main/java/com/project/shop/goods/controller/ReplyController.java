@@ -6,6 +6,7 @@ import com.project.shop.goods.controller.response.ReplyResponse;
 import com.project.shop.goods.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +22,7 @@ public class ReplyController {
     // 대댓글 생성
     @PostMapping("/replies")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('SELLER')")
     public void replyCreate(@RequestBody @Valid ReplyCreateRequest request) {
         replyService.replyCreate(request);
     }
@@ -35,6 +37,7 @@ public class ReplyController {
     // 대댓글 수정
     @PutMapping("/replies/{replyId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('SELLER')")
     public void replyEdit(@PathVariable("replyId") Long replyId, Long goodsMemberId, @RequestBody @Valid ReplyEditRequest request) {
         replyService.replyEdit(replyId, goodsMemberId, request);
     }
@@ -42,6 +45,7 @@ public class ReplyController {
     // 대댓글 삭제
     @DeleteMapping("/replies/{replyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('SELLER','ADMIN')")
     public void replyDelete(@PathVariable("replyId") Long replyId, Long goodsMemberId) {
         replyService.replyDelete(replyId, goodsMemberId);
     }

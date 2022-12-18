@@ -7,6 +7,7 @@ import com.project.shop.goods.service.CategoryService;
 import com.project.shop.goods.service.Impl.CategoryServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ public class CategoryController {
     // 카테고리 생성
     @PostMapping("/categories")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public void categoryCreate(@RequestBody @Valid CategoryCreateRequest categoryCreateRequest) {
         categoryService.categoryCreate(categoryCreateRequest);
     }
@@ -36,6 +38,7 @@ public class CategoryController {
     // 카테고리 수정
     @PutMapping("/categories/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public void categoryEdit(@PathVariable("categoryId") Long categoryId, @RequestBody CategoryEditRequest categoryEditRequest) {
         categoryService.categoryEdit(categoryId , categoryEditRequest);
     }
@@ -43,6 +46,7 @@ public class CategoryController {
     // 카테고리 삭제
     @DeleteMapping("/categories/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public void categoryDelete(@PathVariable("categoryId") Long categoryId) {
         categoryService.categoryDelete(categoryId);
     }
