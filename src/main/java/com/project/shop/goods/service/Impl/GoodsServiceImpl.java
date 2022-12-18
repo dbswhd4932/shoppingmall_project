@@ -13,11 +13,14 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.goods.service.GoodsService;
+import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,12 +45,11 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
-        // 회원 존재여부 확인
-        memberRepository.findById(goodsCreateRequest.getMemberId()).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = memberRepository.findById(Long.valueOf(authentication.getName())).orElseThrow(() -> new IllegalArgumentException("이게맞나.."));
 
         // 상품 정보저장
-        Goods goods = Goods.create(goodsCreateRequest);
+        Goods goods = Goods.create(goodsCreateRequest, member);
         goodsRepository.save(goods);
 
         // 옵션 정보 저장

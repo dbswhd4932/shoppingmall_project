@@ -13,8 +13,4 @@ public class NoSocialLoginRequest {
     private String loginId;
     private String password;
 
-    public UsernamePasswordAuthenticationToken toAuthentication() {
-        return new UsernamePasswordAuthenticationToken(loginId, password);
-    }
-
 }
