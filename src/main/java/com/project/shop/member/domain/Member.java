@@ -12,6 +12,7 @@ import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -83,10 +84,10 @@ public class Member extends BaseTimeEntity {
     }
 
     // 카카오 로그인 -> 회원 생성
-    public static Member kakaoCreate(KakaoLoginRequest kakaoLoginRequest) {
+    public static Member kakaoCreate(KakaoLoginRequest kakaoLoginRequest, PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .loginId(kakaoLoginRequest.getLoginId())
-                .password("")
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                 .name("")
                 .zipcode("")
                 .detailAddress("")

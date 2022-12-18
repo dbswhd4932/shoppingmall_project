@@ -22,7 +22,10 @@ public interface MemberService {
     JwtTokenDto login(NoSocialLoginRequest noSocialLoginRequest);
 
     // 카카오 로그인
-    JwtTokenDto kakaoLogin(KakaoLoginRequest kakaoLoginRequest);
+    void kakaoLogin(KakaoLoginRequest kakaoLoginRequest);
+
+    // 카카오 토큰 생성
+    JwtTokenDto kakaoGetToken(KakaoLoginRequest kakaoLoginRequest);
 
     // 회원 1명 조회
     MemberResponse memberFindByMemberId(Long memberId);

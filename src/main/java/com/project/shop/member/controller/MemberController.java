@@ -47,8 +47,15 @@ public class MemberController {
     //카카오 로그인
     @PostMapping("/members/kakaoLogin")
     @ResponseStatus(HttpStatus.OK)
-    public JwtTokenDto kakaoLogin(@RequestBody @Valid KakaoLoginRequest kakaoLoginRequest) {
-        return memberService.kakaoLogin(kakaoLoginRequest);
+    public void kakaoLogin(@RequestBody @Valid KakaoLoginRequest kakaoLoginRequest) {
+        memberService.kakaoLogin(kakaoLoginRequest);
+    }
+
+    //카카오 토큰 얻기
+    @PostMapping("/members/kakaoGetToken")
+    @ResponseStatus(HttpStatus.OK)
+    public JwtTokenDto kakaoGetToken(@RequestBody @Valid KakaoLoginRequest kakaoLoginRequest) {
+        return memberService.kakaoGetToken(kakaoLoginRequest);
     }
 
     // 내 정보 가져오기
