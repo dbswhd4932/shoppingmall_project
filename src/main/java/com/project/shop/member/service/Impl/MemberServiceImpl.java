@@ -3,11 +3,10 @@ package com.project.shop.member.service.Impl;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.controller.request.KakaoLoginRequest;
-import com.project.shop.member.controller.request.LoginRequest;
+import com.project.shop.member.controller.request.NoSocialLoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
-import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.Role;
 import com.project.shop.member.domain.RoleType;
@@ -67,46 +66,39 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    // todo 일반 로그인
+    // 일반 로그인
     @Override              // String memberId, String password
-    public JwtTokenDto login(LoginRequest loginRequest) {
-
-        memberRepository.findByLoginId(loginRequest.getLoginId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.CHECK_LOGINID_OR_PASSWORD));
-
+    public JwtTokenDto login(NoSocialLoginRequest noSocialLoginRequest) {
         // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = loginRequest.toAuthentication();
-
+        UsernamePasswordAuthenticationToken authenticationToken = noSocialLoginRequest.toAuthentication();
         // 2. 실제 검증 (사용자 비밀번호 체크)
-//         authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
+        // authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
         // 3. 인증기반으로 jwt 토큰생성
         JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
-
         // 4. 리프레시 토큰 저장
         RefreshToken refreshToken = RefreshToken.builder()
                 .key(authentication.getName())
                 .value(tokenDto.getRefreshToken())
                 .build();
-
         refreshTokenRepository.save(refreshToken);
-
         // 5. 토큰 리턴
         return tokenDto;
-
     }
 
     // todo 카카오 로그인
     @Override
-    public void kakaoLogin(KakaoLoginRequest kakaoLoginRequest) {
-        Member member = Member.builder()
-                .loginId(kakaoLoginRequest.getKakaoLoginId())
-                .email(kakaoLoginRequest.getKakaoEmail())
-                .loginType(LoginType.KAKAO)
-                .build();
-
+    public JwtTokenDto kakaoLogin(KakaoLoginRequest kakaoLoginRequest) {
+        Member member = Member.kakaoCreate(kakaoLoginRequest);
         memberRepository.save(member);
+
+        Role role = Role.builder()
+                .member(member)
+                .roleType(RoleType.ROLE_USER)
+                .build();
+        roleRepository.save(role);
+
+        return null;
     }
 
     // 회원 조회 (회원 ID)

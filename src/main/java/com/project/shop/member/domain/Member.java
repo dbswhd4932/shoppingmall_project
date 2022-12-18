@@ -1,6 +1,7 @@
 package com.project.shop.member.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
+import com.project.shop.member.controller.request.KakaoLoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import lombok.*;
@@ -78,6 +79,20 @@ public class Member extends BaseTimeEntity {
                 .email(memberSignupRequest.getEmail())
                 .phone(memberSignupRequest.getPhone())
                 .loginType(LoginType.NO_SOCIAL)
+                .build();
+    }
+
+    // 카카오 로그인 -> 회원 생성
+    public static Member kakaoCreate(KakaoLoginRequest kakaoLoginRequest) {
+        return Member.builder()
+                .loginId(kakaoLoginRequest.getLoginId())
+                .password("")
+                .name("")
+                .zipcode("")
+                .detailAddress("")
+                .email(kakaoLoginRequest.getEmail())
+                .phone("")
+                .loginType(LoginType.KAKAO)
                 .build();
     }
 

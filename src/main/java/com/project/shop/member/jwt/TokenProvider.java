@@ -24,6 +24,7 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY  = "auth";
     private static final String BEARER_TYPE = "Bearer";
+    private static final String MEMBER_ID_CLAIM_KEY = "memberId";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;      // 1일
 
@@ -56,11 +57,17 @@ public class TokenProvider {
         //AccessToken 생성
         Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 30분 60 * 30 * 1000
 
+        log.info("authentication.getName() = {} " , authentication.getName());
+        log.info("authentication.getAuthorities() = {} " , authentication.getAuthorities());
+        log.info("authentication.getCredentials() = {} " , authentication.getCredentials());
+        log.info("authentication.getPrincipal() = {} " , authentication.getPrincipal());
+        log.info("authentication.getDetails() = {} " , authentication.getDetails());
+
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())       //"sub":"name"
-                .claim(AUTHORITIES_KEY, authorization)     //"auth":"ROLE_USER"
-                .setExpiration(accessTokenExpiresIn)       //"exp":"12345678"
-                .signWith(key, SignatureAlgorithm.HS512)   //"alg":"HS512"
+                .claim(MEMBER_ID_CLAIM_KEY, authentication.getName())    //"memberId":"1"
+                .claim(AUTHORITIES_KEY, authorization)                  //"auth":"ROLE_USER"
+                .setExpiration(accessTokenExpiresIn)                    //"exp":"12345678"
+                .signWith(key, SignatureAlgorithm.HS512)                //"alg":"HS512"
                 .compact();
 
         // RefreshToken 생성

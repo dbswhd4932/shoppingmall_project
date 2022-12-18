@@ -2,7 +2,7 @@ package com.project.shop.member.controller;
 
 import com.project.shop.global.util.SecurityUtil;
 import com.project.shop.member.controller.request.KakaoLoginRequest;
-import com.project.shop.member.controller.request.LoginRequest;
+import com.project.shop.member.controller.request.NoSocialLoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
@@ -37,18 +37,18 @@ public class MemberController {
         memberService.loginIdDuplicateCheck(loginId);
     }
 
-    //todo 일반 로그인 -> 시큐리티 적용(Token) 필요
+    //일반 로그인
     @PostMapping("/members/login")
     @ResponseStatus(HttpStatus.OK)
-    public JwtTokenDto login(@RequestBody LoginRequest loginRequest) {
-        return memberService.login(loginRequest);
+    public JwtTokenDto login(@RequestBody NoSocialLoginRequest noSocialLoginRequest) {
+        return memberService.login(noSocialLoginRequest);
     }
 
-    //todo 소셜 로그인
+    //카카오 로그인
     @PostMapping("/members/kakaoLogin")
     @ResponseStatus(HttpStatus.OK)
-    public void kakaoLogin(@Valid KakaoLoginRequest kakaoLoginRequest) {
-        memberService.kakaoLogin(kakaoLoginRequest);
+    public JwtTokenDto kakaoLogin(@RequestBody @Valid KakaoLoginRequest kakaoLoginRequest) {
+        return memberService.kakaoLogin(kakaoLoginRequest);
     }
 
     // 내 정보 가져오기

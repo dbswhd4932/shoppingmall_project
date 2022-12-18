@@ -1,7 +1,7 @@
 package com.project.shop.member.service;
 
 import com.project.shop.member.controller.request.KakaoLoginRequest;
-import com.project.shop.member.controller.request.LoginRequest;
+import com.project.shop.member.controller.request.NoSocialLoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
@@ -19,10 +19,10 @@ public interface MemberService {
     void loginIdDuplicateCheck(String loginId);
 
     // 일반 로그인
-    JwtTokenDto login(LoginRequest loginRequest);
+    JwtTokenDto login(NoSocialLoginRequest noSocialLoginRequest);
 
     // 카카오 로그인
-    void kakaoLogin(KakaoLoginRequest kakaoLoginRequest);
+    JwtTokenDto kakaoLogin(KakaoLoginRequest kakaoLoginRequest);
 
     // 회원 1명 조회
     MemberResponse memberFindByMemberId(Long memberId);

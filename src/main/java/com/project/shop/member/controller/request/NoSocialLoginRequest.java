@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
+public class NoSocialLoginRequest {
 
     private String loginId;
     private String password;
