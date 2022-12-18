@@ -20,10 +20,10 @@ public class CartController {
     private final CartService cartService;
 
     // 장바구니 담기
-    @PostMapping("/carts")
+    @PostMapping("/carts/{memberId}")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('USER')")
-    public void cartAddGoods(@RequestBody @Valid CartCreateRequest request, Long memberId) {
+    public void cartAddGoods(@PathVariable("memberId") Long memberId, @RequestBody @Valid CartCreateRequest request) {
         cartService.cartAddGoods(request, memberId);
     }
 
