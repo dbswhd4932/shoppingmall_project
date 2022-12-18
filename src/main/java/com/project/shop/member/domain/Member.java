@@ -84,10 +84,10 @@ public class Member extends BaseTimeEntity {
     }
 
     // 카카오 로그인 -> 회원 생성
-    public static Member kakaoCreate(KakaoLoginRequest kakaoLoginRequest, PasswordEncoder passwordEncoder) {
+    public static Member kakaoCreate(KakaoLoginRequest kakaoLoginRequest) {
         return Member.builder()
                 .loginId(kakaoLoginRequest.getLoginId())
-                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                .password("")
                 .name("")
                 .zipcode("")
                 .detailAddress("")
