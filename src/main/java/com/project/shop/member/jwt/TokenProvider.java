@@ -1,5 +1,7 @@
 package com.project.shop.member.jwt;
 
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -28,14 +30,17 @@ public class TokenProvider {
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;      // 1일
 
+    private final MemberRepository memberRepository;
+
     private final Key key;
 
     //생성자
-    public TokenProvider(@Value("${jwt.secret}") String secretKey) {
+    public TokenProvider(@Value("${jwt.secret}") String secretKey , MemberRepository memberRepository) {
         // base64를 byte[] 로 변환
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         // byte[] 로 key 생성
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.memberRepository = memberRepository;
     }
 
     // 유저 정보를 가지고 AccessToken , RefreshToken을 생성하는 메서드
@@ -63,13 +68,14 @@ public class TokenProvider {
         log.info("authentication.getPrincipal() = {} " , authentication.getPrincipal());
         log.info("authentication.getDetails() = {} " , authentication.getDetails());
 
+        Member member = memberRepository.findByLoginId(authentication.getName()).get();
 
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(MEMBER_ID_CLAIM_KEY, authentication.getName())    //"memberId":"1"
-                .claim(AUTHORITIES_KEY, authorization)                  //"auth":"ROLE_USER"
-                .setExpiration(accessTokenExpiresIn)                    //"exp":"12345678"
-                .signWith(key, SignatureAlgorithm.HS512)                //"alg":"HS512"
+                .setSubject(authentication.getName())          //"sub":"loginId"
+                .claim(MEMBER_ID_CLAIM_KEY, member.getId())    //"memberId":"1"
+                .claim(AUTHORITIES_KEY, authorization)         //"auth":"ROLE_USER"
+                .setExpiration(accessTokenExpiresIn)           //"exp":"12345678"
+                .signWith(key, SignatureAlgorithm.HS512)       //"alg":"HS512"
                 .compact();
 
         // RefreshToken 생성
