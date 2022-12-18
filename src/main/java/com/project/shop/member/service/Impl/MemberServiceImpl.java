@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,10 +71,11 @@ public class MemberServiceImpl implements MemberService {
     @Override              // String memberId, String password
     public JwtTokenDto login(NoSocialLoginRequest noSocialLoginRequest) {
         // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = noSocialLoginRequest.toAuthentication();
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(noSocialLoginRequest.getLoginId(), noSocialLoginRequest.getPassword());
         // 2. 실제 검증 (사용자 비밀번호 체크)
         // authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         // 3. 인증기반으로 jwt 토큰생성
         JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
         // 4. 리프레시 토큰 저장
@@ -89,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
     // todo 카카오 로그인
     @Override
     public void kakaoLogin(KakaoLoginRequest kakaoLoginRequest) {
-        Member member = Member.kakaoCreate(kakaoLoginRequest, passwordEncoder);
+        Member member = Member.kakaoCreate(kakaoLoginRequest);
         memberRepository.save(member);
 
         Role role = Role.builder()
@@ -103,8 +105,8 @@ public class MemberServiceImpl implements MemberService {
     // 카카오 로그인 토큰 얻기
     public JwtTokenDto kakaoGetToken(KakaoLoginRequest kakaoLoginRequest) {
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(kakaoLoginRequest.getLoginId(), kakaoLoginRequest.getEmail());
+        /*UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(kakaoLoginRequest.getLoginId());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
@@ -115,9 +117,9 @@ public class MemberServiceImpl implements MemberService {
                 .value(tokenDto.getRefreshToken())
                 .build();
 
-        refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(refreshToken);*/
 
-        return tokenDto;
+        return null;
     }
 
     // 회원 조회 (회원 ID)

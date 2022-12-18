@@ -46,7 +46,7 @@ public class GoodsServiceImpl implements GoodsService {
     public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findById(Long.valueOf(authentication.getName())).orElseThrow(() -> new IllegalArgumentException("이게맞나.."));
+        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         // 상품 정보저장
         Goods goods = Goods.create(goodsCreateRequest, member);
@@ -112,8 +112,13 @@ public class GoodsServiceImpl implements GoodsService {
     // s3 이미지 삭제 + s3 이미지 생성
     // 옵션 삭제 + 옵션 재생성
     @Override
-    public void goodsEdit(Long goodsId, Long memberId, GoodsEditRequest goodsEditRequest, List<String> imgPaths) {
-        Goods goods = goodsRepository.findByIdAndMemberId(goodsId, memberId)
+    public void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest, List<String> imgPaths) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+        Goods goods = goodsRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
 
         goods.update(goodsEditRequest);
@@ -153,8 +158,14 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 상품 삭제
     @Override
-    public void goodsDelete(Long goodsId, Long memberId) {
-        Goods goods = goodsRepository.findByIdAndMemberId(goodsId, memberId)
+    public void goodsDelete(Long goodsId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+        Goods goods = goodsRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
 
         // s3 이미지 삭제

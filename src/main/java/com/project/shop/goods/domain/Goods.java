@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,10 +62,10 @@ public class Goods extends BaseTimeEntity {
     }
 
 
-    public static Goods create(GoodsCreateRequest goodsCreateRequest) {
+    public static Goods create(GoodsCreateRequest goodsCreateRequest, Member member) {
         return Goods.builder()
                 .goodsName(goodsCreateRequest.getGoodsName())
-                .memberId(goodsCreateRequest.getMemberId())
+                .memberId(member.getId())
                 .category(goodsCreateRequest.getCategory())
                 .price(goodsCreateRequest.getPrice())
                 .description(goodsCreateRequest.getGoodsDescription())

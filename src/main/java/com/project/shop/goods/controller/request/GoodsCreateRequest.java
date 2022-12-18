@@ -20,9 +20,6 @@ public class GoodsCreateRequest {
     @NotNull(message = "상품이름을 입력하세요")
     private String goodsName;
 
-    @NotNull(message = "주문 회원ID를 입력하세요.")
-    private Long memberId;
-
     @NotNull(message = "카테고리를 입력하세요.")
     private Category category;
 

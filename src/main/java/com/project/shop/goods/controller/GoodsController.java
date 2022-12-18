@@ -70,24 +70,23 @@ public class GoodsController {
     @PutMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('SELLER')")
-    public void goodsEdit(@PathVariable("goodsId") Long goodsId, Long memberId,
+    public void goodsEdit(@PathVariable("goodsId") Long goodsId,
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
                           @RequestPart(required = false) List<MultipartFile> multipartFiles) {
 
-        // todo controller 에서 repository 의존
         if (goodsRepository.findByGoodsName(goodsEditRequest.getGoodsName()).isPresent()) {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
         }
 
         List<String> imgPaths = s3Service.upload(multipartFiles);
-        goodsService.goodsEdit(goodsId, memberId, goodsEditRequest, imgPaths);
+        goodsService.goodsEdit(goodsId, goodsEditRequest, imgPaths);
     }
 
     // 상품 삭제
     @DeleteMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('SELLER')")
-    public void goodsDelete(@PathVariable("goodsId") Long goodsId, Long memberId) {
-        goodsService.goodsDelete(goodsId, memberId);
+    public void goodsDelete(@PathVariable("goodsId") Long goodsId) {
+        goodsService.goodsDelete(goodsId);
     }
 }

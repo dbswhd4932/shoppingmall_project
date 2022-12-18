@@ -22,9 +22,9 @@ public interface GoodsService {
     List<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable);
 
     // 상품 수정
-    void goodsEdit(Long goodsId, Long memberId, GoodsEditRequest goodsEditRequest, List<String> imgPaths);
+    void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest, List<String> imgPaths);
 
     // 상품 삭제
-    void goodsDelete(Long goodsId, Long memberId);
+    void goodsDelete(Long goodsId);
 
 }
