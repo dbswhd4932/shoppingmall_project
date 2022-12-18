@@ -40,17 +40,25 @@ public class TokenProvider {
     // 유저 정보를 가지고 AccessToken , RefreshToken을 생성하는 메서드
     public JwtTokenDto generateToken(Authentication authentication) {
         //권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
-                .map(grantedAuthority -> grantedAuthority.getAuthority())
-                .collect(Collectors.joining(","));
+        String collect = authentication.getAuthorities().stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining());
+
+        /**
+         *  권한이 2개 이상일 경우 EX) [ROLE_ADMIN, ROLE_USER]
+         *  JWT auth 는 문자열 그대로  [ROLE_ADMIN, ROLE_USER] 로 들어가기 때문에, ROLE_ADMIN, ROLE_USER 로 커스텀이 필요합니다.
+         *  대괄호 [ ] 를 제거한 후 토큰 생성 시 auth 값에 추가해줍니다.
+         */
+        String authorization = collect.substring(1, collect.length() - 1);
 
         long nowTime = new Date().getTime();
 
         //AccessToken 생성
         Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 30분 60 * 30 * 1000
+
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())       //"sub":"name"
-                .claim(AUTHORITIES_KEY, authentication)     //"auth":"ROLE_USER"
+                .claim(AUTHORITIES_KEY, authorization)     //"auth":"ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)       //"exp":"12345678"
                 .signWith(key, SignatureAlgorithm.HS512)   //"alg":"HS512"
                 .compact();
@@ -77,9 +85,10 @@ public class TokenProvider {
         if (claims.get(AUTHORITIES_KEY) == null) { // "auth"
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
+
         // 클레임에서 권한 정보 가져오기
-        List<SimpleGrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                .map(SimpleGrantedAuthority::new)
+        List<SimpleGrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(", "))
+                .map(role -> new SimpleGrantedAuthority(role))
                 .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication 리턴
