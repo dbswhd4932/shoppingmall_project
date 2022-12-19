@@ -115,8 +115,18 @@ public class OrderServiceImpl implements OrderService {
     // 결제취소
     @Override
     public void payCancel(Long payId, PayCancelRequest payCancelRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+
         Pay pay = payRepository.findById(payId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_PAY));
+
+        // 결제 회원과 토큰 비교
+        if(!pay.getMemberId().equals(member.getId())) {
+            throw new IllegalArgumentException("결제를 취소할 수 있는 사용자가 아닙니다.");
+        }
 
         // 이미 취소된 결제는 예외처리
         if (pay.getPayStatus().equals(PayStatus.CANCEL)) {
@@ -136,6 +146,12 @@ public class OrderServiceImpl implements OrderService {
                 .cardCompany(pay.getCardCompany())
                 .cardNumber(pay.getCardNumber())
                 .build();
+
+        // ORDER_ITEM DB 상품 삭제
+        List<OrderItem> orderItems = orderItemRepository.findAllByOrder(pay.getOrder());
+        for (OrderItem orderItem : orderItems) {
+            orderItemRepository.deleteById(orderItem.getId());
+        }
 
         // 결제취소 DB 저장
         payCancelRepository.save(payCancel);
