@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "order_cancel")
+@Table(name = "pay_cancel")
 @Entity
 public class PayCancel extends BaseTimeEntity {
 
