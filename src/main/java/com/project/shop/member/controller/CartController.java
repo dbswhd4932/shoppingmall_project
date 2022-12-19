@@ -21,21 +21,21 @@ public class CartController {
     private final CartService cartService;
 
     // 장바구니 담기
-    @PostMapping("/carts/{memberId}")
+    @PostMapping("/carts")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "장바구니 상품 추가")
-    public void cartAddGoods(@PathVariable("memberId") Long memberId, @RequestBody @Valid CartCreateRequest request) {
-        cartService.cartAddGoods(request, memberId);
+    public void cartAddGoods( @RequestBody @Valid CartCreateRequest cartCreateRequest) {
+        cartService.cartAddGoods(cartCreateRequest);
     }
 
     // 장바구니 조회
-    @GetMapping("/carts/{memberId}")
+    @GetMapping("/carts")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "장바구니 조회")
-    public List<CartResponse> cartFind(@PathVariable("memberId") Long memberId) {
-        return cartService.cartFindMember(memberId);
+    public List<CartResponse> cartFind() {
+        return cartService.cartFindMember();
     }
 
     // 상품 변경 여부 확인 - 프론트
@@ -60,7 +60,7 @@ public class CartController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "장바구니 상품 삭제")
-    public void cartDeleteGoods(@PathVariable("cartId") Long cartId, Long goodsId, Long memberId) {
-        cartService.cartDeleteGoods(cartId, goodsId, memberId);
+    public void cartDeleteGoods(@PathVariable("cartId") Long cartId, Long goodsId) {
+        cartService.cartDeleteGoods(cartId, goodsId);
     }
 }

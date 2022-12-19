@@ -9,10 +9,10 @@ import java.util.List;
 public interface CartService {
 
     // 장바구니 담기
-    void cartAddGoods(CartCreateRequest cartCreateRequest, Long memberId);
+    void cartAddGoods(CartCreateRequest cartCreateRequest);
 
     // 장바구니 조회
-    List<CartResponse> cartFindMember(Long memberId);
+    List<CartResponse> cartFindMember();
 
     // 상품 변경 여부 확인(True , False)
     boolean checkGoodsInfoChange(Long goodsId);
@@ -21,7 +21,7 @@ public interface CartService {
     void editCartItem(Long cartId, CartEditRequest cartEditRequest);
 
     // 장바구니 상품 삭제
-    void cartDeleteGoods(Long cartId, Long goodsId , Long memberId);
+    void cartDeleteGoods(Long cartId, Long goodsId);
 
 
 }

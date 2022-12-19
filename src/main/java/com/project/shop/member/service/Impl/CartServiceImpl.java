@@ -14,6 +14,8 @@ import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.service.CartService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +36,9 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 담기
     @Override
-    public void cartAddGoods(CartCreateRequest cartCreateRequest, Long memberId) {
+    public void cartAddGoods(CartCreateRequest cartCreateRequest) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = tokenCheckMember();
 
         Goods goods = goodsRepository.findById(cartCreateRequest.getGoodsId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_GOODS));
@@ -72,11 +73,12 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 조회
     @Override
-    public List<CartResponse> cartFindMember(Long memberId) {
-        List<Cart> carts = cartRepository.findByMemberId(memberId).orElseThrow(
-                () -> {
-                    throw new BusinessException(NOT_FOUND_CART);
-                });
+    public List<CartResponse> cartFindMember() {
+
+        Member member = tokenCheckMember();
+
+        List<Cart> carts = cartRepository.findByMemberId(member.getId()).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_CART));
 
         List<CartResponse> list = new ArrayList<>();
         for (Cart cart : carts) {
@@ -118,7 +120,10 @@ public class CartServiceImpl implements CartService {
     // 장바구니 수량, 옵션 변경
     @Override
     public void editCartItem(Long cartId, CartEditRequest cartEditRequest) {
-        Cart cart = cartRepository.findById(cartId).orElseThrow(
+
+        Member member = tokenCheckMember();
+
+        Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_CART));
 
         Option option = optionRepository.findById(cartEditRequest.getOptionNumber()).orElseThrow(
@@ -129,10 +134,22 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 상품 삭제
     @Override
-    public void cartDeleteGoods(Long cartId, Long goodsId, Long memberId) {
-        Cart cart = cartRepository.findByIdAndGoodsIdAndMemberId(cartId, goodsId, memberId)
+    public void cartDeleteGoods(Long cartId, Long goodsId) {
+
+        Member member = tokenCheckMember();
+
+        Cart cart = cartRepository.findByIdAndGoodsIdAndMemberId(cartId, goodsId, member.getId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
 
         cartRepository.deleteById(cart.getId());
+    }
+
+    private Member tokenCheckMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_MEMBER));
+        return member;
     }
 }
