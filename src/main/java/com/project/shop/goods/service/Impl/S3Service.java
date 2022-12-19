@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +28,7 @@ import java.util.UUID;
 import static com.project.shop.global.error.ErrorCode.*;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class S3Service  {
 

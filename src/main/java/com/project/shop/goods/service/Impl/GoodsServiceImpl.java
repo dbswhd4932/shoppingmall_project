@@ -83,6 +83,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 상품 상세(정보)조회
     @Override
+    @Transactional(readOnly = true)
     public GoodsResponse goodsDetailFind(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));

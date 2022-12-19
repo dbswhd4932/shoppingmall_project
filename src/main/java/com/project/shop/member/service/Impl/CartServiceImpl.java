@@ -73,6 +73,7 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 조회
     @Override
+    @Transactional(readOnly = true)
     public List<CartResponse> cartFindMember() {
 
         Member member = tokenCheckMember();

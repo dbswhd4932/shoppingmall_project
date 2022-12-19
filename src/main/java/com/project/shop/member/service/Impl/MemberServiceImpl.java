@@ -3,9 +3,9 @@ package com.project.shop.member.service.Impl;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.controller.request.KakaoLoginRequest;
-import com.project.shop.member.controller.request.NoSocialLoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
+import com.project.shop.member.controller.request.NoSocialLoginRequest;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.Role;
@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -134,6 +133,7 @@ public class MemberServiceImpl implements MemberService {
     // 내 정보 조회
     // todo 내 정보 조회 권한 부분 질문
     @Override
+    @Transactional(readOnly = true)
     public MemberResponse findByDetailMyInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();

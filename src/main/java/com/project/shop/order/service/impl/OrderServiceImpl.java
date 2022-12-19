@@ -105,6 +105,7 @@ public class OrderServiceImpl implements OrderService {
 
     // 가맹점 ID 조회
     @Override
+    @Transactional(readOnly = true)
     public String findMerchantId(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_ORDERS));
