@@ -75,7 +75,7 @@ public class MemberController {
     //회원 수정
     @PutMapping("/members/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
     @ApiOperation(value = "회원 수정")
     public void memberEdit(@PathVariable("memberId") Long memberId, @RequestBody @Valid MemberEditRequest memberEditRequest) {
         memberService.memberEdit(memberId, memberEditRequest);
@@ -84,7 +84,7 @@ public class MemberController {
     //회원 탈퇴
     @DeleteMapping("/members/{memberId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
     @ApiOperation(value = "회원 탈퇴")
     public void memberDelete(@PathVariable("memberId") Long memberId) {
         memberService.memberDelete(memberId);
