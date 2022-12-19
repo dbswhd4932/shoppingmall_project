@@ -4,6 +4,7 @@ import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
 import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.service.CartService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ public class CartController {
     @PostMapping("/carts/{memberId}")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('USER')")
+    @ApiOperation(value = "장바구니 상품 추가")
     public void cartAddGoods(@PathVariable("memberId") Long memberId, @RequestBody @Valid CartCreateRequest request) {
         cartService.cartAddGoods(request, memberId);
     }
@@ -31,6 +33,7 @@ public class CartController {
     @GetMapping("/carts/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")
+    @ApiOperation(value = "장바구니 조회")
     public List<CartResponse> cartFind(@PathVariable("memberId") Long memberId) {
         return cartService.cartFindMember(memberId);
     }
@@ -38,6 +41,7 @@ public class CartController {
     // 상품 변경 여부 확인 - 프론트
     @GetMapping("/carts/{cartId}/check")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 변경 여부 확인")
     public boolean checkGoodsInfoChange(@PathVariable("cartId") Long cartId) {
         return cartService.checkGoodsInfoChange(cartId);
     }
@@ -46,6 +50,7 @@ public class CartController {
     @PutMapping("/carts/{cartId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")
+    @ApiOperation(value = "장바구니 상품 수정")
     public void cartEdit(@PathVariable("cartId") Long cartId, @RequestBody CartEditRequest cartEditRequest) {
         cartService.editCartItem(cartId, cartEditRequest);
     }
@@ -54,6 +59,7 @@ public class CartController {
     @DeleteMapping("/carts/{cartId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('USER')")
+    @ApiOperation(value = "장바구니 상품 삭제")
     public void cartDeleteGoods(@PathVariable("cartId") Long cartId, Long goodsId, Long memberId) {
         cartService.cartDeleteGoods(cartId, goodsId, memberId);
     }

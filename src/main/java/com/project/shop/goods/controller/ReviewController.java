@@ -8,6 +8,7 @@ import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.service.ReviewService;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,6 +32,7 @@ public class ReviewController {
     @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('USER')")
+    @ApiOperation(value = "리뷰 생성")
     public void reviewCreate(@RequestBody @Valid ReviewCreateRequest reviewCreateRequest) {
         reviewService.reviewCreate(reviewCreateRequest);
     }
@@ -38,6 +40,7 @@ public class ReviewController {
     // 리뷰 전체조회
     @GetMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "리뷰 전체 조회")
     public List<ReviewResponse> reviewFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return reviewService.reviewFindAll(pageable);
     }
@@ -46,6 +49,7 @@ public class ReviewController {
     @PutMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")
+    @ApiOperation(value = "리뷰 수정")
     public void reviewEdit(@PathVariable("reviewId") Long reviewId, Long memberId, @RequestBody @Valid ReviewEditRequest reviewEditRequest) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
@@ -56,6 +60,7 @@ public class ReviewController {
     @DeleteMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @ApiOperation(value = "리뷰 삭제")
     public void reviewDelete(@PathVariable("reviewId") Long reviewId, Long memberId) {
         reviewService.reviewDelete(reviewId, memberId);
     }

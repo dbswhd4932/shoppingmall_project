@@ -8,6 +8,7 @@ import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.service.GoodsService;
 import com.project.shop.goods.service.Impl.S3Service;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,10 +31,11 @@ public class GoodsController {
     private final GoodsService goodsService;
     private final GoodsRepository goodsRepository;
 
-    // 상품 생성
+    // 상품 등록
     @PostMapping(value = "/goods")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('SELLER')")
+    @ApiOperation(value = "상품 등록")
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart List<MultipartFile> multipartFiles) throws IOException {
 
@@ -48,6 +50,7 @@ public class GoodsController {
     // 상품 전체 조회
     @GetMapping("/goods")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 전체 조회")
     public List<GoodsResponse> goodsFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindAll(pageable);
     }
@@ -55,6 +58,7 @@ public class GoodsController {
     // 상품 단품 상세 조회
     @GetMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 단품 상세 조회")
     public GoodsResponse goodsDetailFind(@PathVariable("goodsId") Long goodsId) {
         return goodsService.goodsDetailFind(goodsId);
     }
@@ -62,6 +66,7 @@ public class GoodsController {
     // 상품 검색
     @GetMapping("/goods/keyword")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 검색")
     public List<GoodsResponse> goodsFindKeyword(@RequestParam String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindKeyword(keyword, pageable);
     }
@@ -70,6 +75,7 @@ public class GoodsController {
     @PutMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('SELLER')")
+    @ApiOperation(value = "상품 수정")
     public void goodsEdit(@PathVariable("goodsId") Long goodsId,
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
                           @RequestPart(required = false) List<MultipartFile> multipartFiles) {
@@ -86,6 +92,7 @@ public class GoodsController {
     @DeleteMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('SELLER')")
+    @ApiOperation(value = "상품 삭제")
     public void goodsDelete(@PathVariable("goodsId") Long goodsId) {
         goodsService.goodsDelete(goodsId);
     }

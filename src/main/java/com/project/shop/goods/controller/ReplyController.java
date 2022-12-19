@@ -4,6 +4,7 @@ import com.project.shop.goods.controller.request.ReplyCreateRequest;
 import com.project.shop.goods.controller.request.ReplyEditRequest;
 import com.project.shop.goods.controller.response.ReplyResponse;
 import com.project.shop.goods.service.ReplyService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ public class ReplyController {
     @PostMapping("/replies")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('SELLER')")
+    @ApiOperation(value = "대댓글 등록")
     public void replyCreate(@RequestBody @Valid ReplyCreateRequest request) {
         replyService.replyCreate(request);
     }
@@ -30,6 +32,7 @@ public class ReplyController {
     // 대댓글 전체 조회
     @GetMapping("/replies")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "대댓글 전체 조회")
     public List<ReplyResponse> replyFind(Long reviewId) {
         return replyService.replyFind(reviewId);
     }
@@ -38,6 +41,7 @@ public class ReplyController {
     @PutMapping("/replies/{replyId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('SELLER')")
+    @ApiOperation(value = "대댓글 수정")
     public void replyEdit(@PathVariable("replyId") Long replyId, Long goodsMemberId, @RequestBody @Valid ReplyEditRequest request) {
         replyService.replyEdit(replyId, goodsMemberId, request);
     }
@@ -46,6 +50,7 @@ public class ReplyController {
     @DeleteMapping("/replies/{replyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('SELLER','ADMIN')")
+    @ApiOperation(value = "대댓글 삭제")
     public void replyDelete(@PathVariable("replyId") Long replyId, Long goodsMemberId) {
         replyService.replyDelete(replyId, goodsMemberId);
     }
