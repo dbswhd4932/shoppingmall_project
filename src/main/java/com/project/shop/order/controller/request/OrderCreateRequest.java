@@ -14,8 +14,6 @@ import java.util.UUID;
 @Builder
 public class OrderCreateRequest {
 
-    private Long memberId;
-
     private List<orderItemCreate> orderItemCreates;
 
     @NotBlank(message = "수취인 이름을 입력하세요.")

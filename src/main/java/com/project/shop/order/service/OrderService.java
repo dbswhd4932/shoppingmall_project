@@ -16,8 +16,8 @@ public interface OrderService {
     // 주문 생성
     void cartOrder(OrderCreateRequest orderCreateRequest);
 
-    // 주문 회원별 조회
-    List<OrderResponse> orderFindMember(Long memberId, Pageable pageable);
+    // 주문 조회
+    List<OrderResponse> orderFindMember(Pageable pageable);
 
     // 가맹점 ID 조회
     public String findMerchantId(Long orderId);
@@ -25,6 +25,4 @@ public interface OrderService {
     // 결제 취소
     public void payCancel(Long payId, PayCancelRequest payCancelRequest);
 
-    // 주문 수정 기능 X
-    // 주문 삭제 기능 X
 }

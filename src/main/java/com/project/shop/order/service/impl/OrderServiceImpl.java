@@ -20,6 +20,8 @@ import com.project.shop.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,18 +47,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cartOrder(OrderCreateRequest orderCreateRequest) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+
         int orderPrice = orderCreateRequest.getTotalPrice();
-        Order order = Order.toOrder(orderCreateRequest, orderPrice);
+        Order order = Order.toOrder(orderCreateRequest, orderPrice , member);
 
         // 주문_상품 DB 저장
         for (OrderCreateRequest.orderItemCreate orderItemCreate : orderCreateRequest.getOrderItemCreates()) {
             Goods goods = goodsRepository.findById(orderItemCreate.getGoodsId()).orElseThrow(
                     () -> new BusinessException(NOT_FOUND_GOODS));
-            OrderItem orderItem = OrderItem.createOrderItem(orderCreateRequest.getMemberId(), goods, orderItemCreate.getOrderPrice(), orderItemCreate.getAmount(), order);
+            OrderItem orderItem = OrderItem.createOrderItem(member, goods, orderItemCreate.getOrderPrice(), orderItemCreate.getAmount(), order);
             orderItemRepository.save(orderItem);
-
-            Member member = memberRepository.findById(orderItem.getMemberId()).orElseThrow(
-                    () -> new BusinessException(NOT_FOUND_MEMBER));
 
             Cart cart = cartRepository.findByGoodsIdAndMember(goods.getId(), member).orElseThrow(
                     () -> new BusinessException(CART_NO_PRODUCTS));
@@ -80,14 +84,19 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    // 주문 회원별 조회
+    // 주문 조회
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> orderFindMember(Long memberId, Pageable pageable) {
+    public List<OrderResponse> orderFindMember(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+
         Page<Order> orderList = orderRepository.findAll(pageable);
         List<OrderResponse> list = new ArrayList<>();
         for (Order order : orderList) {
-            if (order.getMemberId().equals(memberId)) {
+            if (order.getMemberId().equals(member.getId())) {
                 list.add(OrderResponse.toOrderResponse(order));
             }
         }
@@ -109,10 +118,12 @@ public class OrderServiceImpl implements OrderService {
         Pay pay = payRepository.findById(payId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_PAY));
 
+        // 이미 취소된 결제는 예외처리
         if (pay.getPayStatus().equals(PayStatus.CANCEL)) {
             throw new BusinessException(ALREADY_CANCEL_PAY);
         }
 
+        // 가맹점 ID 가 다를 경우 예외처리
         if (!pay.getOrder().getMerchantId().equals(payCancelRequest.getMerchantId())) {
             throw new BusinessException(NOT_EQUAL_MERCHANT_ID);
         }

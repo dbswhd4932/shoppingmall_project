@@ -1,6 +1,7 @@
 package com.project.shop.order.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
+import com.project.shop.member.domain.Member;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,8 +25,6 @@ public class Order extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Long memberId;          //회원번호
-
-//    private Long goodsId;           //주문상품번호
 
     @Column(nullable = false, length = 20)
     private String name;            //수취인 이름
@@ -68,9 +67,9 @@ public class Order extends BaseTimeEntity {
     }
 
     // 주문 생성
-    public static Order toOrder(OrderCreateRequest orderCreateRequest, int payTotalPrice) {
+    public static Order toOrder(OrderCreateRequest orderCreateRequest, int payTotalPrice , Member member) {
         return Order.builder()
-                .memberId(orderCreateRequest.getMemberId())
+                .memberId(member.getId())
                 .name(orderCreateRequest.getName())
                 .phone(orderCreateRequest.getPhone())
                 .zipcode(orderCreateRequest.getZipcode())

@@ -46,8 +46,8 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "주문 조회")
-    public List<OrderResponse> orderFindMember(Long memberId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return orderService.orderFindMember(memberId, pageable);
+    public List<OrderResponse> orderFindMember(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return orderService.orderFindMember(pageable);
     }
 
     // MerchantID 조회하기 - 프론트

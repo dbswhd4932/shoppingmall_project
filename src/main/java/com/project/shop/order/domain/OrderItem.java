@@ -2,6 +2,7 @@ package com.project.shop.order.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.Goods;
+import com.project.shop.member.domain.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -44,9 +45,9 @@ public class OrderItem extends BaseTimeEntity {
     }
 
     // 주문_상품 생성
-    public static OrderItem createOrderItem(Long memberId, Goods goods, int orderPrice , int amount, Order order) {
+    public static OrderItem createOrderItem(Member member, Goods goods, int orderPrice , int amount, Order order) {
         return OrderItem.builder()
-                .memberId(memberId)
+                .memberId(member.getId())
                 .order(order)
                 .goods(goods)
                 .amount(amount)
