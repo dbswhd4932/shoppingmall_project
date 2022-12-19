@@ -21,10 +21,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -105,40 +110,26 @@ public class MemberServiceImpl implements MemberService {
     // 카카오 로그인 토큰 얻기
     public JwtTokenDto kakaoGetToken(KakaoLoginRequest kakaoLoginRequest) {
 
-        /*UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(kakaoLoginRequest.getLoginId());
-
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
-
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
-
-        refreshTokenRepository.save(refreshToken);*/
-
         return null;
     }
 
-    // 회원 조회 (회원 ID)
+    // 내 정보 조회
+    // todo 내 정보 조회 권한 부분 질문
     @Override
-    public MemberResponse findMemberInfoById(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
+    public MemberResponse findByDetailMyInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        return new MemberResponse().toResponse(member);
-    }
+        MemberResponse memberResponse = new MemberResponse().toResponse(member);
 
-    // 회원 1명 조회
-    @Transactional(readOnly = true)
-    @Override
-    public MemberResponse memberFindByMemberId(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        memberResponse.setRoles((List<GrantedAuthority>) authorities);
 
-        return new MemberResponse().toResponse(member);
+        return memberResponse;
+
     }
 
     // 회원 수정

@@ -10,7 +10,7 @@ import com.project.shop.member.jwt.JwtTokenDto;
 public interface MemberService {
 
     // 내정보찾기
-    MemberResponse findMemberInfoById(Long memberId);
+    MemberResponse findByDetailMyInfo();
 
     // 회원생성
     void memberSignup(MemberSignupRequest memberSignupRequest);
@@ -26,9 +26,6 @@ public interface MemberService {
 
     // 카카오 토큰 생성
     JwtTokenDto kakaoGetToken(KakaoLoginRequest kakaoLoginRequest);
-
-    // 회원 1명 조회
-    MemberResponse memberFindByMemberId(Long memberId);
 
     // 회원 수정
     void memberEdit(Long memberId, MemberEditRequest memberEditRequest);

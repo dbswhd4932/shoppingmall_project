@@ -65,19 +65,11 @@ public class MemberController {
     }
 
     // 내 정보 가져오기
-    @GetMapping("/member/me")
-    @PreAuthorize("hasAnyRole('USER')")
+    @GetMapping("/members/me")
+    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
     @ApiOperation(value = "내 정보 조회")
-    public MemberResponse findMemberInfoById() {
-        return memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId());
-    }
-
-    // 회원 1명 조회
-    @GetMapping("/member/{memberId}")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "회원 조회")
-    public MemberResponse memberFindByMemberId(@PathVariable("memberId") Long memberId) {
-        return memberService.memberFindByMemberId(memberId);
+    public MemberResponse findByDetailMyInfo() {
+        return memberService.findByDetailMyInfo();
     }
 
     //회원 수정
