@@ -96,7 +96,13 @@ public class MemberServiceImpl implements MemberService {
     // todo 카카오 로그인
     @Override
     public void kakaoLogin(KakaoLoginRequest kakaoLoginRequest) {
-        Member member = Member.kakaoCreate(kakaoLoginRequest);
+
+        // loginId 중복 체크
+        if ( memberRepository.findByLoginId(kakaoLoginRequest.getLoginId()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+        }
+
+        Member member = Member.kakaoCreate(kakaoLoginRequest, passwordEncoder);
         memberRepository.save(member);
 
         Role role = Role.builder()
@@ -110,7 +116,19 @@ public class MemberServiceImpl implements MemberService {
     // 카카오 로그인 토큰 얻기
     public JwtTokenDto kakaoGetToken(KakaoLoginRequest kakaoLoginRequest) {
 
-        return null;
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(kakaoLoginRequest.getLoginId(), kakaoLoginRequest.getLoginId());
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .key(authentication.getName())
+                .value(tokenDto.getRefreshToken())
+                .build();
+        refreshTokenRepository.save(refreshToken);
+
+        return tokenDto;
     }
 
     // 내 정보 조회
