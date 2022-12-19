@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderResponse {
 
+    private Long orderId;           //주문번호
     private Long memberId;          //회원번호
-
     private String name;            //수취인 이름
     private String phone;           //수취인 전화번호
     private String zipcode;         //우편번호
@@ -28,6 +28,7 @@ public class OrderResponse {
 
     public static OrderResponse toOrderResponse(Order order) {
         return OrderResponse.builder()
+                .orderId(order.getId())
                 .memberId(order.getMemberId())
                 .name(order.getName())
                 .phone(order.getPhone())
