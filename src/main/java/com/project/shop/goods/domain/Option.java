@@ -9,8 +9,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.*;
 
 
@@ -32,8 +35,10 @@ public class Option extends BaseTimeEntity {
     @Convert(converter = OptionConverter.class)
     private List<OptionCreate> optionValue;
 
+    @Column(nullable = false)
     private int totalPrice;
 
+    @Column
     private String optionDescription;
 
     @Builder

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class Member extends BaseTimeEntity {
     private String loginId;         //회원ID
 
     @Column(nullable = false)
+    @Size(min = 2,max = 20)
     private String password;        //비밀번호
 
     @Column(nullable = false, length = 20)

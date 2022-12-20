@@ -19,6 +19,7 @@ public class OrderItem extends BaseTimeEntity {
     @Column(name = "order_item_id")
     private Long id;            //주문상품번호(PK)
 
+    @Column(nullable = false)
     private Long memberId;      // 회원 ID
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -43,14 +43,14 @@ public class Order extends BaseTimeEntity {
     @Column(nullable = false)
     private int totalPrice;    //총 주문금액
 
-   @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;//주문상태
 
+    @Column(nullable = false)
     private String impUid;         // 아임포트 발급 ID ex)imp_727855699150
-    private String merchantId;     // 가맹점 ID        ex)ORD20180131-0000014
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @Column(nullable = false)
+    private String merchantId;     // 가맹점 ID        ex)ORD20180131-0000014
 
     @Builder
     public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice, String impUid, String merchantId) {
@@ -67,7 +67,7 @@ public class Order extends BaseTimeEntity {
     }
 
     // 주문 생성
-    public static Order toOrder(OrderCreateRequest orderCreateRequest, int payTotalPrice , Member member) {
+    public static Order toOrder(OrderCreateRequest orderCreateRequest, int payTotalPrice, Member member) {
         return Order.builder()
                 .memberId(member.getId())
                 .name(orderCreateRequest.getName())

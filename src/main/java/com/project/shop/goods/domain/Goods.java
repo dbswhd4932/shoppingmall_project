@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,8 @@ public class Goods extends BaseTimeEntity {
 
     private Long memberId;
 
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, unique = true)
+    @Size(min = 4 , max = 20)
     private String goodsName;    //상품이름
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,6 +41,7 @@ public class Goods extends BaseTimeEntity {
     @Column(nullable = false)
     private int price;      //상품가격
 
+    @Column
     private String goodsDescription; //상품설명
 
     // 상품 삭제 시 이미지 DB 도 같이 삭제 , cascade 옵션

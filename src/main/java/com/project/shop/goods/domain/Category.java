@@ -1,6 +1,7 @@
 package com.project.shop.goods.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.request.CategoryEditRequest;
 import lombok.AccessLevel;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "category")
 @Entity
-public class Category {
+public class Category extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")

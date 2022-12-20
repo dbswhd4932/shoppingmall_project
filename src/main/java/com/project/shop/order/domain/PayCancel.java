@@ -4,10 +4,12 @@ import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.goods.domain.Goods;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "pay_cancel")
 @Entity
