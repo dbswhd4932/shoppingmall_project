@@ -10,7 +10,7 @@ public enum ErrorCode {
 
     // 회원
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
-    CHECK_LOGINID_OR_PASSWORD(HttpStatus.NOT_FOUND, "아이디 또는 비밀번호를 확인해주세요."),
+    CHECK_LOGIN_ID_OR_PASSWORD(HttpStatus.NOT_FOUND, "아이디 또는 비밀번호를 확인해주세요."),
     DUPLICATED_LOGIN_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 아이디 입니다."),
     DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일 입니다."),
 
@@ -26,8 +26,8 @@ public enum ErrorCode {
     UPLOAD_ERROR_IMAGE(HttpStatus.BAD_REQUEST, "이미지 업로드 에러가 발생했습니다."),
     VALID_ERROR_IMAGE(HttpStatus.BAD_REQUEST, "이미지 형식을 확인해주세요."),
 
-    // 카드
-    NOT_FOUND_CARD(HttpStatus.NOT_FOUND, "존재하지 않는 카드입니다."),
+    // 옵션
+    NOT_FOUND_OPTION(HttpStatus.NOT_FOUND, "존재하지 않는 옵션입니다."),
 
     // 장바구니
     NOT_FOUND_CART(HttpStatus.NOT_FOUND, "존재하지 않는 장바구니 입니다."),
@@ -54,6 +54,7 @@ public enum ErrorCode {
     // 결제
     NOT_FOUND_PAY(HttpStatus.NOT_FOUND, "존재하는 결제가 없습니다."),
     ALREADY_CANCEL_PAY(HttpStatus.BAD_REQUEST, "이미 취소된 결제입니다."),
+    CAN_NOT_CANCEL_PAY(HttpStatus.BAD_REQUEST, "결제를 취소할 수 없습니다."),
     NOT_EQUAL_MERCHANT_ID(HttpStatus.BAD_REQUEST, "가맹점 ID가 일치하지 않습니다.");
 
     ErrorCode(HttpStatus httpStatus, String message) {

@@ -47,7 +47,7 @@ public class CartServiceImpl implements CartService {
         Option option = null;
         if (!optionRepository.findByGoodsId(cartCreateRequest.getGoodsId()).isEmpty()) {
             option = optionRepository.findByIdAndGoodsId(cartCreateRequest.getOptionNumber(), goods.getId()).orElseThrow(
-                    () -> new IllegalArgumentException("존재하는 옵션이 없습니다."));
+                    () -> new BusinessException(NOT_FOUND_OPTION));
         }
 
         // 장바구니에 존재하는 상품이면 "장바구니에 이미 담겨있는 상품입니다." 예외 발생가 발생합니다.
@@ -128,7 +128,7 @@ public class CartServiceImpl implements CartService {
                 () -> new BusinessException(NOT_FOUND_CART));
 
         Option option = optionRepository.findById(cartEditRequest.getOptionNumber()).orElseThrow(
-                () -> new IllegalArgumentException("옵션이 존재하지 않습니다."));
+                () -> new BusinessException(NOT_FOUND_OPTION));
 
         cart.edit(option, cartEditRequest);
     }

@@ -126,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 결제 회원과 토큰 비교
         if(!pay.getMemberId().equals(member.getId())) {
-            throw new IllegalArgumentException("결제를 취소할 수 있는 사용자가 아닙니다.");
+            throw new BusinessException(CAN_NOT_CANCEL_PAY);
         }
 
         // 이미 취소된 결제는 예외처리
