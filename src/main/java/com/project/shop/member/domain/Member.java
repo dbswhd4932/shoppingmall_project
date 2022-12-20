@@ -4,16 +4,17 @@ import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.member.controller.request.KakaoLoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -31,7 +32,6 @@ public class Member extends BaseTimeEntity {
     private String loginId;         //회원ID
 
     @Column(nullable = false)
-    @Size(min = 2,max = 20)
     private String password;        //비밀번호
 
     @Column(nullable = false, length = 20)
@@ -100,8 +100,8 @@ public class Member extends BaseTimeEntity {
     }
 
     // 회원 수정
-    public Member edit(MemberEditRequest memberEditRequest) {
-        this.password = memberEditRequest.getPassword();
+    public Member edit(MemberEditRequest memberEditRequest, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(memberEditRequest.getPassword());
         this.zipcode = memberEditRequest.getZipcode();
         this.detailAddress = memberEditRequest.getDetailAddress();
         this.email = memberEditRequest.getEmail();

@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,6 @@ public class Goods extends BaseTimeEntity {
     private Long memberId;
 
     @Column(nullable = false, unique = true)
-    @Size(min = 4 , max = 20)
     private String goodsName;    //상품이름
 
     @ManyToOne(fetch = FetchType.LAZY)
