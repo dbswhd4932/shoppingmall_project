@@ -1,6 +1,7 @@
 package com.project.shop.member.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
+import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Option;
 import com.project.shop.member.controller.request.CartEditRequest;
 import lombok.AccessLevel;
@@ -51,6 +52,12 @@ public class Cart extends BaseTimeEntity {
         this.totalAmount = cartEditRequest.getAmount();
         this.optionNumber = cartEditRequest.getOptionNumber();
         this.totalPrice = goodsTotalPrice * (cartEditRequest.getAmount());
+    }
+
+    public void editNoOption(Goods goods , CartEditRequest cartEditRequest) {
+        this.totalAmount = cartEditRequest.getAmount();
+        this.optionNumber = cartEditRequest.getOptionNumber();
+        this.totalPrice = goods.getPrice() * (cartEditRequest.getAmount());
     }
 
 }

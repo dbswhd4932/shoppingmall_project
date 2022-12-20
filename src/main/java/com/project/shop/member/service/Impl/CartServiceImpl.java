@@ -1,5 +1,6 @@
 package com.project.shop.member.service.Impl;
 
+import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Option;
@@ -127,10 +128,25 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_CART));
 
-        Option option = optionRepository.findById(cartEditRequest.getOptionNumber()).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_OPTION));
+        Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_GOODS));
 
-        cart.edit(option, cartEditRequest);
+        List<Option> options = optionRepository.findByGoodsId(goods.getId());
+
+        // 옵션이 없는 상품
+        if (options.isEmpty()) {
+            cart.editNoOption(goods, cartEditRequest);
+            return;
+        }
+
+        // 옵션 있는 상품
+        for (Option option : options) {
+            if (option.getId().equals(cartEditRequest.getOptionNumber())) {
+                cart.edit(option, cartEditRequest);
+                return;
+            }
+        }
+        throw new BusinessException(NOT_FOUND_OPTION);
     }
 
     // 장바구니 상품 삭제
