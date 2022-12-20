@@ -42,8 +42,8 @@ public class ReplyController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('SELLER')")
     @ApiOperation(value = "대댓글 수정")
-    public void replyEdit(@PathVariable("replyId") Long replyId, Long goodsMemberId, @RequestBody @Valid ReplyEditRequest request) {
-        replyService.replyEdit(replyId, goodsMemberId, request);
+    public void replyEdit(@PathVariable("replyId") Long replyId, @RequestBody @Valid ReplyEditRequest request) {
+        replyService.replyEdit(replyId, request);
     }
 
     // 대댓글 삭제
@@ -51,7 +51,7 @@ public class ReplyController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('SELLER','ADMIN')")
     @ApiOperation(value = "대댓글 삭제")
-    public void replyDelete(@PathVariable("replyId") Long replyId, Long goodsMemberId) {
-        replyService.replyDelete(replyId, goodsMemberId);
+    public void replyDelete(@PathVariable("replyId") Long replyId) {
+        replyService.replyDelete(replyId);
     }
 }
