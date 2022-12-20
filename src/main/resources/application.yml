@@ -24,7 +24,14 @@ spring:
   sql:
     init:
       mode: always # 더미 데이터 적용
-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  security:
+    user:
+      name: user
+      password: 1234
 
 logging:
   level:
@@ -33,3 +40,20 @@ logging:
         type:
           descriptor:
             sql: trace #JPA 파라미터 콘솔에서 확인가능
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA5KBHN5XQSBJBZBVK
+      secret-key: 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
+    s3:
+      bucket: goods-image
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+jwt:
+  header: Authorization
+  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+  token-validity-in-seconds: 86400
