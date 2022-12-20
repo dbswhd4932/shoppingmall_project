@@ -9,12 +9,11 @@ import java.util.Optional;
 
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
-    // 상품 검색 - 상품이름 사용
     Optional<Goods> findByGoodsName(String goodsName);
 
-    // 상품 검색 - 키워드
     List<Goods> findGoodsByGoodsNameContaining(Pageable pageable, String keyword);
 
-
     Optional<Goods> findByMemberId(Long memberId);
+
+    List<Goods> findAllByMemberId(Long memberId);
 }
