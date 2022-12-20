@@ -34,10 +34,10 @@ public class S3Service  {
 
     private final AmazonS3 s3Client;
 
-    @Value("${cloud.aws.credentials.accessKey}")
+    @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
 
-    @Value("${cloud.aws.credentials.secretKey}")
+    @Value("${cloud.aws.credentials.secret-key}")
     private String secretKey;
 
     @Value("${cloud.aws.s3.bucket}")
