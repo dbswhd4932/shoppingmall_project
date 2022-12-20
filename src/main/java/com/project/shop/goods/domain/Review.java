@@ -1,13 +1,16 @@
 package com.project.shop.goods.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
-import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.ReplyCreateRequest;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
+import com.project.shop.member.domain.Member;
 import com.project.shop.order.domain.OrderItem;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -42,9 +45,9 @@ public class Review extends BaseTimeEntity {
     }
 
     // 리뷰 생성
-    public static Review createReview(OrderItem orderItem, ReviewCreateRequest reviewCreateRequest) {
+    public static Review createReview(Member member, OrderItem orderItem, ReviewCreateRequest reviewCreateRequest) {
         return Review.builder()
-                .memberId(reviewCreateRequest.getMemberId())
+                .memberId(member.getId())
                 .goods(orderItem.getGoods())
                 .comment(reviewCreateRequest.getComment())
                 .build();

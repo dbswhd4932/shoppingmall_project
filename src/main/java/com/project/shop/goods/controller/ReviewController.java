@@ -26,7 +26,6 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final MemberRepository memberRepository;
 
     // 리뷰 생성
     @PostMapping("/reviews")
@@ -50,10 +49,8 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "리뷰 수정")
-    public void reviewEdit(@PathVariable("reviewId") Long reviewId, Long memberId, @RequestBody @Valid ReviewEditRequest reviewEditRequest) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-        reviewService.reviewEdit(reviewId, member.getId(), reviewEditRequest);
+    public void reviewEdit(@PathVariable("reviewId") Long reviewId, @RequestBody @Valid ReviewEditRequest reviewEditRequest) {
+        reviewService.reviewEdit(reviewId, reviewEditRequest);
     }
 
     // 리뷰 삭제
@@ -61,7 +58,7 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ApiOperation(value = "리뷰 삭제")
-    public void reviewDelete(@PathVariable("reviewId") Long reviewId, Long memberId) {
-        reviewService.reviewDelete(reviewId, memberId);
+    public void reviewDelete(@PathVariable("reviewId") Long reviewId) {
+        reviewService.reviewDelete(reviewId);
     }
 }

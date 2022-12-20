@@ -15,10 +15,9 @@ public interface ReviewService {
     // 리뷰 전체조회
     List<ReviewResponse> reviewFindAll(Pageable pageable);
 
-
     // 리뷰 수정
-    void reviewEdit(Long reviewId, Long memberId, ReviewEditRequest reviewEditRequest);
+    void reviewEdit(Long reviewId, ReviewEditRequest reviewEditRequest);
 
     // 리뷰 삭제
-    void reviewDelete(Long reviewId, Long memberId);
+    void reviewDelete(Long reviewId);
 }
