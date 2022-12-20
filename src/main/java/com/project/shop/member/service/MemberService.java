@@ -28,10 +28,10 @@ public interface MemberService {
     JwtTokenDto kakaoGetToken(KakaoLoginRequest kakaoLoginRequest);
 
     // 회원 수정
-    void memberEdit(Long memberId, MemberEditRequest memberEditRequest);
+    void memberEdit(MemberEditRequest memberEditRequest);
 
     // 회원 삭제
-    void memberDelete(Long memberId);
+    void memberDelete();
 
 
 }
