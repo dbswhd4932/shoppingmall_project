@@ -2,7 +2,6 @@ package com.project.shop.goods.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.controller.request.ReplyCreateRequest;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.member.domain.Member;
@@ -15,7 +14,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import static com.project.shop.global.error.ErrorCode.NOT_MATCH_REVIEW;
-import static com.project.shop.global.error.ErrorCode.NOT_SELLING_GOODS;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -56,12 +54,6 @@ public class Review extends BaseTimeEntity {
     // 리뷰 수정
     public void edit(ReviewEditRequest reviewEditRequest) {
         this.comment = reviewEditRequest.getComment();
-    }
-
-    // 상품을 판매하는 회원인지 확인
-    public void checkSeller(ReplyCreateRequest replyCreateRequest) {
-        if (!this.memberId.equals(replyCreateRequest.getProductMemberId()))
-            throw new BusinessException(NOT_SELLING_GOODS);
     }
 
     // 해당 회원이 작성한 리뷰인지 확인
