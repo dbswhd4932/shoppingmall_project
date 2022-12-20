@@ -26,11 +26,11 @@ class OrderServiceImplTest {
     @Mock
     PayRepository payRepository;
 
-    @Mock
-    CardRepository cardRepository;
+//    @Mock
+//    CardRepository cardRepository;
 
-    @Mock
-    GoodsRepository goodsRepository;
+//    @Mock
+//    GoodsRepository goodsRepository;
 
 
 }
