@@ -32,21 +32,13 @@ dependencies {
     implementation "io.springfox:springfox-boot-starter:3.0.0"
     implementation "io.springfox:springfox-swagger-ui:3.0.0"
 
-    // https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-52
-//    implementation 'com.vladmihalcea:hibernate-types-52:2.20.0'
-
     // json 변환
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
     // AWS S3 사용
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
-//    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
-//자바 역직렬화 문제 해결 패키지
+    //자바 역직렬화 문제 해결 패키지
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-//    implementation 'com.fasterxml.jackson.core:jackson-databind'
-
-
-//    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
