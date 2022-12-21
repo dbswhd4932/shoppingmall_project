@@ -1,6 +1,5 @@
 package com.project.shop.member.service.Impl;
 
-import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Option;
@@ -52,7 +51,7 @@ public class CartServiceImpl implements CartService {
         }
 
         // 장바구니에 존재하는 상품이면 "장바구니에 이미 담겨있는 상품입니다." 예외 발생가 발생합니다.
-        if (cartRepository.findByGoodsId(goods.getId()).isPresent())
+        if (cartRepository.findByGoodsIdAndMember(goods.getId(), member).isPresent())
             throw new BusinessException(CART_IN_GOODS_DUPLICATED);
 
         int goodsTotalPrice = goods.getPrice();
@@ -151,11 +150,11 @@ public class CartServiceImpl implements CartService {
 
     // 장바구니 상품 삭제
     @Override
-    public void cartDeleteGoods(Long cartId, Long goodsId) {
+    public void cartDeleteGoods(Long cartId) {
 
         Member member = tokenCheckMember();
 
-        Cart cart = cartRepository.findByIdAndGoodsIdAndMemberId(cartId, goodsId, member.getId())
+        Cart cart = cartRepository.findByIdAndMember(cartId, member)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
 
         cartRepository.deleteById(cart.getId());

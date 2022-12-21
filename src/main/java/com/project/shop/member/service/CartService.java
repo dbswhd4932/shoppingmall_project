@@ -21,7 +21,7 @@ public interface CartService {
     void editCartItem(Long cartId, CartEditRequest cartEditRequest);
 
     // 장바구니 상품 삭제
-    void cartDeleteGoods(Long cartId, Long goodsId);
+    void cartDeleteGoods(Long cartId);
 
 
 }

@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.shop.global.error.ErrorCode.NOT_SELLING_GOODS;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -119,18 +121,19 @@ public class GoodsServiceImpl implements GoodsService {
         String loginId = authentication.getName();
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        Goods goods = goodsRepository.findByMemberId(member.getId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
+        if (!goods.getMemberId().equals(member.getId()))
+            throw new BusinessException(NOT_SELLING_GOODS);
 
         goods.update(goodsEditRequest);
 
-//         기존 옵션 삭제
+        //기존 옵션 삭제
         List<Option> options = optionRepository.findByGoodsId(goodsId);
         for (Option option : options) {
             optionRepository.deleteById(option.getId());
         }
 
-//         상품 옵션 수정이 null 이 아니면 저장
+        //상품 옵션 수정이 null 이 아니면 저장
         if (goodsEditRequest.getOptionCreateRequest() != null) {
             List<OptionCreateRequest> optionCreateRequest = goodsEditRequest.getOptionCreateRequest();
             for (OptionCreateRequest createRequest : optionCreateRequest) {
@@ -166,8 +169,9 @@ public class GoodsServiceImpl implements GoodsService {
 
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        Goods goods = goodsRepository.findByMemberId(member.getId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_SELLING_GOODS));
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
+        if (!goods.getMemberId().equals(member.getId()))
+            throw new BusinessException(NOT_SELLING_GOODS);
 
         // s3 이미지 삭제
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
