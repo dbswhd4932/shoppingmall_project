@@ -43,6 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    // 카테고리 수정
     @Override
     public void categoryEdit(Long categoryId, CategoryEditRequest categoryEditRequest) {
         Category category = categoryRepository.findById(categoryId)
