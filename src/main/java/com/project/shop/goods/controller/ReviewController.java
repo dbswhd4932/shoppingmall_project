@@ -39,7 +39,7 @@ public class ReviewController {
     // 리뷰 전체조회
     @GetMapping("/goods/{goodsId}/reviews")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "리뷰 전체 조회")
+    @ApiOperation(value = "리뷰 조회")
     public List<ReviewResponse> reviewFindAll(@PathVariable("goodsId") Long goodsId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return reviewService.reviewFindAll(goodsId, pageable);
     }
