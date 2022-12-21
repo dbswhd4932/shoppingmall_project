@@ -44,8 +44,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .securityContexts(List.of(securityContext()))
                 .securitySchemes(List.of(apiKey()))
                 .select()
-//                .useDefaultResponseMessages(true) // Swagger 에서 제공해주는 기본 응답 코드 (200, 401, 403, 404) 등의 노출 여부
-//                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class), typeResolver.resolve(Page.class)))
                 .apis(RequestHandlerSelectors.basePackage("com.project.shop")) // api 스펙이 작성되어 있는 패키지 (controller)
                 .paths(PathSelectors.any()) // apis 에 위치하는 API 중 특정 path 를 선택
                 .build();
