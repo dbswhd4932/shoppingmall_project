@@ -1,5 +1,6 @@
 package com.project.shop.global.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -29,11 +30,13 @@ public abstract class BaseTimeEntity {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Column(name = "created_at", updatable = false)
+    @JsonIgnore
     private LocalDateTime cratedAt;
 
     @LastModifiedDate
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Column(name = "updated_at", updatable = true)
+    @JsonIgnore
     private LocalDateTime updatedAt;
 }
