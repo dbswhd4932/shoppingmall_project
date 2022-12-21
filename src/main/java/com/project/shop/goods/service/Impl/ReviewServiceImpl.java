@@ -1,11 +1,12 @@
 package com.project.shop.goods.service.Impl;
 
-import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewResponse;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Review;
+import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.ReviewService;
 import com.project.shop.member.domain.Member;
@@ -32,6 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final OrderItemRepository orderItemRepository;
     private final MemberRepository memberRepository;
+    private final GoodsRepository goodsRepository;
 
     // 리뷰생성 - 결제한 사람만 리뷰 작성이 가능
     @Override
@@ -49,12 +51,13 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(review);
     }
 
-    // 리뷰 전체조회
+    // 리뷰 전체
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponse> reviewFindAll(Pageable pageable) {
-        return reviewRepository.findAll(pageable)
-                .stream().map(ReviewResponse::toReviewResponse).collect(Collectors.toList());
+    public List<ReviewResponse> reviewFindAll(Long goodsId, Pageable pageable) {
+        Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
+        return reviewRepository.findAllByGoods(goods, pageable).stream()
+                .map(ReviewResponse::toReviewResponse).collect(Collectors.toList());
     }
 
     // 리뷰 수정

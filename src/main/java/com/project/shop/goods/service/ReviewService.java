@@ -12,8 +12,8 @@ public interface ReviewService {
     // 리뷰생성
     void reviewCreate(ReviewCreateRequest reviewCreateRequest);
 
-    // 리뷰 전체조회
-    List<ReviewResponse> reviewFindAll(Pageable pageable);
+    // 리뷰 전체
+    List<ReviewResponse> reviewFindAll(Long goodsId, Pageable pageable);
 
     // 리뷰 수정
     void reviewEdit(Long reviewId, ReviewEditRequest reviewEditRequest);
