@@ -1,9 +1,11 @@
 package com.project.shop.goods.service.Impl;
 
+import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
 import com.project.shop.goods.repository.CategoryRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +44,7 @@ class CategoryService {
     }
 
     @Test
-    @DisplayName("카테고리 전체 조회")
+    @DisplayName("카테고리 조회")
     void categoryFindAll() {
         //given
         Category category1 = Category.builder().category("의류").build();
@@ -54,6 +56,22 @@ class CategoryService {
 
         //then
         assertThat(categoryResponses.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("카테고리 수정")
+    void categoryEditTest() {
+        //given
+        Category category = Category.builder().category("의류").build();
+        CategoryEditRequest categoryEditRequest = CategoryEditRequest.builder().category("신발").build();
+        given(categoryRepository.findById(category.getId())).willReturn(Optional.of(category));
+
+        //when
+        categoryService.categoryEdit(category.getId(), categoryEditRequest);
+
+        //then
+        Assertions.assertThat(category.getCategory()).isEqualTo("신발");
+
     }
 
     @Test
