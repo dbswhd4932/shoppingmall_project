@@ -17,16 +17,14 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.schema.AlternateTypeRules;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -41,13 +39,13 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private final TypeResolver typeResolver;
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.OAS_30)
-                .useDefaultResponseMessages(true) // Swagger 에서 제공해주는 기본 응답 코드 (200, 401, 403, 404) 등의 노출 여부
-                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class), typeResolver.resolve(Page.class)))
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo()) // Swagger UI 로 노출할 정보
                 .securityContexts(List.of(securityContext()))
                 .securitySchemes(List.of(apiKey()))
                 .select()
+//                .useDefaultResponseMessages(true) // Swagger 에서 제공해주는 기본 응답 코드 (200, 401, 403, 404) 등의 노출 여부
+//                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class), typeResolver.resolve(Page.class)))
                 .apis(RequestHandlerSelectors.basePackage("com.project.shop")) // api 스펙이 작성되어 있는 패키지 (controller)
                 .paths(PathSelectors.any()) // apis 에 위치하는 API 중 특정 path 를 선택
                 .build();
@@ -67,12 +65,16 @@ public class SwaggerConfig implements WebMvcConfigurer {
         private List<String> sort;
     }
 
-    public ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("쇼핑몰 프로젝트")
-                .description("쇼핑몰 프로젝트 Swagger 문서")
-//                .version("")
-                .build();
+    private ApiInfo apiInfo() {
+        return new ApiInfo(
+                "OpenMarket shoppingMall",
+                "springboot + Jpa 를 이용한 오픈마켓 쇼핑몰 프로젝트 입니다.",
+                "",
+                "",
+                new Contact("Jo Yoon Jong", "https://github.com/dbswhd4932/shoppingmall_project.git", "dbswhd4932@gmail.com"),
+                "",
+                "",
+                Collections.emptyList());
     }
 
     @Override
