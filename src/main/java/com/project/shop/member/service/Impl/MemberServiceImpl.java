@@ -22,6 +22,7 @@ import com.project.shop.member.jwt.TokenProvider;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.MemberService;
+import com.project.shop.order.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,18 +43,12 @@ import java.util.List;
 @Transactional
 public class MemberServiceImpl implements MemberService {
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
-    private final S3Service s3Service;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final RoleRepository roleRepository;
-    private final GoodsRepository goodsRepository;
-    private final ImageRepository imageRepository;
 
     // 회원생성
     @Override
@@ -174,24 +169,6 @@ public class MemberServiceImpl implements MemberService {
     public void memberDelete() {
         Member member = getMember();
         member.setDeletedAt();
-
-        /**
-         *  member 가 SELLER 일 경우, 상품 등록했을 수 있습니다.
-         *  상품이 있다면, 상품 DB , 이미지 DB , S3 에서 데이터가 삭제됩니다.
-         *  대댓글 등 이외의 데이터는 삭제되지 않습니다.
-         */
-        List<Goods> goodsList = goodsRepository.findAllByMemberId(member.getId());
-        if (!goodsList.isEmpty()) {
-            for (Goods goods : goodsList) {
-                goodsRepository.deleteById(goods.getId());
-                List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
-                for (Image image : imageList) {
-                    imageRepository.deleteById(image.getId());
-                    String fileName = image.getFileUrl().substring(bucket.length() + 41);
-                    s3Service.deleteFile(fileName);
-                }
-            }
-        }
     }
 
     private Member getMember() {
