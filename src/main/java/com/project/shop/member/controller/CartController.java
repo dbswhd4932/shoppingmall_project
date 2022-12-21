@@ -41,7 +41,7 @@ public class CartController {
     // 상품 변경 여부 확인 - 프론트
     @GetMapping("/carts/{cartId}/check")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "상품 변경 여부 확인")
+    @ApiOperation(value = "상품 변경 여부 확인" , notes = "false (변경없음) , true (변경있음)")
     public boolean checkGoodsInfoChange(@PathVariable("cartId") Long cartId) {
         return cartService.checkGoodsInfoChange(cartId);
     }
@@ -60,7 +60,7 @@ public class CartController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "장바구니 상품 삭제")
-    public void cartDeleteGoods(@PathVariable("cartId") Long cartId, Long goodsId) {
-        cartService.cartDeleteGoods(cartId, goodsId);
+    public void cartDeleteGoods(@PathVariable("cartId") Long cartId) {
+        cartService.cartDeleteGoods(cartId);
     }
 }
