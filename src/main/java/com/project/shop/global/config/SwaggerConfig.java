@@ -40,6 +40,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .useDefaultResponseMessages(true) // Swagger 에서 제공해주는 기본 응답 코드 (200, 401, 403, 404) 등의 노출 여부
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class), typeResolver.resolve(Page.class)))
                 .apiInfo(apiInfo()) // Swagger UI 로 노출할 정보
                 .securityContexts(List.of(securityContext()))
                 .securitySchemes(List.of(apiKey()))
@@ -53,10 +55,10 @@ public class SwaggerConfig implements WebMvcConfigurer {
     @Setter
     @ApiModel
     static class Page {
-        @ApiModelProperty(value = "페이지 번호(0..N)")
+        @ApiModelProperty(value = "페이지 번호(0..N)", example = "0")
         private Integer page;
 
-        @ApiModelProperty(value = "페이지 크기")
+        @ApiModelProperty(value = "페이지 크기", example = "0")
         private Integer size;
 
         @ApiModelProperty(value = "상품 ID 내림차순")
@@ -67,11 +69,11 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return new ApiInfo(
                 "OpenMarket shoppingMall",
                 "springboot + Jpa 를 이용한 오픈마켓 쇼핑몰 프로젝트 입니다.",
-                "",
-                "",
+                "1.0.0",
+                "https://github.com/dbswhd4932/shoppingmall_project.git",
                 new Contact("Jo Yoon Jong", "https://github.com/dbswhd4932/shoppingmall_project.git", "dbswhd4932@gmail.com"),
-                "",
-                "",
+                "License of API",
+                "API license URL",
                 Collections.emptyList());
     }
 
