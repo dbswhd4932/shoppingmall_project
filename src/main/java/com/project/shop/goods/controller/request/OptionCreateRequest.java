@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.util.List;
 import java.util.Map;
 
@@ -15,10 +16,13 @@ import java.util.Map;
 @Builder
 public class OptionCreateRequest {
 
+    @Column
     private List<OptionCreate> optionValue;
 
+    @Column
     private int totalPrice;
 
+    @Column
     private String optionDescription;
 
 }
