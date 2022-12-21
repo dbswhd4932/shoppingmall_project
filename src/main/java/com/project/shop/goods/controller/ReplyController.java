@@ -29,11 +29,11 @@ public class ReplyController {
         replyService.replyCreate(request);
     }
 
-    // 대댓글 전체 조회
-    @GetMapping("/replies")
+    // 대댓글 조회
+    @GetMapping("/reviews/{reviewId}/reply")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "대댓글 전체 조회")
-    public List<ReplyResponse> replyFind(Long reviewId) {
+    @ApiOperation(value = "대댓글 조회")
+    public List<ReplyResponse> replyFind(@PathVariable(name = "reviewId") Long reviewId) {
         return replyService.replyFind(reviewId);
     }
 
