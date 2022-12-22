@@ -138,7 +138,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     // 내 정보 조회
-    // todo 내 정보 조회 권한 부분 질문
     @Override
     @Transactional(readOnly = true)
     public MemberResponse findByDetailMyInfo() {
@@ -151,7 +150,8 @@ public class MemberServiceImpl implements MemberService {
         MemberResponse memberResponse = new MemberResponse().toResponse(member);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        memberResponse.setRoles((List<GrantedAuthority>) authorities);
+        List<String> list = authorities.stream().map(GrantedAuthority::getAuthority).toList();
+        memberResponse.setRoles(list);
 
         return memberResponse;
 

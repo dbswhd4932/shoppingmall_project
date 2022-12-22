@@ -24,7 +24,7 @@ public class MemberResponse {
     private String detailAddress;   //상세주소
     private String email;           //이메일
     private String phone;           //핸드폰번호
-    private List<GrantedAuthority> roles;
+    private List<String> roles;
 
     // Member -> MemberResponse 변환
     public MemberResponse toResponse(Member m) {
