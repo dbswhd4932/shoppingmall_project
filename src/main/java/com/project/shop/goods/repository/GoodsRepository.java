@@ -1,5 +1,6 @@
 package com.project.shop.goods.repository;
 
+import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.domain.Goods;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,5 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     List<Goods> findGoodsByGoodsNameContaining(Pageable pageable, String keyword);
 
-    Optional<Goods> findByMemberId(Long memberId);
-
-    List<Goods> findAllByMemberId(Long memberId);
+    List<Goods> findAllByCategory(Category category);
 }

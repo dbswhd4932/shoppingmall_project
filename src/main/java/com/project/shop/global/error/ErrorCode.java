@@ -37,6 +37,7 @@ public enum ErrorCode {
     // 카테고리
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다"),
     CATEGORY_NAME_DUPLICATED(HttpStatus.BAD_REQUEST, "중복된 카테고리 이름입니다."),
+    CATEGORY_EXIST_GOODS(HttpStatus.BAD_REQUEST, "카테고리에 속한 상품이 존재합니다."),
 
     // 리뷰
     NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "존재하는 리뷰가 없습니다."),

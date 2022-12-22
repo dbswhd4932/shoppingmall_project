@@ -7,6 +7,7 @@ import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
 import com.project.shop.goods.repository.CategoryRepository;
+import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.shop.global.error.ErrorCode.CATEGORY_EXIST_GOODS;
 import static com.project.shop.global.error.ErrorCode.CATEGORY_NAME_DUPLICATED;
 
 @Service
@@ -23,6 +25,7 @@ import static com.project.shop.global.error.ErrorCode.CATEGORY_NAME_DUPLICATED;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final GoodsRepository goodsRepository;
 
     // 카테고리 생성
     @Override
@@ -57,6 +60,11 @@ public class CategoryServiceImpl implements CategoryService {
     public void categoryDelete(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
+
+        // 카테고리에 속한 상품이 있을 경우 예외처리
+        if(!goodsRepository.findAllByCategory(category).isEmpty()) {
+            throw new BusinessException(CATEGORY_EXIST_GOODS);
+        }
 
         categoryRepository.delete(category);
     }
