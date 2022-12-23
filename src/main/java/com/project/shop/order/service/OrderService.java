@@ -19,9 +19,6 @@ public interface OrderService {
     // 주문 조회
     List<OrderResponse> orderFindMember(Pageable pageable);
 
-    // 가맹점 ID 조회
-    public String findMerchantId(Long orderId);
-
     // 결제 취소
     public void payCancel(Long payId, PayCancelRequest payCancelRequest);
 

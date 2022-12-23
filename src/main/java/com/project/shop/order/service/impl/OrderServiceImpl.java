@@ -103,16 +103,6 @@ public class OrderServiceImpl implements OrderService {
         return list;
     }
 
-    // 가맹점 ID 조회
-    @Override
-    @Transactional(readOnly = true)
-    public String findMerchantId(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_ORDERS));
-
-        return order.getMerchantId();
-    }
-
     // 결제취소
     @Override
     public void payCancel(Long payId, PayCancelRequest payCancelRequest) {

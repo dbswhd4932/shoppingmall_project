@@ -50,14 +50,6 @@ public class OrderController {
         return orderService.orderFindMember(pageable);
     }
 
-    // MerchantID 조회하기 - 프론트
-    @GetMapping("/merchantId/{orderId}")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "가맹점 ID (MerchantId) 조회")
-    public String findMerchantId(@PathVariable("orderId") Long orderId) {
-        return orderService.findMerchantId(orderId);
-    }
-
     // 결제 취소
     @PostMapping("/payCancel/{payId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
