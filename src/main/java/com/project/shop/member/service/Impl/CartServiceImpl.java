@@ -78,8 +78,7 @@ public class CartServiceImpl implements CartService {
 
         Member member = tokenCheckMember();
 
-        List<Cart> carts = cartRepository.findByMemberId(member.getId()).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_CART));
+        List<Cart> carts = cartRepository.findByMemberId(member.getId());
 
         List<CartResponse> list = new ArrayList<>();
         for (Cart cart : carts) {

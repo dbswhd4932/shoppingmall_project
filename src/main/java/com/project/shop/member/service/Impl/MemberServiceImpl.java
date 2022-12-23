@@ -11,14 +11,12 @@ import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
-import com.project.shop.member.domain.LoginType;
-import com.project.shop.member.domain.Member;
-import com.project.shop.member.domain.Role;
-import com.project.shop.member.domain.RoleType;
+import com.project.shop.member.domain.*;
 import com.project.shop.member.jwt.JwtTokenDto;
 import com.project.shop.member.jwt.RefreshToken;
 import com.project.shop.member.jwt.RefreshTokenRepository;
 import com.project.shop.member.jwt.TokenProvider;
+import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.MemberService;
@@ -53,6 +51,7 @@ public class MemberServiceImpl implements MemberService {
     private final RoleRepository roleRepository;
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
+    private final CartRepository cartRepository;
 
     // 회원생성
     @Override
@@ -90,7 +89,7 @@ public class MemberServiceImpl implements MemberService {
         if (loginRequest.getLoginType().equals(LoginType.KAKAO)) {
             Member member = Member.kakaoCreate(loginRequest, passwordEncoder);
             // 이미 존재하는 회원인지 확인
-            if(memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent())
+            if (memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent())
                 throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
 
             memberRepository.save(member);
@@ -160,17 +159,27 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void memberDelete() {
         Member member = getMember();
+        // 회원 DB deleteAt 현재시간으로 초기화
         member.setDeletedAt();
 
-        // 회원이 등록한 상품이 있으면 상품에 관련된 데이터를 모두 삭제 (상품, 리뷰, 대댓글, 옵션, 상품이미지, S3)
-        List<Goods> goodsList = goodsRepository.findAllByMemberId(member.getId());
-        for (Goods goods : goodsList) {
-            List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
-            for (Image image : imageList) {
-                String fileName = image.getFileUrl().substring(bucket.length() + 41);
-                s3Service.deleteFile(fileName);
+        // member 권한이 USER 권한이면 장바구니 상품 삭제
+        for (Role role : member.getRoles()) {
+            if (role.getRoleType().equals(RoleType.ROLE_USER)) {
+                List<Cart> cartList = cartRepository.findByMemberId(member.getId());
+                cartRepository.deleteAll(cartList);
             }
-            goodsRepository.deleteById(goods.getId());
+            // 회원(SELLER) 이 등록한 상품이 있으면 상품에 관련된 데이터를 모두 삭제 (상품, 리뷰, 대댓글, 옵션, 상품이미지, S3)
+            else if (role.getRoleType().equals(RoleType.ROLE_SELLER)) {
+                List<Goods> goodsList = goodsRepository.findAllByMemberId(member.getId());
+                for (Goods goods : goodsList) {
+                    List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
+                    for (Image image : imageList) {
+                        String fileName = image.getFileUrl().substring(bucket.length() + 41);
+                        s3Service.deleteFile(fileName);
+                    }
+                    goodsRepository.deleteById(goods.getId());
+                }
+            }
         }
     }
 
