@@ -7,11 +7,11 @@ import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.service.Impl.S3Service;
-import com.project.shop.member.controller.request.KakaoLoginRequest;
+import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
-import com.project.shop.member.controller.request.NoSocialLoginRequest;
 import com.project.shop.member.controller.response.MemberResponse;
+import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.Role;
 import com.project.shop.member.domain.RoleType;
@@ -84,9 +84,30 @@ public class MemberServiceImpl implements MemberService {
 
     // 일반 로그인
     @Override              // String memberId, String password
-    public JwtTokenDto login(NoSocialLoginRequest noSocialLoginRequest) {
+    public JwtTokenDto login(LoginRequest loginRequest) {
+
+        // KAKAO 로그인 시, Member DB 에 LoginType = KAKAO 로 생성
+        if (loginRequest.getLoginType().equals(LoginType.KAKAO)) {
+            Member member = Member.kakaoCreate(loginRequest, passwordEncoder);
+            memberRepository.save(member);
+
+            Role role = Role.builder()
+                    .member(member)
+                    .roleType(RoleType.ROLE_USER)
+                    .build();
+            roleRepository.save(role);
+
+            JwtTokenDto tokenDto = tokenProvider.generateTokenNoSecurity(loginRequest);
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .key(member.getLoginId())
+                    .value(tokenDto.getRefreshToken())
+                    .build();
+            refreshTokenRepository.save(refreshToken);
+            return tokenDto;
+        }
+
         // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(noSocialLoginRequest.getLoginId(), noSocialLoginRequest.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
         // 2. 실제 검증 (사용자 비밀번호 체크)
         // authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -100,44 +121,6 @@ public class MemberServiceImpl implements MemberService {
                 .build();
         refreshTokenRepository.save(refreshToken);
         // 5. 토큰 리턴
-        return tokenDto;
-    }
-
-    // todo 카카오 로그인
-    @Override
-    public void kakaoLogin(KakaoLoginRequest kakaoLoginRequest) {
-
-        // loginId 중복 체크
-        if (memberRepository.findByLoginId(kakaoLoginRequest.getLoginId()).isPresent()) {
-            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
-        }
-
-        Member member = Member.kakaoCreate(kakaoLoginRequest, passwordEncoder);
-        memberRepository.save(member);
-
-        Role role = Role.builder()
-                .member(member)
-                .roleType(RoleType.ROLE_USER)
-                .build();
-        roleRepository.save(role);
-    }
-
-    @Override
-    // 카카오 로그인 토큰 얻기
-    public JwtTokenDto kakaoGetToken(KakaoLoginRequest kakaoLoginRequest) {
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(kakaoLoginRequest.getLoginId(), kakaoLoginRequest.getLoginId());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
-
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
-        refreshTokenRepository.save(refreshToken);
-
         return tokenDto;
     }
 

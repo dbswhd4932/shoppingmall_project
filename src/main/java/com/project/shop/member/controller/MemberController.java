@@ -1,8 +1,6 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.global.util.SecurityUtil;
-import com.project.shop.member.controller.request.KakaoLoginRequest;
-import com.project.shop.member.controller.request.NoSocialLoginRequest;
+import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
@@ -44,24 +42,8 @@ public class MemberController {
     @PostMapping("/members/login")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "일반 로그인")
-    public JwtTokenDto login(@RequestBody NoSocialLoginRequest noSocialLoginRequest) {
-        return memberService.login(noSocialLoginRequest);
-    }
-
-    //카카오 로그인
-    @PostMapping("/members/kakaoLogin")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "카카오 로그인")
-    public void kakaoLogin(@RequestBody @Valid KakaoLoginRequest kakaoLoginRequest) {
-        memberService.kakaoLogin(kakaoLoginRequest);
-    }
-
-    //카카오 토큰 얻기
-    @PostMapping("/members/kakaoGetToken")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "카카오 로그인 토큰 받기")
-    public JwtTokenDto kakaoGetToken(@RequestBody @Valid KakaoLoginRequest kakaoLoginRequest) {
-        return memberService.kakaoGetToken(kakaoLoginRequest);
+    public JwtTokenDto login(@RequestBody LoginRequest loginRequest) {
+        return memberService.login(loginRequest);
     }
 
     // 내 정보 가져오기

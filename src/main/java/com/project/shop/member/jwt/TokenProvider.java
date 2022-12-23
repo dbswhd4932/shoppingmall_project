@@ -1,5 +1,8 @@
 package com.project.shop.member.jwt;
 
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
+import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
@@ -43,6 +46,35 @@ public class TokenProvider {
         this.memberRepository = memberRepository;
     }
 
+    // 시큐리티 없이 토큰 생성
+    public JwtTokenDto generateTokenNoSecurity(LoginRequest loginRequest) {
+        long nowTime = new Date().getTime();
+        Member member = memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 1일
+        String accessToken = Jwts.builder()
+                .setSubject(loginRequest.getLoginId())          //"sub":"소셜닉네임"
+                .claim(MEMBER_ID_CLAIM_KEY, member.getId())    //"memberId":"1"
+                .claim(AUTHORITIES_KEY, "ROLE_USER")    // 소셜로그인은 ROLE_USER 고정
+                .claim("LOGIN_TYPE", member.getLoginType()) // "LOGIN_TYPE":"KAKAO"
+                .setExpiration(accessTokenExpiresIn)           //"exp":"12345678"
+                .signWith(key, SignatureAlgorithm.HS512)       //"alg":"HS512"
+                .compact();
+
+        // RefreshToken 생성
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(nowTime + REFRESH_TOKEN_EXPIRE_TIME)) // 7일
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        return JwtTokenDto.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+                .build();
+    }
+
     // 유저 정보를 가지고 AccessToken , RefreshToken을 생성하는 메서드
     public JwtTokenDto generateToken(Authentication authentication) {
         //권한 가져오기
@@ -60,7 +92,7 @@ public class TokenProvider {
         long nowTime = new Date().getTime();
 
         //AccessToken 생성
-        Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 30분 60 * 30 * 1000
+        Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 1일
 
         log.info("authentication.getName() = {} " , authentication.getName());
         log.info("authentication.getAuthorities() = {} " , authentication.getAuthorities());
@@ -74,13 +106,14 @@ public class TokenProvider {
                 .setSubject(authentication.getName())          //"sub":"loginId"
                 .claim(MEMBER_ID_CLAIM_KEY, member.getId())    //"memberId":"1"
                 .claim(AUTHORITIES_KEY, authorization)         //"auth":"ROLE_USER"
+                .claim("LOGIN_TYPE", member.getLoginType()) // "LOGIN_TYPE":"NO_SOCIAL"
                 .setExpiration(accessTokenExpiresIn)           //"exp":"12345678"
                 .signWith(key, SignatureAlgorithm.HS512)       //"alg":"HS512"
                 .compact();
 
         // RefreshToken 생성
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(nowTime + REFRESH_TOKEN_EXPIRE_TIME)) // 1일 24 * 60 * 60 * 1000
+                .setExpiration(new Date(nowTime + REFRESH_TOKEN_EXPIRE_TIME)) // 7일
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
