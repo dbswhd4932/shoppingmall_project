@@ -2,7 +2,9 @@ package com.project.shop.goods.service;
 
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -14,6 +16,8 @@ public interface GoodsService {
 
     // 상품 전체 검색 - 페이징 기능
     List<GoodsResponse> goodsFindAll(Pageable pageable);
+
+    UpdateGoodsResponse checkGoodsUpdate(UpdateCheckRequest updateCheckRequest);
 
     // 상품 상세(정보) 조회
     GoodsResponse goodsDetailFind(Long goodsId);

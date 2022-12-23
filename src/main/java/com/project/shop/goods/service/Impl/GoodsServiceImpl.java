@@ -5,7 +5,9 @@ import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
+import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.domain.Option;
@@ -27,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.shop.global.error.ErrorCode.NOT_FOUND_GOODS;
 import static com.project.shop.global.error.ErrorCode.NOT_SELLING_GOODS;
 
 @Service
@@ -82,6 +85,36 @@ public class GoodsServiceImpl implements GoodsService {
         }
         return list;
     }
+
+    // 상품 변경 여부 확인 (가격기준)
+    @Transactional(readOnly = true)
+    public UpdateGoodsResponse checkGoodsUpdate(UpdateCheckRequest updateCheckRequest) {
+        Goods goods = goodsRepository.findById(updateCheckRequest.getGoodsId()).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_GOODS));
+        // 상품 옵션이 없으면, 상품 가격으로 비교 후 리턴
+        if (goods.getOptions().isEmpty()) {
+            if (goods.getPrice() != updateCheckRequest.getGoodsPrice()) {
+                return UpdateGoodsResponse.builder()
+                        .goodsId(updateCheckRequest.getGoodsId())
+                        .goodsPrice(goods.getPrice())
+                        .build();
+            }
+        }
+        // 상품에 관련된 옵션을 조회
+        List<Option> optionList = optionRepository.findByGoodsId(updateCheckRequest.getGoodsId());
+        // 상품 옵션이 있으면, 옵션 DB 의 최종가격으로 비교 후 리턴
+        for (Option option : optionList) {
+            if (option.getId().equals(updateCheckRequest.getOptionId()) &&
+                    option.getTotalPrice() != updateCheckRequest.getGoodsTotalPrice()) {
+                return UpdateGoodsResponse.builder()
+                        .goodsId(updateCheckRequest.getGoodsId())
+                        .goodsPrice(option.getTotalPrice())
+                        .build();
+            }
+        }
+        return null;
+    }
+
 
     // 상품 상세(정보)조회
     @Override

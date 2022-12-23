@@ -4,7 +4,9 @@ import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.service.GoodsService;
 import com.project.shop.goods.service.Impl.S3Service;
@@ -53,6 +55,13 @@ public class GoodsController {
     @ApiOperation(value = "상품 전체 조회")
     public List<GoodsResponse> goodsFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindAll(pageable);
+    }
+
+    @GetMapping("/goods/checkUpdateGoods")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 가격 변경 확인")
+    public UpdateGoodsResponse checkGoodsUpdate(@RequestBody UpdateCheckRequest updateCheckRequest) {
+        return goodsService.checkGoodsUpdate(updateCheckRequest);
     }
 
     // 상품 단품 상세 조회
