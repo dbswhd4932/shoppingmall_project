@@ -46,7 +46,7 @@ public class GoodsController {
         }
 
         List<String> imgPaths = s3Service.upload(multipartFiles); // s3 저장
-       goodsService.goodsCreate(goodsCreateRequest, imgPaths);
+        goodsService.goodsCreate(goodsCreateRequest, imgPaths);
     }
 
     // 상품 전체 조회
@@ -59,8 +59,10 @@ public class GoodsController {
 
     @GetMapping("/goods/checkUpdateGoods")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "상품 가격 변경 확인")
-    public UpdateGoodsResponse checkGoodsUpdate(@RequestBody UpdateCheckRequest updateCheckRequest) {
+    @ApiOperation(value = "상품 가격 변경 확인",
+            notes ="옵션이 있는 상품은 goodsTotalPrice 와 OptionId 를 입력해주세요, " +
+                    "옵션이 없는 경우에는 goodsPrice 를 입력해주세요.")
+    public List<UpdateGoodsResponse> checkGoodsUpdate(@RequestBody List<UpdateCheckRequest> updateCheckRequest) {
         return goodsService.checkGoodsUpdate(updateCheckRequest);
     }
 

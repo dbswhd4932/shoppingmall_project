@@ -17,7 +17,8 @@ public interface GoodsService {
     // 상품 전체 검색 - 페이징 기능
     List<GoodsResponse> goodsFindAll(Pageable pageable);
 
-    UpdateGoodsResponse checkGoodsUpdate(UpdateCheckRequest updateCheckRequest);
+    // 상품 가격 변경 확인
+    List<UpdateGoodsResponse> checkGoodsUpdate(List<UpdateCheckRequest> updateCheckRequest);
 
     // 상품 상세(정보) 조회
     GoodsResponse goodsDetailFind(Long goodsId);

@@ -9,10 +9,6 @@ import java.util.List;
 
 public interface OrderService {
 
-    // todo 삭제 확인
-    // 주문생성 - 장바구니에 있는 상품 구매
-//    void createOrder(Long cartId, OrderCreateRequest orderCreateRequest, PayCreateRequest payCreateRequest);
-
     // 주문 생성
     void cartOrder(OrderCreateRequest orderCreateRequest);
 
