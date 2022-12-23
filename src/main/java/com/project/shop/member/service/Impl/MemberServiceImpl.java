@@ -86,9 +86,13 @@ public class MemberServiceImpl implements MemberService {
     @Override              // String memberId, String password
     public JwtTokenDto login(LoginRequest loginRequest) {
 
-        // KAKAO 로그인 시, Member DB 에 LoginType = KAKAO 로 생성
+        // LoginType 이 KAKAO 일때
         if (loginRequest.getLoginType().equals(LoginType.KAKAO)) {
             Member member = Member.kakaoCreate(loginRequest, passwordEncoder);
+            // 이미 존재하는 회원인지 확인
+            if(memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent())
+                throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+
             memberRepository.save(member);
 
             Role role = Role.builder()
@@ -106,6 +110,7 @@ public class MemberServiceImpl implements MemberService {
             return tokenDto;
         }
 
+        // 일반 회원 로그인
         // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
         // 2. 실제 검증 (사용자 비밀번호 체크)
