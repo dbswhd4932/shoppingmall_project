@@ -47,10 +47,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cartOrder(OrderCreateRequest orderCreateRequest) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = getMember();
 
         int orderPrice = orderCreateRequest.getTotalPrice();
         Order order = Order.toOrder(orderCreateRequest, orderPrice , member);
@@ -84,14 +81,19 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    // 주문 조회
-    @Override
-    @Transactional(readOnly = true)
-    public List<OrderResponse> orderFindMember(Pageable pageable) {
+    private Member getMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();
 
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+        return member;
+    }
+
+    // 주문 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<OrderResponse> orderFindMember(Pageable pageable) {
+        Member member = getMember();
 
         Page<Order> orderList = orderRepository.findAll(pageable);
         List<OrderResponse> list = new ArrayList<>();
@@ -106,10 +108,7 @@ public class OrderServiceImpl implements OrderService {
     // 결제취소
     @Override
     public void payCancel(Long payId, PayCancelRequest payCancelRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = getMember();
 
         Pay pay = payRepository.findById(payId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_PAY));
