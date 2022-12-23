@@ -88,36 +88,6 @@ public class CartServiceImpl implements CartService {
         return list;
     }
 
-    /**
-     * 상품 변경 여부를 확인할 수 있습니다.
-     * 장바구니에서 상품 주문전에 해당 API 로 상품 변경 여부를 확인 후,
-     * 변경된 내역(가격)이 있을 경우 변경된 내용으로 적용되어 주문창으로 넘어갑니다.
-     * false = 변경 없음 / true = 변경 있음
-     */
-    @Override
-    public boolean checkGoodsInfoChange(Long cartId) {
-
-        boolean result = false;
-        Cart cart = cartRepository.findById(cartId).orElseThrow(
-                () -> new BusinessException(CART_NO_PRODUCTS));
-
-        // 옵션이 없는 상품일 경우, 상품의 기본가격으로 비교합니다.
-        if (cart.getOptionNumber() == null) {
-            Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(
-                    () -> new BusinessException(NOT_FOUND_GOODS));
-            if (cart.getTotalPrice() != (goods.getPrice() * cart.getTotalAmount()))
-                return true;
-        }
-        // 상품의 옵션이 변경되었으면 기존의 option 은 삭제되고 재생성됩니다.
-        // 그러므로, cart 의 option_number 와 같은 Option_Id 의 존재여부로 비교합니다.
-        if (cart.getOptionNumber() != null) {
-            if (optionRepository.findById(cart.getOptionNumber()).isEmpty())
-                result = true;
-        }
-
-        return result;
-    }
-
     // 장바구니 수량, 옵션 변경
     @Override
     public void editCartItem(Long cartId, CartEditRequest cartEditRequest) {

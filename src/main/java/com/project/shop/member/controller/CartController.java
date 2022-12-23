@@ -38,14 +38,6 @@ public class CartController {
         return cartService.cartFindMember();
     }
 
-    // 상품 변경 여부 확인 - 프론트
-    @GetMapping("/carts/{cartId}/check")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "상품 변경 여부 확인" , notes = "false (변경없음) , true (변경있음)")
-    public boolean checkGoodsInfoChange(@PathVariable("cartId") Long cartId) {
-        return cartService.checkGoodsInfoChange(cartId);
-    }
-
     // 장바구니 수정
     @PutMapping("/carts/{cartId}")
     @ResponseStatus(HttpStatus.OK)
