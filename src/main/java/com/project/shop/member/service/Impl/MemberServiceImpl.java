@@ -22,7 +22,6 @@ import com.project.shop.member.jwt.TokenProvider;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.MemberService;
-import com.project.shop.order.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,13 +41,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class MemberServiceImpl implements MemberService {
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
+    private final S3Service s3Service;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final RoleRepository roleRepository;
+    private final GoodsRepository goodsRepository;
+    private final ImageRepository imageRepository;
 
     // 회원생성
     @Override
@@ -169,6 +173,17 @@ public class MemberServiceImpl implements MemberService {
     public void memberDelete() {
         Member member = getMember();
         member.setDeletedAt();
+
+        // 회원이 등록한 상품이 있으면 상품에 관련된 데이터를 모두 삭제 (상품, 리뷰, 대댓글, 옵션, 상품이미지, S3)
+        List<Goods> goodsList = goodsRepository.findAllByMemberId(member.getId());
+        for (Goods goods : goodsList) {
+            List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
+            for (Image image : imageList) {
+                String fileName = image.getFileUrl().substring(bucket.length() + 41);
+                s3Service.deleteFile(fileName);
+            }
+            goodsRepository.deleteById(goods.getId());
+        }
     }
 
     private Member getMember() {

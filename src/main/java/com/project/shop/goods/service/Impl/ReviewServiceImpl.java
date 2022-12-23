@@ -40,14 +40,17 @@ public class ReviewServiceImpl implements ReviewService {
     public void reviewCreate(ReviewCreateRequest reviewCreateRequest) {
         Member member = getMember();
 
-        OrderItem orderItem = orderItemRepository.findById(reviewCreateRequest.getOrderItemId())
-                .orElseThrow(() -> new BusinessException(NO_BUY_ORDER));
+        OrderItem orderItem = orderItemRepository.findById(reviewCreateRequest.getOrderItemId()).orElseThrow(
+                () -> new BusinessException(NO_BUY_ORDER));
 
         if (!orderItem.getMemberId().equals(member.getId())) {
             throw new BusinessException(NOT_BUY_GOODS);
         }
 
-        Review review = Review.createReview(member, orderItem, reviewCreateRequest);
+        Goods goods = goodsRepository.findById(orderItem.getGoodsId()).orElseThrow(
+                () -> new BusinessException(NOT_BUY_GOODS));
+
+        Review review = Review.createReview(member, goods, reviewCreateRequest);
         reviewRepository.save(review);
     }
 

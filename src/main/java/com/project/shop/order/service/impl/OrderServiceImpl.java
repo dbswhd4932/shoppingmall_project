@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderCreateRequest.orderItemCreate orderItemCreate : orderCreateRequest.getOrderItemCreates()) {
             Goods goods = goodsRepository.findById(orderItemCreate.getGoodsId()).orElseThrow(
                     () -> new BusinessException(NOT_FOUND_GOODS));
-            OrderItem orderItem = OrderItem.createOrderItem(member, goods, orderItemCreate.getOrderPrice(), orderItemCreate.getAmount(), order);
+            OrderItem orderItem = OrderItem.createOrderItem(member, goods.getId(), orderItemCreate.getOrderPrice(), orderItemCreate.getAmount(), order, goods.getGoodsName(), goods.getPrice());
             orderItemRepository.save(orderItem);
 
             Cart cart = cartRepository.findByGoodsIdAndMember(goods.getId(), member).orElseThrow(
