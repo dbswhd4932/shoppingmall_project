@@ -17,14 +17,19 @@ public class OrderItem extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id")
-    private Long id;            //주문상품번호(PK)
+    private Long id;               //주문상품번호(PK)
 
     @Column(nullable = false)
-    private Long memberId;      // 회원 ID
+    private Long memberId;        // 회원 ID
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "goods_id")
-    private Goods goods;          //상품(다대일)
+    @Column(nullable = false)
+    private Long goodsId;         //상품(다대일)
+
+    @Column(nullable = false)
+    private String goodsName;     // 상품 이름
+
+    @Column(nullable = false)
+    private int price;            // 상품 가격
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_id")
@@ -37,22 +42,26 @@ public class OrderItem extends BaseTimeEntity {
     private int orderPrice;      //주문수량가격
 
     @Builder
-    public OrderItem(Long memberId, Goods goods, Order order, int amount, int orderPrice) {
+    public OrderItem(Long memberId, Long goodsId, String goodsName, int price, Order order, int amount, int orderPrice) {
         this.memberId = memberId;
-        this.goods = goods;
+        this.goodsId = goodsId;
+        this.goodsName = goodsName;
+        this.price = price;
         this.order = order;
         this.amount = amount;
         this.orderPrice = orderPrice;
     }
 
     // 주문_상품 생성
-    public static OrderItem createOrderItem(Member member, Goods goods, int orderPrice , int amount, Order order) {
+    public static OrderItem createOrderItem(Member member, Long goodsId, int orderPrice , int amount, Order order, String goodsName, int price) {
         return OrderItem.builder()
                 .memberId(member.getId())
                 .order(order)
-                .goods(goods)
+                .goodsId(goodsId)
                 .amount(amount)
                 .orderPrice(orderPrice)
+                .goodsName(goodsName)
+                .price(price)
                 .build();
     }
 }

@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.project.shop.global.error.ErrorCode.NOT_MATCH_REVIEW;
 
 @Getter
@@ -35,6 +38,9 @@ public class Review extends BaseTimeEntity {
     @Column(nullable = false)
     private String comment;     //내용
 
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<Reply> replies = new ArrayList<>();
+
     @Builder
     public Review(Long memberId, Goods goods, String comment) {
         this.memberId = memberId;
@@ -43,10 +49,10 @@ public class Review extends BaseTimeEntity {
     }
 
     // 리뷰 생성
-    public static Review createReview(Member member, OrderItem orderItem, ReviewCreateRequest reviewCreateRequest) {
+    public static Review createReview(Member member, Goods goods, ReviewCreateRequest reviewCreateRequest) {
         return Review.builder()
                 .memberId(member.getId())
-                .goods(orderItem.getGoods())
+                .goods(goods)
                 .comment(reviewCreateRequest.getComment())
                 .build();
     }

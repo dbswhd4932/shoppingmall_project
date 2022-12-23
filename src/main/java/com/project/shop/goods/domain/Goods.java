@@ -52,6 +52,9 @@ public class Goods extends BaseTimeEntity {
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Option> options = new ArrayList<>();
 
+    @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
 
     @Builder
     public Goods(Long memberId, String goodsName, Category category, int price, String description) {
