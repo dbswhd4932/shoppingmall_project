@@ -30,10 +30,10 @@ public class ReplyController {
     }
 
     // 대댓글 조회
-    @GetMapping("/reviews/{reviewId}/reply")
+    @GetMapping("/reviews/reply")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "대댓글 조회")
-    public List<ReplyResponse> replyFind(@PathVariable(name = "reviewId") Long reviewId) {
+    public List<ReplyResponse> replyFind(Long reviewId) {
         return replyService.replyFind(reviewId);
     }
 
