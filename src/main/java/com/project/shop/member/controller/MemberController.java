@@ -33,10 +33,10 @@ public class MemberController {
     }
 
     //로그인 아이디 중복 체크
-    @GetMapping("/members/{loginId}/exist")
-    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/members/exist")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "로그인아이디 중복 체크")
-    public void memberLoginIdDuplicateCheck(@PathVariable("loginId") String loginId) {
+    public void memberLoginIdDuplicateCheck(String loginId) {
         memberService.loginIdDuplicateCheck(loginId);
     }
 
