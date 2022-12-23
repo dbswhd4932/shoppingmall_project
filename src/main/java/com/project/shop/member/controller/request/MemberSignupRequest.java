@@ -1,14 +1,11 @@
 package com.project.shop.member.controller.request;
 
-import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -40,9 +37,6 @@ public class MemberSignupRequest {
 
     @NotNull(message = "전화번호를 입력하세요.")
     private String phone;           //핸드폰번호
-
-    @Enumerated(EnumType.STRING)
-    private LoginType loginType;    //로그인 타입
 
     private List<RoleType> roles;    // 권한타입
 
