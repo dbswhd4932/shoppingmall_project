@@ -42,7 +42,6 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class GoodsServiceImplTest {
 
-    @Spy
     @InjectMocks
     GoodsServiceImpl goodsService;
 
@@ -52,8 +51,6 @@ class GoodsServiceImplTest {
     @Mock
     OptionRepository optionRepository;
 
-    @Mock
-    ImageRepository imageRepository;
 
     @Mock
     MemberRepository memberRepository;
@@ -61,8 +58,6 @@ class GoodsServiceImplTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
-    @Mock
-    S3Service s3Service;
 
     @BeforeEach()
     void beforeEach() {

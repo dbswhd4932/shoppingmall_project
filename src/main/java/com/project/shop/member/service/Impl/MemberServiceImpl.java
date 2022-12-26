@@ -169,7 +169,7 @@ public class MemberServiceImpl implements MemberService {
                 cartRepository.deleteAll(cartList);
             }
             // 회원(SELLER) 이 등록한 상품이 있으면 상품에 관련된 데이터를 모두 삭제 (상품, 리뷰, 대댓글, 옵션, 상품이미지, S3)
-            else if (role.getRoleType().equals(RoleType.ROLE_SELLER)) {
+            if (role.getRoleType().equals(RoleType.ROLE_SELLER)) {
                 List<Goods> goodsList = goodsRepository.findAllByMemberId(member.getId());
                 for (Goods goods : goodsList) {
                     List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
