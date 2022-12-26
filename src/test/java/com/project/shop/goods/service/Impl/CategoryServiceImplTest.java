@@ -5,6 +5,7 @@ import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
 import com.project.shop.goods.repository.CategoryRepository;
+import com.project.shop.goods.repository.GoodsRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ class CategoryService {
 
     @Mock
     CategoryRepository categoryRepository;
+
+    @Mock
+    GoodsRepository goodsRepository;
 
     @Test
     @DisplayName("카테고리 생성")
@@ -80,6 +84,7 @@ class CategoryService {
         //given
         Category category = Category.builder().category("의류").build();
         given(categoryRepository.findById(category.getId())).willReturn(Optional.of(category));
+        assertThatCode(() -> goodsRepository.findAllByCategory(category)).doesNotThrowAnyException();
 
         //when
         categoryService.categoryDelete(category.getId());
