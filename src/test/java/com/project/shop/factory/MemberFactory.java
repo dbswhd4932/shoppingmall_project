@@ -18,6 +18,7 @@ public class MemberFactory {
 
     public Member createMember() {
         Member member = Member.builder()
+                .id(1L)
                 .loginId("loginId")
                 .password(passwordEncoder.encode("1234"))
                 .name("name")
