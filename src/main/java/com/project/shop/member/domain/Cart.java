@@ -38,7 +38,8 @@ public class Cart extends BaseTimeEntity {
     private Long optionNumber;   //옵션 번호
 
     @Builder
-    public Cart(Member member, Long goodsId, int totalAmount, int totalPrice, Long optionNumber) {
+    public Cart(Long id, Member member, Long goodsId, int totalAmount, int totalPrice, Long optionNumber) {
+        this.id = id;
         this.member = member;
         this.goodsId = goodsId;
         this.totalAmount = totalAmount;

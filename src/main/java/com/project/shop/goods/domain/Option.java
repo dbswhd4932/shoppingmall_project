@@ -42,7 +42,8 @@ public class Option extends BaseTimeEntity {
     private String optionDescription;
 
     @Builder
-    public Option(Goods goods, List<OptionCreate> optionValue, int totalPrice, String description) {
+    public Option(Long id, Goods goods, List<OptionCreate> optionValue, int totalPrice, String description) {
+        this.id = id;
         this.goods = goods;
         this.optionValue = optionValue;
         this.totalPrice = totalPrice;
