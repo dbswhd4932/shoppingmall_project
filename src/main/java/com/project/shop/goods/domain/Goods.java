@@ -57,7 +57,8 @@ public class Goods extends BaseTimeEntity {
 
 
     @Builder
-    public Goods(Long memberId, String goodsName, Category category, int price, String description) {
+    public Goods(Long id, Long memberId, String goodsName, Category category, int price, String description) {
+        this.id = id;
         this.memberId = memberId;
         this.goodsName = goodsName;
         this.category = category;

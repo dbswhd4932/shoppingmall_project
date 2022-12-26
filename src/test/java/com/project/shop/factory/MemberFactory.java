@@ -3,6 +3,7 @@ package com.project.shop.factory;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.Member;
+import com.project.shop.member.domain.Role;
 import com.project.shop.member.domain.RoleType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -26,6 +27,8 @@ public class MemberFactory {
                 .detailAddress("seoul")
                 .email("user@test.com")
                 .phone("010-1111-1111")
+                .roles(List.of(Role.builder().roleType(RoleType.ROLE_USER).build(),
+                        Role.builder().roleType(RoleType.ROLE_SELLER).build()))
                 .loginType(LoginType.NO_SOCIAL)
                 .build();
 
