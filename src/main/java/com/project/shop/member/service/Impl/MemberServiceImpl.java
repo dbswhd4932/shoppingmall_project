@@ -81,7 +81,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    // 일반 로그인
+    // 로그인
     @Override              // String memberId, String password
     public JwtTokenDto login(LoginRequest loginRequest) {
 
