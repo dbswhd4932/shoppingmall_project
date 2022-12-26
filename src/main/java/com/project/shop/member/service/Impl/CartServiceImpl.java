@@ -38,7 +38,11 @@ public class CartServiceImpl implements CartService {
     @Override
     public void cartAddGoods(CartCreateRequest cartCreateRequest) {
 
-        Member member = tokenCheckMember();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_MEMBER));
 
         Goods goods = goodsRepository.findById(cartCreateRequest.getGoodsId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_GOODS));
@@ -76,7 +80,11 @@ public class CartServiceImpl implements CartService {
     @Transactional(readOnly = true)
     public List<CartResponse> cartFindMember() {
 
-        Member member = tokenCheckMember();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_MEMBER));
 
         List<Cart> carts = cartRepository.findByMemberId(member.getId());
 
@@ -91,7 +99,11 @@ public class CartServiceImpl implements CartService {
     @Override
     public void editCartItem(Long cartId, CartEditRequest cartEditRequest) {
 
-        Member member = tokenCheckMember();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_MEMBER));
 
         Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_CART));
@@ -114,14 +126,17 @@ public class CartServiceImpl implements CartService {
                 return;
             }
         }
-        throw new BusinessException(NOT_FOUND_OPTION);
     }
 
     // 장바구니 상품 삭제
     @Override
     public void cartDeleteGoods(Long cartId) {
 
-        Member member = tokenCheckMember();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_MEMBER));
 
         Cart cart = cartRepository.findByIdAndMember(cartId, member)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
@@ -129,12 +144,4 @@ public class CartServiceImpl implements CartService {
         cartRepository.deleteById(cart.getId());
     }
 
-    private Member tokenCheckMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
-        return member;
-    }
 }
