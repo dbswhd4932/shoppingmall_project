@@ -1,32 +1,48 @@
 package com.project.shop.goods.service.Impl;
 
 import com.project.shop.factory.GoodsFactory;
-import com.project.shop.goods.controller.request.OptionCreateRequest;
-import com.project.shop.goods.domain.Category;
-import com.project.shop.goods.domain.Goods;
+import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
+import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.repository.MemberRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class GoodsServiceImplTest {
 
+    @Spy
     @InjectMocks
     GoodsServiceImpl goodsService;
 
@@ -40,123 +56,115 @@ class GoodsServiceImplTest {
     ImageRepository imageRepository;
 
     @Mock
+    MemberRepository memberRepository;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
+
+    @Mock
     S3Service s3Service;
 
-//    @Test
-//    @DisplayName("상품 생성")
-//    void goodsCreateTest() {
-//        //given
-//        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
-//                .optionValue(null)
-//                .totalPrice(12000)
-//                .optionDescription("옵션설명").build();
-//
-//        GoodsCreateRequest goodsCreateRequest = GoodsCreateRequest.builder()
-//                .goodsName("상품이름")
-//                .category(new Category("의류"))
-//                .price(10000)
-//                .optionCreateRequest(List.of(optionCreateRequest))
-//                .goodsDescription("상품설명")
-//                .build();
-//
-//        List<String> impPaths = new ArrayList<>();
-//        impPaths.add("abcdefg.png");
-//        Goods goods = Goods.create(goodsCreateRequest);
-//
-//        //when
-//        goodsService.goodsCreate(goodsCreateRequest, impPaths);
-//
-//        //then
-//        verify(goodsRepository).save(refEq(goods));
-//        verify(optionRepository).save(any()); // 어떤값이라도 상관없다.
-//        verify(imageRepository).save(any());
-//
-//    }
+    @BeforeEach()
+    void beforeEach() {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("loginId", "1234");
+        context.setAuthentication(mockAuthentication);
+        SecurityContextHolder.setContext(context);
+    }
 
-//    @Test
-//    @DisplayName("상품 전체 조회")
-//    void goodsFindAllTest() {
-//        //given
-//        Pageable pageable = PageRequest.of(0,10, Sort.Direction.DESC,"id");
-//        List<Goods> goodsList = goodsRepository.findAll();
-//        Goods goods = GoodsFactory.createGoods();
-//        goodsList.add(goods);
-//        Page<Goods> goodsPage = new PageImpl<>(goodsList);
-//        given(goodsRepository.findAll(pageable)).willReturn(goodsPage);
-//
-//        //when
-//        List<GoodsResponse> goodsResponses = goodsService.goodsFindAll(pageable);
-//
-//        //then
-//        assertThat(goodsResponses.size()).isEqualTo(1);
-//
-//    }
 
     @Test
-    @DisplayName("상품 검색")
-    void goodFindKeyWordTest() {
+    @DisplayName("상품 등록")
+    @Disabled
+    void goodsCreate() {
         //given
-        Pageable pageable = PageRequest.of(0,10, Sort.Direction.DESC,"id");
-        String keyword = "테스트";
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        given(goodsRepository.findGoodsByGoodsNameContaining(pageable,keyword))
-                .willReturn(List.of(goods));
+        GoodsCreateRequest goodsCreateRequest = GoodsCreateRequest.builder().goodsName("상품이름").build();
+        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder().totalPrice(10000).build();
+        List<OptionCreateRequest> list = new ArrayList<>();
+        list.add(optionCreateRequest);
+        Option option = Option.toOption(list.get(0), goods);
+
+        given(memberRepository.findByLoginId(any())).willReturn(Optional.ofNullable(member));
+        given(optionRepository.save(Option.toOption(list.get(0), goods))).willReturn(option);
 
         //when
-        List<GoodsResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
+        goodsService.goodsCreate(goodsCreateRequest, List.of("123412341234"));
+
+
+        //then
+
+    }
+
+    @Test
+    @DisplayName("상품 전체 조회")
+    void goodsFindAll() {
+        //given
+        Goods goods = GoodsFactory.createGoods();
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
+        List<Goods> goodsList = new ArrayList<>();
+        goodsList.add(goods);
+
+        PageImpl<Goods> goodsPage = new PageImpl<>(goodsList);
+
+        given(goodsRepository.findAll(pageable)).willReturn(goodsPage);
+
+        //when
+        List<GoodsResponse> goodsResponses = goodsService.goodsFindAll(pageable);
 
         //then
         assertThat(goodsResponses.size()).isEqualTo(1);
     }
 
-//    @Test
-//    @Disabled
-//    @DisplayName("상품 수정")
-//    void goodsEditTest(){
-//        //given
-//        Goods goods = GoodsFactory.createGoods();
-//        Member member = MemberFactory.createMember();
-//
-//        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
-//                .optionName("옵션이름")
-//                .optionValue(null)
-//                .totalPrice(12000)
-//                .optionDescription("옵션설명").build();
-//        Option option = Option.toOption(optionCreateRequest, goods);
-//        GoodsEditRequest goodsEditRequest = GoodsEditRequest.builder()
-//                .goodsName("상품이름")
-//                .category(new Category("의류"))
-//                .price(10000)
-//                .optionCreateRequest(List.of(optionCreateRequest))
-//                .goodsDescription("상품설명")
-//                .build();
-//
-//        goods.update(goodsEditRequest);
-//
-//        List<String> impPaths = new ArrayList<>();
-//        impPaths.add("5824bf15-d24f-4d34-97c7-47da110f9fc7.png");
-//        Image image = Image.builder().fileUrl(impPaths.get(0)).goods(goods).build();
-//
-//        given(goodsRepository.findByIdAndMemberId(goods.getId(),member.getId())).willReturn(Optional.of(goods));
-//        given(optionRepository.findAllByGoodsId(goods.getId())).willReturn(List.of(option));
-//
-//        //when
-//        goodsService.goodsEdit(goods.getId(), member.getId(), goodsEditRequest, impPaths);
-//
-//        //then
-//        verify(optionRepository).deleteById(option.getId());
-//        verify(optionRepository).save(any());
-//        for (String impPath : impPaths) {
-//
-//        }
-//        verify(imageRepository).deleteById(image.getId());
-//        verify(imageRepository).save(any());
-//    }
-//
-//    @Test
-//    @DisplayName("상품 삭제")
-//    void goodsDeleteTest() {
-//
-//    }
+    @Test
+    @DisplayName("상품 상세 조회")
+    void goodsDetailFind() {
+        //given
+        Goods goods = GoodsFactory.createGoods();
+        given(goodsRepository.findById(any())).willReturn(Optional.ofNullable(goods));
 
+        //when
+        GoodsResponse goodsResponse = goodsService.goodsDetailFind(goods.getId());
+
+        //then
+        assertThat(goodsResponse.getGoodsName()).isEqualTo("테스트상품");
+    }
+
+    @Test
+    @DisplayName("상품 검색")
+    void goodsFindKeyword() {
+        //given
+        String keyword = "테스트";
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
+        Goods goods = GoodsFactory.createGoods();
+        given(goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword)).willReturn(List.of(goods));
+
+        //when
+        List<GoodsResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
+
+        //then
+        assertThat(goodsResponses.get(0).getGoodsName()).isEqualTo("테스트상품");
+    }
+
+    @Test
+    @DisplayName("상품 삭제")
+    @Disabled
+    void goodsDelete() {
+        //given
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
+        Goods goods = GoodsFactory.createGoods();
+
+        given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.ofNullable(member));
+        given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
+
+        //when
+        goodsService.goodsDelete(goods.getId());
+
+        //then
+        verify(goodsRepository).deleteById(goods.getId());
+
+    }
 }
