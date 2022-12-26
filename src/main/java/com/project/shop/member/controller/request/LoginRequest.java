@@ -2,6 +2,7 @@ package com.project.shop.member.controller.request;
 
 import com.project.shop.member.domain.LoginType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.Column;
 
 @Data
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class LoginRequest {
 
