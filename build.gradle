@@ -48,8 +48,14 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
-    testImplementation 'org.mockito:mockito-inline:4.8.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    // JUnit 의 테스트 작성을 보다 문맥적으로 자연스럽고 우아하게 할 수 있도록 도와주는 Matcher 라이브러리
+    testImplementation 'org.hamcrest:hamcrest-library:2.2'
+    testImplementation 'org.mockito:mockito-core:4.10.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 
 }
 
