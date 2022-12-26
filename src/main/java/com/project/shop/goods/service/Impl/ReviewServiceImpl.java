@@ -71,7 +71,8 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
 
-        review.checkWhoWriteReview(member.getId());
+        if (!review.getMemberId().equals(member.getId()))
+            throw new BusinessException(NOT_MATCH_REVIEW);
         review.edit(reviewEditRequest);
     }
 
@@ -83,7 +84,8 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
 
-        review.checkWhoWriteReview(member.getId());
+        if (!review.getMemberId().equals(member.getId()))
+            throw new BusinessException(NOT_MATCH_REVIEW);
         reviewRepository.delete(review);
     }
 
