@@ -48,6 +48,8 @@ public class OrderCreateRequest {
 
     @Data
     @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class orderItemCreate {
         private Long goodsId;   // 상품 ID
         private int amount;    // 상품 수량
