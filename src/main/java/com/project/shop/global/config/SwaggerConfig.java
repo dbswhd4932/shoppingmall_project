@@ -39,8 +39,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private final TypeResolver typeResolver;
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .useDefaultResponseMessages(true) // Swagger 에서 제공해주는 기본 응답 코드 (200, 401, 403, 404) 등의 노출 여부
+        return new Docket(DocumentationType.OAS_30)
+                .useDefaultResponseMessages(false) // Swagger 에서 제공해주는 기본 응답 코드 (200, 401, 403, 404) 등의 노출 여부
                 .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Pageable.class), typeResolver.resolve(Page.class)))
                 .apiInfo(apiInfo()) // Swagger UI 로 노출할 정보
                 .securityContexts(List.of(securityContext()))
@@ -84,7 +84,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     // swagger 에 토큰 인증 기능 추가  apiKey() , securityContext(), defaultAuth()
     private ApiKey apiKey() {
-        return new ApiKey("JWT", "Authorization", "header");
+        return new ApiKey("Authorization", "Bearer", "header");
     }
 
     private SecurityContext securityContext() {
@@ -95,7 +95,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
+        return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
     }
 
 }
