@@ -123,11 +123,6 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessException(ALREADY_CANCEL_PAY);
         }
 
-        // 가맹점 ID 가 다를 경우 예외처리
-        if (!pay.getOrder().getMerchantId().equals(payCancelRequest.getMerchantId())) {
-            throw new BusinessException(NOT_EQUAL_MERCHANT_ID);
-        }
-
         PayCancel payCancel = PayCancel.builder()
                 .order(pay.getOrder())
                 .merchantId(payCancelRequest.getMerchantId())
