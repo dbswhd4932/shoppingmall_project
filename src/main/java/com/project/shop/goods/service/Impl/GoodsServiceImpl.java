@@ -96,20 +96,17 @@ public class GoodsServiceImpl implements GoodsService {
                     () -> new BusinessException(NOT_FOUND_GOODS));
             // 상품 옵션이 없으면, 상품 가격으로 비교
             if (goods.getOptions().isEmpty()) {
-                if (goods.getPrice() != request.getGoodsPrice()) {
                     UpdateGoodsResponse response = UpdateGoodsResponse.builder()
                             .goodsId(request.getGoodsId())
                             .goodsPrice(goods.getPrice())
                             .build();
                     list.add(response);
-                }
             }
             // 상품에 관련된 옵션을 조회
             List<Option> optionList = optionRepository.findByGoodsId(request.getGoodsId());
             // 상품 옵션이 있으면, 옵션 DB 의 최종가격으로 비교
             for (Option option : optionList) {
-                if (option.getId().equals(request.getOptionId()) &&
-                        option.getTotalPrice() != request.getGoodsTotalPrice()) {
+                if (option.getId().equals(request.getOptionId())) {
                     UpdateGoodsResponse response = UpdateGoodsResponse.builder()
                             .goodsId(request.getGoodsId())
                             .goodsPrice(option.getTotalPrice())
@@ -173,7 +170,7 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
         //상품 옵션 수정이 null 이 아니면 저장
-        if (goodsEditRequest.getOptionCreateRequest().isEmpty()) {
+        if (!goodsEditRequest.getOptionCreateRequest().isEmpty() && goodsEditRequest.getGoodsDescription() != null) {
             List<OptionCreateRequest> optionCreateRequest = goodsEditRequest.getOptionCreateRequest();
             for (OptionCreateRequest createRequest : optionCreateRequest) {
                 Option option = Option.toOption(createRequest, goods);
