@@ -14,8 +14,10 @@ import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.request.PayCancelRequest;
 import com.project.shop.order.controller.response.OrderResponse;
 import com.project.shop.order.domain.Order;
+import com.project.shop.order.domain.OrderItem;
 import com.project.shop.order.domain.Pay;
 import com.project.shop.order.domain.PayCancel;
+import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayCancelRepository;
 import com.project.shop.order.repository.PayRepository;
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -59,6 +62,8 @@ class OrderServiceImplTest {
     @Mock
     PayRepository payRepository;
 
+    @Mock
+    OrderItemRepository orderItemRepository;
 
     @Mock
     PayCancelRepository payCancelRepository;
@@ -87,11 +92,16 @@ class OrderServiceImplTest {
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
+        Order order = OrderFactory.order(member);
         Cart cart = CartFactory.cartCreate(member, goods);
+        OrderItem orderItem = OrderItem.createOrderItem
+                (member, goods.getId(), 10000, 10, order, goods.getGoodsName(), goods.getPrice());
         OrderCreateRequest orderCreateRequest = OrderFactory.orderCreateRequest(goods);
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
         given(goodsRepository.findById(orderCreateRequest.getOrderItemCreates().get(0).getGoodsId()))
                 .willReturn(Optional.of(goods));
+
+        given(orderItemRepository.save(any())).willReturn(orderItem);
         given(cartRepository.findByGoodsIdAndMember(goods.getId(), member)).willReturn(Optional.ofNullable(cart));
 
         //when

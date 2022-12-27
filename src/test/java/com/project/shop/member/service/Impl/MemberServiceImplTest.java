@@ -5,18 +5,22 @@ import com.project.shop.factory.MemberFactory;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.repository.GoodsRepository;
+import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
-import com.project.shop.member.domain.LoginType;
-import com.project.shop.member.domain.Member;
+import com.project.shop.member.domain.*;
 import com.project.shop.member.jwt.JwtTokenDto;
+import com.project.shop.member.jwt.RefreshToken;
+import com.project.shop.member.jwt.RefreshTokenRepository;
 import com.project.shop.member.jwt.TokenProvider;
+import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.member.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +32,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,10 +56,24 @@ class MemberServiceImplTest {
     GoodsRepository goodsRepository;
 
     @Mock
+    CartRepository cartRepository;
+
+    @Mock
+    ImageRepository imageRepository;
+
+    @Mock
+    RoleRepository roleRepository;
+
+    @Mock
+    RefreshTokenRepository refreshTokenRepository;
+
+    @Mock
     AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Mock
     TokenProvider tokenProvider;
+
+
 
     @Mock
     PasswordEncoder passwordEncoder;
@@ -73,7 +92,11 @@ class MemberServiceImplTest {
     void memberSignupTest() {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
+        Role role = new Role(RoleType.ROLE_USER, member);
         MemberSignupRequest signupRequestDto = memberFactory.createSignupRequestDto();
+        given(roleRepository.save(any())).willReturn(role);
+
         //when
         memberService.memberSignup(signupRequestDto);
         //then
@@ -102,7 +125,9 @@ class MemberServiceImplTest {
         //given
         LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.KAKAO, "test@test.com");
         JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", "refreshToken", 1234L);
+        RefreshToken refreshToken = new RefreshToken("key", "value");
         given(tokenProvider.generateTokenNoSecurity(loginRequest)).willReturn(tokenDto);
+        given(refreshTokenRepository.save(any())).willReturn(refreshToken);
 
         //when
         memberService.login(loginRequest);
@@ -113,11 +138,10 @@ class MemberServiceImplTest {
 
     @Test
     @DisplayName("일반 로그인")
-    @Disabled
+    @WithMockUser
     void noSocialLogin() {
         //given
         LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.NO_SOCIAL, "test@test.com");
-        given(authenticationManagerBuilder.getObject()).willReturn(any());
 
         //when
         memberService.login(loginRequest);
@@ -167,8 +191,12 @@ class MemberServiceImplTest {
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
+        Image image = new Image("https://goods-image.s3.ap-northeast-2.amazonaws.com/9a6347ed-56b0-47de-b194-6f865aa4f5ca.png", goods);
+        Cart cart = new Cart(1L, member, goods.getId(), 10, 10000, 1L);
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
         given(goodsRepository.findAllByMemberId(member.getId())).willReturn(List.of(goods));
+        given(cartRepository.findByMemberId(member.getId())).willReturn(List.of(cart));
+        given(imageRepository.findByGoodsId(goods.getId())).willReturn(List.of(image));
 
         //when
         memberService.memberDelete();

@@ -3,10 +3,15 @@ package com.project.shop.goods.service.Impl;
 import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
+import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
+import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
+import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.domain.Option;
+import com.project.shop.goods.domain.OptionCreate;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
@@ -19,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +55,8 @@ class GoodsServiceImplTest {
     @Mock
     OptionRepository optionRepository;
 
+    @Mock
+    ImageRepository imageRepository;
 
     @Mock
     MemberRepository memberRepository;
@@ -70,24 +76,23 @@ class GoodsServiceImplTest {
 
     @Test
     @DisplayName("상품 등록")
-    @Disabled
     void goodsCreate() {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
         GoodsCreateRequest goodsCreateRequest = GoodsCreateRequest.builder().goodsName("상품이름").build();
-        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder().totalPrice(10000).build();
+        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
+                .totalPrice(10000).optionValue(List.of()).optionDescription("설명").build();
         List<OptionCreateRequest> list = new ArrayList<>();
         list.add(optionCreateRequest);
-        Option option = Option.toOption(list.get(0), goods);
+        Option option = Option.toOption(optionCreateRequest, goods);
 
         given(memberRepository.findByLoginId(any())).willReturn(Optional.ofNullable(member));
-        given(optionRepository.save(Option.toOption(list.get(0), goods))).willReturn(option);
+        given(optionRepository.save(any())).willReturn(option);
 
         //when
         goodsService.goodsCreate(goodsCreateRequest, List.of("123412341234"));
-
 
         //then
 
@@ -114,6 +119,22 @@ class GoodsServiceImplTest {
     }
 
     @Test
+    @DisplayName("상품 가격 변경 확인")
+    void checkGoodsUpdate() {
+        //given
+        Goods goods = GoodsFactory.createGoods();
+        UpdateCheckRequest updateCheckRequest = UpdateCheckRequest.builder().goodsId(goods.getId()).goodsPrice(2000).build();
+        given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
+
+        //when
+        List<UpdateGoodsResponse> goodsResponses = goodsService.checkGoodsUpdate(List.of(updateCheckRequest));
+
+        //then
+        assertThat(goodsResponses.get(0).getGoodsPrice()).isEqualTo(1000);
+
+    }
+
+    @Test
     @DisplayName("상품 상세 조회")
     void goodsDetailFind() {
         //given
@@ -134,8 +155,9 @@ class GoodsServiceImplTest {
         String keyword = "테스트";
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
         Goods goods = GoodsFactory.createGoods();
+        Image image = new Image("fileUrl", goods);
         given(goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword)).willReturn(List.of(goods));
-
+        given(imageRepository.findByGoodsId(goods.getId())).willReturn(List.of(image));
         //when
         List<GoodsResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
 
@@ -144,8 +166,25 @@ class GoodsServiceImplTest {
     }
 
     @Test
+    @DisplayName("상품 수정")
+    void goodsEdit() {
+        //given
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
+        Goods goods = GoodsFactory.createGoods();
+        GoodsEditRequest goodsEditRequest = new GoodsEditRequest("name", 1L, 3000, null, "설명");
+
+        given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
+        given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
+
+        //when
+        goodsService.goodsEdit(goods.getId(),goodsEditRequest,null);
+
+        //then
+    }
+
+    @Test
     @DisplayName("상품 삭제")
-    @Disabled
     void goodsDelete() {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
