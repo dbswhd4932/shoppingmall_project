@@ -44,6 +44,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("회원 서비스 테스트")
 class MemberServiceImplTest {
 
     @InjectMocks

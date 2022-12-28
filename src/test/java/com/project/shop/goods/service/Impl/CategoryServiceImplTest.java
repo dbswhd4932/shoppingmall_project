@@ -1,9 +1,9 @@
 package com.project.shop.goods.service.Impl;
 
-import com.project.shop.goods.controller.request.CategoryEditRequest;
-import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
+import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
+import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.repository.CategoryRepository;
 import com.project.shop.goods.repository.GoodsRepository;
 import org.assertj.core.api.Assertions;
@@ -17,12 +17,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("카테고리 서비스 테스트")
 class CategoryService {
 
     @InjectMocks

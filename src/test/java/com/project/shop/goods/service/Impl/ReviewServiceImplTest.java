@@ -41,6 +41,7 @@ import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("리뷰 서비스 테스트")
 class ReviewServiceImplTest {
 
     @InjectMocks

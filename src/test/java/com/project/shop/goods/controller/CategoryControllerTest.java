@@ -4,7 +4,6 @@ import com.project.shop.config.WebSecurityConfig;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
-import com.project.shop.goods.repository.CategoryRepository;
 import com.project.shop.goods.service.Impl.CategoryServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -29,13 +27,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CategoryController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @ImportAutoConfiguration(WebSecurityConfig.class)
+@DisplayName("카테고리 컨트롤러 테스트")
 public class CategoryControllerTest extends ControllerSetting{
 
     @MockBean
     CategoryServiceImpl categoryService;
-
-    @MockBean
-    CategoryRepository categoryRepository;
 
     @Test
     @DisplayName("카테고리 생성")
@@ -95,8 +91,7 @@ public class CategoryControllerTest extends ControllerSetting{
     void categoryDeleteTest() throws Exception {
         //given
         //when
-        mockMvc.perform(delete("/api/categories/{categoryId}", 1L)
-                .contentType(APPLICATION_JSON))
+        mockMvc.perform(delete("/api/categories/{categoryId}", 1L))
                 .andExpect(status().isNoContent());
 
         //then

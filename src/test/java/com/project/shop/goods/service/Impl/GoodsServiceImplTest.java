@@ -11,14 +11,12 @@ import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.domain.Option;
-import com.project.shop.goods.domain.OptionCreate;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +42,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("상품 서비스 테스트")
 class GoodsServiceImplTest {
 
     @InjectMocks

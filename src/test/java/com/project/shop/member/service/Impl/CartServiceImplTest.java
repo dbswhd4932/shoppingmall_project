@@ -8,15 +8,14 @@ import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.domain.OptionCreate;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
+import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
-import com.project.shop.member.controller.request.CartCreateRequest;
-import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +38,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("장바구니 서비스 테스트")
 class CartServiceImplTest {
 
     @InjectMocks

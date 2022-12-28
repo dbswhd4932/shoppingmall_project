@@ -12,7 +12,6 @@ import com.project.shop.goods.repository.ReplyRepository;
 import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,12 +28,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("대댓글 서비스 테스트")
 class ReplyServiceImplTest {
 
     @InjectMocks
