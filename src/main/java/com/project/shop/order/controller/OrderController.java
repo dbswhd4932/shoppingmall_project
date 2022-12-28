@@ -27,6 +27,7 @@ public class OrderController {
 
     // MerchantID UUID 생성 - 프론트
     @GetMapping("/merchantId")
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "가맹점 ID (MerchantId) UUID 생성")
     public MerchantId merchantIdCreate() {
         return MerchantId.builder().merchantId(UUID.randomUUID()).build();
