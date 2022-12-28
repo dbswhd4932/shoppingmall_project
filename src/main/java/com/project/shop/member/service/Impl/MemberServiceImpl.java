@@ -13,8 +13,6 @@ import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.domain.*;
 import com.project.shop.member.jwt.JwtTokenDto;
-import com.project.shop.member.jwt.RefreshToken;
-import com.project.shop.member.jwt.RefreshTokenRepository;
 import com.project.shop.member.jwt.TokenProvider;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
@@ -47,7 +45,6 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final RoleRepository roleRepository;
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
@@ -101,11 +98,6 @@ public class MemberServiceImpl implements MemberService {
             roleRepository.save(role);
 
             JwtTokenDto tokenDto = tokenProvider.generateTokenNoSecurity(loginRequest);
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .key(member.getLoginId())
-                    .value(tokenDto.getRefreshToken())
-                    .build();
-            refreshTokenRepository.save(refreshToken);
             return tokenDto;
         }
 
@@ -118,13 +110,7 @@ public class MemberServiceImpl implements MemberService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // 3. 인증기반으로 jwt 토큰생성
         JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
-        // 4. 리프레시 토큰 저장
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
-        refreshTokenRepository.save(refreshToken);
-        // 5. 토큰 리턴
+        // 4. 토큰 리턴
         return tokenDto;
     }
 

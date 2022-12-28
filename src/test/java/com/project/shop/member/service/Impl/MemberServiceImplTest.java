@@ -14,8 +14,6 @@ import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.domain.*;
 import com.project.shop.member.jwt.JwtTokenDto;
-import com.project.shop.member.jwt.RefreshToken;
-import com.project.shop.member.jwt.RefreshTokenRepository;
 import com.project.shop.member.jwt.TokenProvider;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
@@ -64,9 +62,6 @@ class MemberServiceImplTest {
 
     @Mock
     RoleRepository roleRepository;
-
-    @Mock
-    RefreshTokenRepository refreshTokenRepository;
 
     @Mock
     AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -125,10 +120,8 @@ class MemberServiceImplTest {
     void SocialLogin() {
         //given
         LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.KAKAO, "test@test.com");
-        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", "refreshToken", 1234L);
-        RefreshToken refreshToken = new RefreshToken("key", "value");
+        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken",  1234L);
         given(tokenProvider.generateTokenNoSecurity(loginRequest)).willReturn(tokenDto);
-        given(refreshTokenRepository.save(any())).willReturn(refreshToken);
 
         //when
         memberService.login(loginRequest);

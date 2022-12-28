@@ -6,10 +6,8 @@ import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -35,19 +33,17 @@ public class TokenProvider {
 
     private final MemberRepository memberRepository;
 
-    private final Key key;
+    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     //생성자
-    public TokenProvider(@Value("${jwt.secret}") String secretKey , MemberRepository memberRepository) {
-        // base64를 byte[] 로 변환
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        // byte[] 로 key 생성
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+    public TokenProvider(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
     // 시큐리티 없이 토큰 생성
     public JwtTokenDto generateTokenNoSecurity(LoginRequest loginRequest) {
+
+
         long nowTime = new Date().getTime();
         Member member = memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
@@ -58,19 +54,12 @@ public class TokenProvider {
                 .claim(AUTHORITIES_KEY, "ROLE_USER")    // 소셜로그인은 ROLE_USER 고정
                 .claim("LOGIN_TYPE", member.getLoginType()) // "LOGIN_TYPE":"KAKAO"
                 .setExpiration(accessTokenExpiresIn)           //"exp":"12345678"
-                .signWith(key, SignatureAlgorithm.HS512)       //"alg":"HS512"
-                .compact();
-
-        // RefreshToken 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(nowTime + REFRESH_TOKEN_EXPIRE_TIME)) // 7일
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key)
                 .compact();
 
         return JwtTokenDto.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .build();
     }
@@ -93,13 +82,6 @@ public class TokenProvider {
 
         //AccessToken 생성
         Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 1일
-
-        log.info("authentication.getName() = {} " , authentication.getName());
-        log.info("authentication.getAuthorities() = {} " , authentication.getAuthorities());
-        log.info("authentication.getCredentials() = {} " , authentication.getCredentials());
-        log.info("authentication.getPrincipal() = {} " , authentication.getPrincipal());
-        log.info("authentication.getDetails() = {} " , authentication.getDetails());
-
         Member member = memberRepository.findByLoginId(authentication.getName()).get();
 
         String accessToken = Jwts.builder()
@@ -108,19 +90,12 @@ public class TokenProvider {
                 .claim(AUTHORITIES_KEY, authorization)         //"auth":"ROLE_USER"
                 .claim("LOGIN_TYPE", member.getLoginType()) // "LOGIN_TYPE":"NO_SOCIAL"
                 .setExpiration(accessTokenExpiresIn)           //"exp":"12345678"
-                .signWith(key, SignatureAlgorithm.HS512)       //"alg":"HS512"
-                .compact();
-
-        // RefreshToken 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(nowTime + REFRESH_TOKEN_EXPIRE_TIME)) // 7일
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key)
                 .compact();
 
         return JwtTokenDto.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .build();
     }
