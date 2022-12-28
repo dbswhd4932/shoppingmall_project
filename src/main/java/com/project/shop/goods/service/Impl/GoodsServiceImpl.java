@@ -53,6 +53,10 @@ public class GoodsServiceImpl implements GoodsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
+        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
+        }
+
         // 상품 정보저장
         Goods goods = Goods.create(goodsCreateRequest, member);
         goodsRepository.save(goods);
@@ -156,6 +160,10 @@ public class GoodsServiceImpl implements GoodsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+        if (goodsRepository.findByGoodsName(goodsEditRequest.getGoodsName()).isPresent()) {
+            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
+        }
 
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
         if (!goods.getMemberId().equals(member.getId()))
