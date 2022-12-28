@@ -1,6 +1,5 @@
-package com.project.shop.global.config;
+package com.project.shop.global.config.security;
 
-import com.project.shop.member.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

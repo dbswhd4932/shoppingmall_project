@@ -4,7 +4,7 @@ import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
-import com.project.shop.member.jwt.JwtTokenDto;
+import com.project.shop.global.config.security.JwtTokenDto;
 import com.project.shop.member.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

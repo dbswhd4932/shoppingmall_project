@@ -1,7 +1,5 @@
-package com.project.shop.global.config;
+package com.project.shop.global.config.security;
 
-import com.project.shop.member.jwt.JwtFilter;
-import com.project.shop.member.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

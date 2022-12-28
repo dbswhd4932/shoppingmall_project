@@ -1,4 +1,4 @@
-package com.project.shop.member.jwt;
+package com.project.shop.global.config.security;
 
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;

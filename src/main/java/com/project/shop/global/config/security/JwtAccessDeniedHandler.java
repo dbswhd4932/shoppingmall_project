@@ -1,4 +1,4 @@
-package com.project.shop.member.jwt;
+package com.project.shop.global.config.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;

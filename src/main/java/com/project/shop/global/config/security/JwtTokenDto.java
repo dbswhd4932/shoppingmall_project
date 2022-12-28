@@ -1,4 +1,4 @@
-package com.project.shop.member.jwt;
+package com.project.shop.global.config.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
