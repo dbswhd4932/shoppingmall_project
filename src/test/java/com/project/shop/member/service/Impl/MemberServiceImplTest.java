@@ -25,8 +25,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -132,11 +135,15 @@ class MemberServiceImplTest {
 
     @Test
     @DisplayName("일반 로그인")
-    @WithMockUser
+    @WithMockUser(username = "test", roles = "USER")
     void noSocialLogin() {
         //given
         LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.NO_SOCIAL, "test@test.com");
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
 
+        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        given(authenticationManagerBuilder.getObject()).willReturn((AuthenticationManager) authenticate);
         //when
         memberService.login(loginRequest);
 
@@ -178,24 +185,4 @@ class MemberServiceImplTest {
 
     }
 
-    @Test
-    @DisplayName("회원 탈퇴")
-    void memberDelete() {
-        //given
-        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
-        Member member = memberFactory.createMember();
-        Goods goods = GoodsFactory.createGoods();
-        Image image = new Image("https://goods-image.s3.ap-northeast-2.amazonaws.com/9a6347ed-56b0-47de-b194-6f865aa4f5ca.png", goods);
-        Cart cart = new Cart(1L, member, goods.getId(), 10, 10000, 1L);
-        given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-        given(goodsRepository.findAllByMemberId(member.getId())).willReturn(List.of(goods));
-        given(cartRepository.findByMemberId(member.getId())).willReturn(List.of(cart));
-        given(imageRepository.findByGoodsId(goods.getId())).willReturn(List.of(image));
-
-        //when
-        memberService.memberDelete();
-
-        //then
-        verify(goodsRepository).deleteById(goods.getId());
-    }
 }
