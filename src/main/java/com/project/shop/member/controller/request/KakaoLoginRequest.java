@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,6 @@ public class KakaoLoginRequest {
     @NotNull(message = "닉네임은 필수값입니다.")
     private String loginId;
 
-    @Column
+    @Nullable
     private String email;
 }

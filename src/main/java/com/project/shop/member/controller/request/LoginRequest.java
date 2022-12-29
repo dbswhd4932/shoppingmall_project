@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -14,16 +16,16 @@ import javax.persistence.Column;
 @AllArgsConstructor
 public class LoginRequest {
 
-    @Column(nullable = false)
+    @NotNull(message = "닉네임은 필수값입니다.")
     private String loginId;
 
-    @Column(nullable = false)
+    @NotNull(message = "비밀번호는 필수값입니다.")
     private String password;
 
-    @Column(nullable = false)
+    @NotNull(message = "로그인타입은 필수값입니다.")
     private LoginType loginType; // NO_SOCIAL , KAKAO
 
-    @Column
-    private String email;       // kakao 동의 항목 (email)
+    @Nullable
+    private String email;       // 선택동의 항목 (email)
 
 }

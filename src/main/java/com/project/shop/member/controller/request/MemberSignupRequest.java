@@ -38,6 +38,7 @@ public class MemberSignupRequest {
     @NotNull(message = "전화번호를 입력하세요.")
     private String phone;           //핸드폰번호
 
+    @NotNull(message = "권한을 입력하세요.")
     private List<RoleType> roles;    // 권한타입
 
 }
