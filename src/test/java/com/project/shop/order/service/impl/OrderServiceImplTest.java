@@ -148,10 +148,11 @@ class OrderServiceImplTest {
         PayCancelRequest payCancelRequest = new PayCancelRequest("1111", "reason");
 
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-        given(payRepository.findById(pay.getId())).willReturn(Optional.of(pay));
+        given(orderRepository.findByMerchantId(payCancelRequest.getMerchantId())).willReturn(Optional.of(order));
+        given(payRepository.findByOrderId(order.getId())).willReturn(Optional.of(pay));
 
         //when
-        orderService.payCancel(pay.getId(), payCancelRequest);
+        orderService.payCancel(payCancelRequest);
 
         //then
         verify(payCancelRepository).save(any());

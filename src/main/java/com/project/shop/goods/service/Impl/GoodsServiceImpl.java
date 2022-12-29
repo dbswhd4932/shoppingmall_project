@@ -50,7 +50,8 @@ public class GoodsServiceImpl implements GoodsService {
     public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
@@ -61,19 +62,15 @@ public class GoodsServiceImpl implements GoodsService {
         goodsRepository.save(goods);
 
         // 옵션 정보 저장
-        List<OptionCreateRequest> optionCreateRequest = goodsCreateRequest.getOptionCreateRequest();
-        for (OptionCreateRequest createRequest : optionCreateRequest) {
-            Option option = Option.toOption(createRequest, goods);
+        for (OptionCreateRequest optionCreateRequest : goodsCreateRequest.getOptionCreateRequest()) {
+            Option option = Option.toOption(optionCreateRequest, goods);
             optionRepository.save(option);
         }
 
         // 이미지 정보 저장
-        List<String> imgList = new ArrayList<>();
         for (String imgUrl : imgPaths) {
             Image image = Image.builder().fileUrl(imgUrl).goods(goods).build();
             imageRepository.save(image);
-            imgList.add(image.getFileUrl());
-
         }
     }
 
@@ -153,8 +150,6 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 수정
-    // s3 이미지 삭제 + s3 이미지 생성
-    // 옵션 삭제 + 옵션 재생성
     @Override
     public void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest, List<String> imgPaths) {
 

@@ -11,6 +11,7 @@ import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.domain.Option;
+import com.project.shop.goods.domain.OptionCreate;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
@@ -79,21 +80,21 @@ class GoodsServiceImplTest {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
-        Goods goods = GoodsFactory.createGoods();
-        GoodsCreateRequest goodsCreateRequest = GoodsCreateRequest.builder().goodsName("상품이름").build();
+        OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
         OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
-                .totalPrice(10000).optionValue(List.of()).optionDescription("설명").build();
-        List<OptionCreateRequest> list = new ArrayList<>();
-        list.add(optionCreateRequest);
-        Option option = Option.toOption(optionCreateRequest, goods);
+                .totalPrice(10000).optionValue(List.of(optionCreate)).optionDescription("설명").build();
+        GoodsCreateRequest goodsCreateRequest = GoodsCreateRequest.builder().goodsName("상품이름").
+                optionCreateRequest(List.of(optionCreateRequest)).build();
 
         given(memberRepository.findByLoginId(any())).willReturn(Optional.ofNullable(member));
-        given(optionRepository.save(any())).willReturn(option);
 
         //when
-        goodsService.goodsCreate(goodsCreateRequest, List.of("123412341234"));
+        goodsService.goodsCreate(goodsCreateRequest, List.of("imgPaths"));
 
         //then
+        verify(goodsRepository).save(any());
+        verify(optionRepository).save(any());
+        verify(imageRepository).save(any());
 
     }
 
@@ -129,7 +130,7 @@ class GoodsServiceImplTest {
         List<UpdateGoodsResponse> goodsResponses = goodsService.checkGoodsUpdate(List.of(updateCheckRequest));
 
         //then
-        assertThat(goodsResponses.get(0).getGoodsPrice()).isEqualTo(1000);
+        assertThat(goodsResponses.get(0).getGoodsPrice()).isEqualTo(2000);
 
     }
 
@@ -154,9 +155,7 @@ class GoodsServiceImplTest {
         String keyword = "테스트";
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
         Goods goods = GoodsFactory.createGoods();
-        Image image = new Image("fileUrl", goods);
         given(goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword)).willReturn(List.of(goods));
-        given(imageRepository.findByGoodsId(goods.getId())).willReturn(List.of(image));
         //when
         List<GoodsResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
 
@@ -171,15 +170,22 @@ class GoodsServiceImplTest {
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        GoodsEditRequest goodsEditRequest = new GoodsEditRequest("name", 1L, 3000, null, "설명");
+        OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
+        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
+                .totalPrice(10000).optionValue(List.of(optionCreate)).optionDescription("설명").build();
+        Option option = Option.toOption(optionCreateRequest, goods);
+        GoodsEditRequest goodsEditRequest = new GoodsEditRequest("name", 1L, 3000, List.of(optionCreateRequest), "설명");
 
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
         given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
+        given(optionRepository.findByGoodsId(goods.getId())).willReturn(List.of(option));
 
         //when
-        goodsService.goodsEdit(goods.getId(),goodsEditRequest,null);
+        goodsService.goodsEdit(goods.getId(), goodsEditRequest, List.of("imgPath"));
 
         //then
+        verify(optionRepository).save(any());
+        verify(imageRepository).save(any());
     }
 
     @Test
