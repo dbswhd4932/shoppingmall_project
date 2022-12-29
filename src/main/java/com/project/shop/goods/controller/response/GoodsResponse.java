@@ -19,8 +19,8 @@ public class GoodsResponse {
     private String categoryName;
     private int price;
     private String description;
-    private List<Image> imageList;
-    private List<Option> options;
+    private List<ImageResponse> imageList;
+    private List<OptionResponse> options;
 
     public static GoodsResponse toGoodsResponse(Goods goods) {
         return GoodsResponse.builder()
@@ -29,8 +29,8 @@ public class GoodsResponse {
                 .categoryName(goods.getCategory().getCategory())
                 .price(goods.getPrice())
                 .description(goods.getGoodsDescription())
-                .imageList(goods.getImages())
-                .options(goods.getOptions())
+                .imageList(ImageResponse.toResponse(goods))
+                .options(OptionResponse.toResponse(goods))
                 .build();
     }
 }

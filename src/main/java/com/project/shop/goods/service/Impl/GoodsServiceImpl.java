@@ -146,9 +146,7 @@ public class GoodsServiceImpl implements GoodsService {
         List<GoodsResponse> list = new ArrayList<>();
         // 상품의 이미지 찾아서 응답에 추가 설정
         for (Goods good : goods) {
-            List<Image> imageList = imageRepository.findByGoodsId(good.getId());
             GoodsResponse goodsResponse = GoodsResponse.toGoodsResponse(good);
-            goodsResponse.setImageList(imageList);
             list.add(goodsResponse);
         }
         return list;
