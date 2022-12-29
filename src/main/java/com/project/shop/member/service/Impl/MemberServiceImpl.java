@@ -85,10 +85,18 @@ public class MemberServiceImpl implements MemberService {
         // LoginType 이 KAKAO 일때
         if (loginRequest.getLoginType().equals(LoginType.KAKAO)) {
             Member member = Member.kakaoCreate(loginRequest, passwordEncoder);
-            // 이미 존재하는 회원인지 확인
+
+            // 동일한 Email , LoginID 일 경우 토큰만 발급 후 리턴
+            if (memberRepository.findByEmailAndLoginId(loginRequest.getEmail(), loginRequest.getLoginId()).isPresent()) {
+                JwtTokenDto tokenDto = tokenProvider.generateTokenNoSecurity(loginRequest);
+                return tokenDto;
+            }
+
+            // 동일한 LoginID (닉네임) 은 예외처리
             if (memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent())
                 throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
 
+            // 동일한 Email , 다른 LoginID 일 경우 토큰발급 + Member DB 추가 저장
             memberRepository.save(member);
 
             Role role = Role.builder()
