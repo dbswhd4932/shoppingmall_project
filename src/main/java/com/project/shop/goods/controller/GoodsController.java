@@ -60,8 +60,7 @@ public class GoodsController {
     @GetMapping("/goods/checkUpdateGoods")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 가격 변경 확인",
-            notes ="옵션이 있는 상품은 goodsTotalPrice 와 OptionId 를 입력해주세요, " +
-                    "옵션이 없는 경우에는 goodsPrice 를 입력해주세요.")
+            notes ="changeCheck True = 변경 / False = 변경 없음")
     public List<UpdateGoodsResponse> checkGoodsUpdate(@RequestBody List<UpdateCheckRequest> updateCheckRequest) {
         return goodsService.checkGoodsUpdate(updateCheckRequest);
     }

@@ -29,8 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.project.shop.global.error.ErrorCode.NOT_FOUND_GOODS;
-import static com.project.shop.global.error.ErrorCode.NOT_SELLING_GOODS;
+import static com.project.shop.global.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -94,30 +93,34 @@ public class GoodsServiceImpl implements GoodsService {
     @Transactional(readOnly = true)
     public List<UpdateGoodsResponse> checkGoodsUpdate(List<UpdateCheckRequest> updateCheckRequest) {
         List<UpdateGoodsResponse> list = new ArrayList<>();
-
         for (UpdateCheckRequest request : updateCheckRequest) {
             Goods goods = goodsRepository.findById(request.getGoodsId()).orElseThrow(
                     () -> new BusinessException(NOT_FOUND_GOODS));
-            // 상품 옵션이 없으면, 상품 가격으로 비교
+
+            // 옵션이 없는 상품이면
             if (goods.getOptions().isEmpty()) {
-                    UpdateGoodsResponse response = UpdateGoodsResponse.builder()
-                            .goodsId(request.getGoodsId())
-                            .goodsPrice(goods.getPrice())
-                            .build();
-                    list.add(response);
+                // 상품 ID 를 입력하면 예외처리
+                if (request.getOptionId() != null)
+                    throw new BusinessException(NOT_FOUND_OPTION);
+                UpdateGoodsResponse goodsResponse = UpdateGoodsResponse.builder()
+                        .goodsId(request.getGoodsId()).goodsPrice(request.getGoodsPrice()).changeCheck(false).build();
+                // DB 가격 != 입력한 가격 -> ChangeCheck true 로 변경
+                if (goods.getPrice() != request.getGoodsPrice())
+                    goodsResponse.setChangeCheck(true);
+                list.add(goodsResponse);
+                return list;
             }
-            // 상품에 관련된 옵션을 조회
-            List<Option> optionList = optionRepository.findByGoodsId(request.getGoodsId());
-            // 상품 옵션이 있으면, 옵션 DB 의 최종가격으로 비교
-            for (Option option : optionList) {
-                if (option.getId().equals(request.getOptionId())) {
-                    UpdateGoodsResponse response = UpdateGoodsResponse.builder()
-                            .goodsId(request.getGoodsId())
-                            .goodsPrice(option.getTotalPrice())
-                            .build();
-                    list.add(response);
-                }
+
+            // 옵션이 있는 상품이면
+            Option option = optionRepository.findByIdAndGoodsId(request.getOptionId(), request.getGoodsId()).orElseThrow(
+                    () -> new BusinessException(NOT_FOUND_OPTION));
+            UpdateGoodsResponse goodsResponse = UpdateGoodsResponse.builder()
+                    .goodsId(request.getGoodsId()).goodsPrice(option.getTotalPrice()).changeCheck(false).build();
+            // DB 옵션 가격 != 입력한 가격 -> ChangeCheck true 로 변경
+            if (option.getTotalPrice() != request.getGoodsPrice()) {
+                goodsResponse.setChangeCheck(true);
             }
+            list.add(goodsResponse);
         }
         return list;
     }
