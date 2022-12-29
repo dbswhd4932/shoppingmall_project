@@ -33,7 +33,7 @@ import java.util.List;
 @EnableWebMvc
 public class SwaggerConfig implements WebMvcConfigurer {
     /**
-     * http://localhost:8080/swagger-ui/index.html 접속
+     * http://localhost:8080/swagger-ui/index.html#/ 접속
      */
 
     private final TypeResolver typeResolver;
