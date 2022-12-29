@@ -43,6 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
         OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(
                 () -> new BusinessException(NO_BUY_ORDER));
 
+        // 주문한 상품의 회원과 로그인한 회원이 다르면 예외처리
         if (!orderItem.getMemberId().equals(member.getId())) {
             throw new BusinessException(NOT_BUY_GOODS);
         }
@@ -71,8 +72,8 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
 
-        if (!review.getMemberId().equals(member.getId()))
-            throw new BusinessException(NOT_MATCH_REVIEW);
+        // 리뷰를 작성한 사람과 로그인한 사람이 다르면 예외처리
+        if (!review.getMemberId().equals(member.getId())) throw new BusinessException(NOT_MATCH_REVIEW);
         review.edit(reviewEditRequest);
     }
 
@@ -84,8 +85,8 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
 
-        if (!review.getMemberId().equals(member.getId()))
-            throw new BusinessException(NOT_MATCH_REVIEW);
+        // 리뷰를 작성한 사람과 로그인한 사람이 다르면 예외처리
+        if (!review.getMemberId().equals(member.getId())) throw new BusinessException(NOT_MATCH_REVIEW);
         reviewRepository.delete(review);
     }
 

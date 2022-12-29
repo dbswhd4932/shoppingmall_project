@@ -57,6 +57,7 @@ public class ReplyServiceImpl implements ReplyService {
     public List<ReplyResponse> replyFind(Long reviewId) {
         List<Reply> replyList = replyRepository.findByReviewId(reviewId);
 
+        // 대댓글이 없으면 예외처리
         if(replyList.isEmpty()) throw new BusinessException(NOT_FOUND_REPLY);
 
         return replyList.stream()
