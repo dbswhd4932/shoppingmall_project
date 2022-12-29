@@ -13,5 +13,5 @@ import java.util.UUID;
 @Builder
 public class MerchantId {
 
-    private UUID merchantId; // 가맹점 ID
+    private UUID merchantId; // 주문번호 ID
 }

@@ -50,7 +50,7 @@ public class Order extends BaseTimeEntity {
     private String impUid;         // 아임포트 발급 ID ex)imp_727855699150
 
     @Column(nullable = false)
-    private String merchantId;     // 가맹점 ID        ex)ORD20180131-0000014
+    private String merchantId;     // 주문번호         ex)ORD20180131-0000014
 
     @Builder
     public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice, String impUid, String merchantId) {

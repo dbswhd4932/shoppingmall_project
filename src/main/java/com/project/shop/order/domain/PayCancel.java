@@ -25,7 +25,7 @@ public class PayCancel extends BaseTimeEntity {
     private Order order;         //주문(다대일)
 
     @Column(nullable = false)
-    private String merchantId;   // 가맹점ID
+    private String merchantId;   // 주문번호
 
     @Column(nullable = false)
     private String cancelReason; // 주문 취소 사유

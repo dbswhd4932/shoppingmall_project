@@ -22,7 +22,7 @@ public class OrderResponse {
     private String zipcode;         //우편번호
     private String detailAddress;   //상세주소
     private String requirement;     //요청사항
-    private String merchantId;      //가맹점 ID
+    private String merchantId;      //주문번호 ID
     private int totalPrice;         //결제금액
     private OrderStatus orderStatus;
     private LocalDateTime orderTime;

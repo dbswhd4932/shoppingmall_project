@@ -81,14 +81,6 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    private Member getMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
-        return member;
-    }
-
     // 주문 조회
     @Override
     @Transactional(readOnly = true)
@@ -107,10 +99,14 @@ public class OrderServiceImpl implements OrderService {
 
     // 결제취소
     @Override
-    public void payCancel(Long payId, PayCancelRequest payCancelRequest) {
+    public void payCancel(PayCancelRequest payCancelRequest) {
         Member member = getMember();
 
-        Pay pay = payRepository.findById(payId).orElseThrow(
+        Order order = orderRepository.findByMerchantId(payCancelRequest.getMerchantId())
+                .orElseThrow(() -> new BusinessException(NOT_EQUAL_MERCHANT_ID));
+
+
+        Pay pay = payRepository.findByOrderId(order.getId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_PAY));
 
         // 결제 회원과 토큰 비교
@@ -144,5 +140,13 @@ public class OrderServiceImpl implements OrderService {
         pay.PayStatusChangeCancel();
         // 주문 DB 상태 변경
         pay.getOrder().orderStatusChangeCancel();
+    }
+
+    private Member getMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+        return member;
     }
 }

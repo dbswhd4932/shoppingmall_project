@@ -48,7 +48,7 @@ class OrderControllerTest extends ControllerSetting {
     PasswordEncoder passwordEncoder;
 
     @Test
-    @DisplayName("가맹점 ID 생성")
+    @DisplayName("주문번호 ID 생성")
     void merchantIdCreate() throws Exception {
         //given
         //when
@@ -100,13 +100,13 @@ class OrderControllerTest extends ControllerSetting {
                 = PayCancelRequest.builder().merchantId("1111").cancelReason("단순변심").build();
 
         //when
-        mockMvc.perform(post("/api/payCancel/{payId}", 1L)
+        mockMvc.perform(post("/api/payCancel")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payCancelRequest)))
                 .andExpect(status().isNoContent());
 
         //then
-        verify(orderService).payCancel(anyLong(), refEq(payCancelRequest));
+        verify(orderService).payCancel(refEq(payCancelRequest));
     }
 
 }

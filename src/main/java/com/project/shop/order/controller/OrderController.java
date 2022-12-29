@@ -28,7 +28,7 @@ public class OrderController {
     // MerchantID UUID 생성 - 프론트
     @GetMapping("/merchantId")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "가맹점 ID (MerchantId) UUID 생성")
+    @ApiOperation(value = "주문번호 ID (MerchantId) UUID 생성")
     public MerchantId merchantIdCreate() {
         return MerchantId.builder().merchantId(UUID.randomUUID()).build();
     }
@@ -52,11 +52,11 @@ public class OrderController {
     }
 
     // 결제 취소
-    @PostMapping("/payCancel/{payId}")
+    @PostMapping("/payCancel")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "결제 취소")
-    public void payCancel(@PathVariable("payId") Long payId, @RequestBody PayCancelRequest payCancelRequest) {
-        orderService.payCancel(payId, payCancelRequest);
+    public void payCancel(@RequestBody PayCancelRequest payCancelRequest) {
+        orderService.payCancel(payCancelRequest);
     }
 }

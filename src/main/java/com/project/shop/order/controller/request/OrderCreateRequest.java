@@ -37,7 +37,7 @@ public class OrderCreateRequest {
     @NotBlank(message = "아임포트 결제 ID 를 입력하세요.")
     private String impUid;
 
-    @NotBlank(message = "가맹점 ID 를 입력하세요.")
+    @NotBlank(message = "주문번호 ID 를 입력하세요.")
     private String merchantId;
 
     @NotNull(message = "카드사를 입력하세요.")

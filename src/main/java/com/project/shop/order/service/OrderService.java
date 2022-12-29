@@ -16,6 +16,6 @@ public interface OrderService {
     List<OrderResponse> orderFindMember(Pageable pageable);
 
     // 결제 취소
-    public void payCancel(Long payId, PayCancelRequest payCancelRequest);
+    public void payCancel(PayCancelRequest payCancelRequest);
 
 }
