@@ -16,7 +16,7 @@ public class ReviewResponse {
     private Long goodsId;
     private String comment;
 
-    public static ReviewResponse toReviewResponse(Review review) {
+    public static ReviewResponse toResponse(Review review) {
         return ReviewResponse.builder()
                 .memberId(review.getMemberId())
                 .goodsId(review.getGoods().getId())
