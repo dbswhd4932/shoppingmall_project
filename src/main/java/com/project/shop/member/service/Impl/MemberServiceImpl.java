@@ -53,9 +53,9 @@ public class MemberServiceImpl implements MemberService {
     // 회원생성
     @Override
     public void memberSignup(MemberSignupRequest memberSignupRequest) {
-        if (memberRepository.findByLoginId(memberSignupRequest.getLoginId()).isPresent()) {
+        // 로그인 ID 가 중복이면 예외처리
+        if (memberRepository.findByLoginId(memberSignupRequest.getLoginId()).isPresent())
             throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
-        }
 
         Member member = Member.create(memberSignupRequest, passwordEncoder);
         memberRepository.save(member);
@@ -73,9 +73,9 @@ public class MemberServiceImpl implements MemberService {
     // 회원가입 중복체크
     @Override
     public void loginIdDuplicateCheck(String loginId) {
-        if (memberRepository.findByLoginId(loginId).isPresent()) {
+        // 로그인 ID 가 중복이면 예외처리
+        if (memberRepository.findByLoginId(loginId).isPresent())
             throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
-        }
     }
 
     // 로그인
@@ -92,7 +92,7 @@ public class MemberServiceImpl implements MemberService {
                 return tokenDto;
             }
 
-            // 동일한 LoginID (닉네임) 은 예외처리
+            // 중복 LoginID (닉네임) + 다른 이메일(다른사용자) 이면 예외처리
             if (memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent())
                 throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
 
@@ -127,15 +127,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberResponse findByDetailMyInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
         MemberResponse memberResponse = new MemberResponse().toResponse(member);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        List<String> list = authorities.stream().map(GrantedAuthority::getAuthority).toList();
+        List<String> list = authorities.stream().map(grantedAuthority -> grantedAuthority.getAuthority()).toList();
         memberResponse.setRoles(list);
 
         return memberResponse;
@@ -157,6 +154,7 @@ public class MemberServiceImpl implements MemberService {
         member.setDeletedAt();
 
         // member 권한이 USER 권한이면 장바구니 상품 삭제
+        // 권한이 USER, SELLER 2개일 수도 있다.
         for (Role role : member.getRoles()) {
             if (role.getRoleType().equals(RoleType.ROLE_USER)) {
                 List<Cart> cartList = cartRepository.findByMemberId(member.getId());
