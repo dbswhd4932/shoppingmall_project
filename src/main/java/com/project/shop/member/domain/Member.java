@@ -59,18 +59,6 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<Role> roles = new ArrayList<>();
 
-    @Builder
-    public Member(String loginId, String password, String name, String zipcode, String detailAddress, String email, String phone, LoginType loginType) {
-        this.loginId = loginId;
-        this.password = password;
-        this.name = name;
-        this.zipcode = zipcode;
-        this.detailAddress = detailAddress;
-        this.email = email;
-        this.phone = phone;
-        this.loginType = loginType;
-    }
-
     // 회원 생성
     public static Member create(MemberSignupRequest memberSignupRequest, PasswordEncoder passwordEncoder) {
         return Member.builder()
