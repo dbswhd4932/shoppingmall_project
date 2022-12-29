@@ -22,7 +22,6 @@ public class Category extends BaseTimeEntity {
     private Long id;                 //카테고리번호(PK)
 
     @Column(unique = true)
-    @JsonIgnore
     private String category;    //메인카테고리
 
     @Builder

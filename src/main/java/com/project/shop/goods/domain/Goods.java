@@ -26,6 +26,7 @@ public class Goods extends BaseTimeEntity {
     @Column(name = "goods_id")
     private Long id;   //상품번호(PK)
 
+    @Column(nullable = false)
     private Long memberId;
 
     @Column(nullable = false, unique = true)
@@ -33,7 +34,6 @@ public class Goods extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    @JsonIgnore
     private Category category;  //카테고리(다대일)
 
     @Column(nullable = false)
@@ -44,6 +44,7 @@ public class Goods extends BaseTimeEntity {
 
     // 상품 삭제 시 이미지 DB 도 같이 삭제 , cascade 옵션
     // null 처리된 자식을 delete -> orphanRemoval 옵션
+    // JPA 순환참조 관련 @JsonManagedReference
     @JsonManagedReference
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();

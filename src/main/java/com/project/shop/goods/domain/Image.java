@@ -17,7 +17,6 @@ public class Image extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column(nullable = false)   //사진경로
@@ -34,6 +33,5 @@ public class Image extends BaseTimeEntity {
         this.fileUrl = fileUrl;
         this.goods = goods;
     }
-
 }
 

@@ -25,6 +25,7 @@ public class Review extends BaseTimeEntity {
     @Column(name = "review_id")
     private Long id;  //상품리뷰번호(PK)
 
+    @Column(nullable = false)
     private Long memberId; // 회원 ID
 
     @ManyToOne(fetch = FetchType.LAZY)

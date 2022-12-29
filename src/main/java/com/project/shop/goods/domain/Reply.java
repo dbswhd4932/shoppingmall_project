@@ -24,6 +24,7 @@ public class Reply extends BaseTimeEntity {
     @Column(name = "repliy_id")
     private Long id;         //상품리뷰댓글번호(PK)
 
+    @Column(nullable = false)
     private Long memberId;   //회원번호
 
     @ManyToOne(fetch = FetchType.LAZY)
