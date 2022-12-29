@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryResponse> categoryFindAll() {
         return categoryRepository.findAll()
-                .stream().map(CategoryResponse::toCategoryResponse)
+                .stream().map(CategoryResponse::toResponse)
                 .collect(Collectors.toList());
     }
 

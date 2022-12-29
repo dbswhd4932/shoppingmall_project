@@ -67,7 +67,7 @@ public class ReplyServiceImpl implements ReplyService {
         }
 
         return replyList.stream()
-                .map(reply -> ReplyResponse.toReplyResponse(reply)).collect(toList());
+                .map(reply -> ReplyResponse.toResponse(reply)).collect(toList());
     }
 
     // 대댓글 수정

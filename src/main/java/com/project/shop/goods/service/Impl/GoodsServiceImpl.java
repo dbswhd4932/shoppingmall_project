@@ -81,7 +81,7 @@ public class GoodsServiceImpl implements GoodsService {
         Page<Goods> goods = goodsRepository.findAll(pageable);
         List<GoodsResponse> list = new ArrayList<>();
         for (Goods good : goods) {
-            list.add(GoodsResponse.toGoodsResponse(good));
+            list.add(GoodsResponse.toResponse(good));
         }
         return list;
     }
@@ -130,7 +130,7 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
 
-        return GoodsResponse.toGoodsResponse(goods);
+        return GoodsResponse.toResponse(goods);
     }
 
     // 상품 검색 ( 키워드 )
@@ -143,7 +143,7 @@ public class GoodsServiceImpl implements GoodsService {
         List<GoodsResponse> list = new ArrayList<>();
         // 상품의 이미지 찾아서 응답에 추가 설정
         for (Goods good : goods) {
-            GoodsResponse goodsResponse = GoodsResponse.toGoodsResponse(good);
+            GoodsResponse goodsResponse = GoodsResponse.toResponse(good);
             list.add(goodsResponse);
         }
         return list;

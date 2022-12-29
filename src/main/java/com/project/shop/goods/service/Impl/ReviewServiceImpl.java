@@ -60,7 +60,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewResponse> reviewFindAll(Long goodsId, Pageable pageable) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
         return reviewRepository.findAllByGoods(goods, pageable).stream()
-                .map(ReviewResponse::toReviewResponse).collect(Collectors.toList());
+                .map(ReviewResponse::toResponse).collect(Collectors.toList());
     }
 
     // 리뷰 수정
