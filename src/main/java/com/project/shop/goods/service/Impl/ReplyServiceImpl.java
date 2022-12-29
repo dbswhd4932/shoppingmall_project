@@ -32,19 +32,14 @@ public class ReplyServiceImpl implements ReplyService {
     private final ReviewRepository reviewRepository;
     private final ReplyRepository replyRepository;
     private final MemberRepository memberRepository;
-    private final GoodsRepository goodsRepository;
 
     // 대댓글 생성
     @Override
-    public void replyCreate(ReplyCreateRequest replyCreateRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
+    public void replyCreate(Long reviewId, ReplyCreateRequest replyCreateRequest) {
+        Member member = getMember();
 
         // 대댓글 추가할 리뷰 찾기
-        Review review = reviewRepository.findById(replyCreateRequest.getReviewId())
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
 
         // 해당 상품을 판매하고 있는 회원인지 확인
@@ -62,9 +57,7 @@ public class ReplyServiceImpl implements ReplyService {
     public List<ReplyResponse> replyFind(Long reviewId) {
         List<Reply> replyList = replyRepository.findByReviewId(reviewId);
 
-        if(replyList.isEmpty()) {
-            throw new BusinessException(NOT_FOUND_REPLY);
-        }
+        if(replyList.isEmpty()) throw new BusinessException(NOT_FOUND_REPLY);
 
         return replyList.stream()
                 .map(reply -> ReplyResponse.toResponse(reply)).collect(toList());
@@ -73,11 +66,7 @@ public class ReplyServiceImpl implements ReplyService {
     // 대댓글 수정
     @Override
     public void replyEdit(Long replyId, ReplyEditRequest ReplyEditRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = getMember();
 
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
@@ -89,16 +78,18 @@ public class ReplyServiceImpl implements ReplyService {
     // 대댓글 삭제
     @Override
     public void replyDelete(Long replyId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = getMember();
 
         Reply reply = replyRepository.findById(replyId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
 
         reply.checkReply(member);
         replyRepository.delete(reply);
+    }
+
+    private Member getMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+        return member;
     }
 }

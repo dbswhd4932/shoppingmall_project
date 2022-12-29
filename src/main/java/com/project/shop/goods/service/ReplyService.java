@@ -9,7 +9,7 @@ import java.util.List;
 public interface ReplyService {
 
     // 리뷰 대댓글 생성
-    void replyCreate(ReplyCreateRequest ReplyCreateRequest);
+    void replyCreate(Long reviewId, ReplyCreateRequest replyCreateRequest);
 
     // 리뷰 대댓글 조회
     List<ReplyResponse> replyFind(Long reviewId);

@@ -25,8 +25,8 @@ public class ReplyController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('SELLER')")
     @ApiOperation(value = "대댓글 등록")
-    public void replyCreate(@RequestBody @Valid ReplyCreateRequest request) {
-        replyService.replyCreate(request);
+    public void replyCreate(Long reviewId, @RequestBody @Valid ReplyCreateRequest request) {
+        replyService.replyCreate(reviewId, request);
     }
 
     // 대댓글 조회

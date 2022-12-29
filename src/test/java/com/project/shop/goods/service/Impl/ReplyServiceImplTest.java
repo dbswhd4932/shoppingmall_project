@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -66,16 +66,14 @@ class ReplyServiceImplTest {
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        Review review = new Review(member.getId(), goods, "comment");
-
-        ReplyCreateRequest replyCreateRequest =
-                ReplyCreateRequest.builder().reviewId(1L).replyComment("replyComment").build();
+        Review review = Review.builder().memberId(member.getId()).goods(goods).comment("comment").build();
+        ReplyCreateRequest replyCreateRequest = ReplyCreateRequest.builder().replyComment("replyComment").build();
 
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-        given(reviewRepository.findById(1L)).willReturn(Optional.of(review));
+        given(reviewRepository.findById(1L)).willReturn(Optional.ofNullable(review));
 
         //when
-        replyService.replyCreate(replyCreateRequest);
+        replyService.replyCreate(1L, replyCreateRequest);
 
         //then
         verify(replyRepository).save(any());
