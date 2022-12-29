@@ -41,10 +41,6 @@ public class GoodsController {
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart List<MultipartFile> multipartFiles) throws IOException {
 
-//        if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
-//            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
-//        }
-
         List<String> imgPaths = s3Service.upload(multipartFiles); // s3 저장
         goodsService.goodsCreate(goodsCreateRequest, imgPaths);
     }
@@ -89,10 +85,6 @@ public class GoodsController {
     public void goodsEdit(@PathVariable("goodsId") Long goodsId,
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
                           @RequestPart(required = false) List<MultipartFile> multipartFiles) {
-
-//        if (goodsRepository.findByGoodsName(goodsEditRequest.getGoodsName()).isPresent()) {
-//            throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
-//        }
 
         List<String> imgPaths = s3Service.upload(multipartFiles);
         goodsService.goodsEdit(goodsId, goodsEditRequest, imgPaths);
