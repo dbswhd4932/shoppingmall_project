@@ -14,7 +14,7 @@ public class CategoryResponse {
 
     private String category;
 
-    public static CategoryResponse toCategoryResponse(Category category) {
+    public static CategoryResponse toResponse(Category category) {
         return CategoryResponse.builder()
                 .category(category.getCategory()).build();
     }
