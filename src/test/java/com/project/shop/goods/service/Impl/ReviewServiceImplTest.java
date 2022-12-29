@@ -76,16 +76,19 @@ class ReviewServiceImplTest {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(1L, "comment");
-        Order order = Order.builder().build();
         Goods goods = GoodsFactory.createGoods();
-        OrderItem orderItem = new OrderItem(1L, 1L, "goodsName", 10000, order, 1, 10000);
-        given(memberRepository.findByLoginId(any())).willReturn(Optional.ofNullable(member));
-        given(orderItemRepository.findById(reviewCreateRequest.getOrderItemId())).willReturn(Optional.of(orderItem));
-        given(goodsRepository.findById(orderItem.getGoodsId())).willReturn(Optional.ofNullable(goods));
+        ReviewCreateRequest reviewCreateRequest = ReviewCreateRequest.builder().comment("comment").build();
+        Order order = Order.builder().memberId(member.getId()).merchantId("11").impUid("11").name("name")
+                .phone("010").detailAddress("address").zipcode("zipcode").totalPrice(1000)
+                .requirement("requirement").build();
+        OrderItem orderItem = OrderItem.createOrderItem(member, goods.getId(), 1000, 10, order, "name", 1000);
+
+        given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
+        given(orderItemRepository.findById(1L)).willReturn(Optional.ofNullable(orderItem));
+        given(goodsRepository.findById(orderItem.getGoodsId())).willReturn(Optional.of(goods));
 
         //when
-        reviewService.reviewCreate(reviewCreateRequest);
+        reviewService.reviewCreate(1L, reviewCreateRequest);
 
         //then
         verify(reviewRepository).save(any());

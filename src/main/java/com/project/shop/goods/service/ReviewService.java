@@ -10,7 +10,7 @@ import java.util.List;
 public interface ReviewService {
 
     // 리뷰생성
-    void reviewCreate(ReviewCreateRequest reviewCreateRequest);
+    void reviewCreate(Long orderItemId, ReviewCreateRequest reviewCreateRequest);
 
     // 리뷰 전체
     List<ReviewResponse> reviewFindAll(Long goodsId, Pageable pageable);

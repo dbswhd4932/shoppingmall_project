@@ -37,10 +37,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰생성 - 결제한 사람만 리뷰 작성이 가능
     @Override
-    public void reviewCreate(ReviewCreateRequest reviewCreateRequest) {
+    public void reviewCreate(Long orderItemId, ReviewCreateRequest reviewCreateRequest) {
         Member member = getMember();
 
-        OrderItem orderItem = orderItemRepository.findById(reviewCreateRequest.getOrderItemId()).orElseThrow(
+        OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(
                 () -> new BusinessException(NO_BUY_ORDER));
 
         if (!orderItem.getMemberId().equals(member.getId())) {

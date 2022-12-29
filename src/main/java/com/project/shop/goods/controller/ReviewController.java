@@ -1,13 +1,9 @@
 package com.project.shop.goods.controller;
 
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.service.ReviewService;
-import com.project.shop.member.domain.Member;
-import com.project.shop.member.repository.MemberRepository;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -32,8 +28,8 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "리뷰 생성")
-    public void reviewCreate(@RequestBody @Valid ReviewCreateRequest reviewCreateRequest) {
-        reviewService.reviewCreate(reviewCreateRequest);
+    public void reviewCreate(Long orderItemId, @RequestBody @Valid ReviewCreateRequest reviewCreateRequest) {
+        reviewService.reviewCreate(orderItemId, reviewCreateRequest);
     }
 
     // 리뷰 전체조회
