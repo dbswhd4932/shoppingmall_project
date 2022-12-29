@@ -28,7 +28,7 @@ public class MemberResponse {
 
     // Member -> MemberResponse 변환
     public MemberResponse toResponse(Member m) {
-        MemberResponse memberResponse = MemberResponse.builder()
+        return MemberResponse.builder()
                 .loginId(m.getLoginId())
                 .name(m.getName())
                 .zipcode(m.getZipcode())
@@ -36,9 +36,5 @@ public class MemberResponse {
                 .email(m.getEmail())
                 .phone(m.getPhone())
                 .build();
-
-        return memberResponse;
     }
-
-
 }

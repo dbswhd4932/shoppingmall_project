@@ -17,7 +17,7 @@ public class CartResponse {
     private int totalAmount;
     private int totalPrice;
 
-    public static CartResponse toCartResponse(Cart cart) {
+    public static CartResponse toResponse(Cart cart) {
         return CartResponse.builder()
                 .memberId(cart.getMember().getId())
                 .goodsId(cart.getGoodsId())

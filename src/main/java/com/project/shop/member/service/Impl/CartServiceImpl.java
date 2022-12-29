@@ -90,7 +90,7 @@ public class CartServiceImpl implements CartService {
 
         List<CartResponse> list = new ArrayList<>();
         for (Cart cart : carts) {
-            list.add(CartResponse.toCartResponse(cart));
+            list.add(CartResponse.toResponse(cart));
         }
         return list;
     }
