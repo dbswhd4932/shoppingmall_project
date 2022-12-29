@@ -25,7 +25,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,12 +49,11 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 상품 등록 + 이미지 추가(필수) + 옵션 추가(필수X)
     @Override
-    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<String> imgPaths) {
+    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> imgPaths) throws IOException {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Member member = getMember();
 
+        // 같은 이름의 상품이 있으면 예외처리
         if (goodsRepository.findByGoodsName(goodsCreateRequest.getGoodsName()).isPresent()) {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
         }
@@ -67,9 +68,9 @@ public class GoodsServiceImpl implements GoodsService {
             optionRepository.save(option);
         }
 
-        // 이미지 정보 저장
-        for (String imgUrl : imgPaths) {
-            Image image = Image.builder().fileUrl(imgUrl).goods(goods).build();
+        List<String> list = s3Service.upload(imgPaths);
+        for (String img : list) {
+            Image image = Image.builder().fileUrl(img).goods(goods).build();
             imageRepository.save(image);
         }
     }
@@ -96,7 +97,7 @@ public class GoodsServiceImpl implements GoodsService {
 
             // 옵션이 없는 상품이면
             if (goods.getOptions().isEmpty()) {
-                // 상품 ID 를 입력하면 예외처리
+                // 상품 옵션 ID 를 입력하면 예외처리
                 if (request.getOptionId() != null)
                     throw new BusinessException(NOT_FOUND_OPTION);
                 UpdateGoodsResponse goodsResponse = UpdateGoodsResponse.builder()
@@ -114,9 +115,8 @@ public class GoodsServiceImpl implements GoodsService {
             UpdateGoodsResponse goodsResponse = UpdateGoodsResponse.builder()
                     .goodsId(request.getGoodsId()).goodsPrice(option.getTotalPrice()).changeCheck(false).build();
             // DB 옵션 가격 != 입력한 가격 -> ChangeCheck true 로 변경
-            if (option.getTotalPrice() != request.getGoodsPrice()) {
+            if (option.getTotalPrice() != request.getGoodsPrice())
                 goodsResponse.setChangeCheck(true);
-            }
             list.add(goodsResponse);
         }
         return list;
@@ -151,20 +151,15 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 상품 수정
     @Override
-    public void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest, List<String> imgPaths) {
+    public void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest, List<MultipartFile> imgPaths) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Member member = getMember();
 
-        if (goodsRepository.findByGoodsName(goodsEditRequest.getGoodsName()).isPresent()) {
+        // 수정할 상품이름이 이미 존재하면 예외처리
+        if (goodsRepository.findByGoodsName(goodsEditRequest.getGoodsName()).isPresent())
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
-        }
 
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
-        if (!goods.getMemberId().equals(member.getId()))
-            throw new BusinessException(NOT_SELLING_GOODS);
-
         goods.update(goodsEditRequest);
 
         //기존 옵션 삭제
@@ -173,7 +168,7 @@ public class GoodsServiceImpl implements GoodsService {
             optionRepository.deleteById(option.getId());
         }
 
-        //상품 옵션 수정이 null 이 아니면 저장
+        // 수정할 상품의 옵션이 비어있거나 null 이 아니면 옵션 DB 에 저장
         if (!goodsEditRequest.getOptionCreateRequest().isEmpty() && goodsEditRequest.getGoodsDescription() != null) {
             List<OptionCreateRequest> optionCreateRequest = goodsEditRequest.getOptionCreateRequest();
             for (OptionCreateRequest createRequest : optionCreateRequest) {
@@ -190,13 +185,15 @@ public class GoodsServiceImpl implements GoodsService {
             imageRepository.deleteById(image.getId());
         }
 
+        // S3 이미지 저장
+        List<String> list = s3Service.upload(imgPaths);
+
         // 이미지 정보 저장
         List<String> imgList = new ArrayList<>();
-        for (String imgUrl : imgPaths) {
-            Image image = Image.builder().fileUrl(imgUrl).goods(goods).build();
+        for (String img : list) {
+            Image image = Image.builder().fileUrl(img).goods(goods).build();
             imageRepository.save(image);
             imgList.add(image.getFileUrl());
-
         }
     }
 
@@ -221,5 +218,11 @@ public class GoodsServiceImpl implements GoodsService {
         }
 
         goodsRepository.deleteById(goods.getId());
+    }
+
+    private Member getMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        return member;
     }
 }

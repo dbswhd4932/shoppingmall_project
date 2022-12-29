@@ -29,7 +29,6 @@ import java.util.List;
 @RequestMapping("/api")
 public class GoodsController {
 
-    private final S3Service s3Service;
     private final GoodsService goodsService;
 
     // 상품 등록
@@ -40,8 +39,7 @@ public class GoodsController {
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart List<MultipartFile> multipartFiles) throws IOException {
 
-        List<String> imgPaths = s3Service.upload(multipartFiles); // s3 저장
-        goodsService.goodsCreate(goodsCreateRequest, imgPaths);
+        goodsService.goodsCreate(goodsCreateRequest, multipartFiles);
     }
 
     // 상품 전체 조회
@@ -85,8 +83,7 @@ public class GoodsController {
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
                           @RequestPart(required = false) List<MultipartFile> multipartFiles) {
 
-        List<String> imgPaths = s3Service.upload(multipartFiles);
-        goodsService.goodsEdit(goodsId, goodsEditRequest, imgPaths);
+        goodsService.goodsEdit(goodsId, goodsEditRequest, multipartFiles);
     }
 
     // 상품 삭제
