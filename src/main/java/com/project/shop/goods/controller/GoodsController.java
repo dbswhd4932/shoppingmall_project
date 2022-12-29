@@ -31,7 +31,6 @@ public class GoodsController {
 
     private final S3Service s3Service;
     private final GoodsService goodsService;
-    private final GoodsRepository goodsRepository;
 
     // 상품 등록
     @PostMapping(value = "/goods")
