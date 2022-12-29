@@ -38,11 +38,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void cartAddGoods(CartCreateRequest cartCreateRequest) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = getMember();
 
         Goods goods = goodsRepository.findById(cartCreateRequest.getGoodsId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_GOODS));
@@ -54,7 +50,7 @@ public class CartServiceImpl implements CartService {
                     () -> new BusinessException(NOT_FOUND_OPTION));
         }
 
-        // 장바구니에 존재하는 상품이면 "장바구니에 이미 담겨있는 상품입니다." 예외 발생가 발생합니다.
+        // 장바구니에 이미 존재하는 상품이면 예외처리
         if (cartRepository.findByGoodsIdAndMember(goods.getId(), member).isPresent())
             throw new BusinessException(CART_IN_GOODS_DUPLICATED);
 
@@ -80,11 +76,7 @@ public class CartServiceImpl implements CartService {
     @Transactional(readOnly = true)
     public List<CartResponse> cartFindMember() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = getMember();
 
         List<Cart> carts = cartRepository.findByMemberId(member.getId());
 
@@ -92,6 +84,7 @@ public class CartServiceImpl implements CartService {
         for (Cart cart : carts) {
             list.add(CartResponse.toResponse(cart));
         }
+        //todo carts.stream().map(cart -> list.add(CartResponse.toResponse(cart))).collect(Collectors.toList()); -> 무시되었습니다 ?
         return list;
     }
 
@@ -99,11 +92,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void editCartItem(Long cartId, CartEditRequest cartEditRequest) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = getMember();
 
         Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_CART));
@@ -132,16 +121,18 @@ public class CartServiceImpl implements CartService {
     @Override
     public void cartDeleteGoods(Long cartId) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
-
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
+        Member member = getMember();
 
         Cart cart = cartRepository.findByIdAndMember(cartId, member)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
 
         cartRepository.deleteById(cart.getId());
+    }
+
+    private Member getMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+        return member;
     }
 
 }
