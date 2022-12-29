@@ -32,7 +32,9 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +66,9 @@ class GoodsServiceImplTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    @Mock
+    S3Service s3Service;
+
 
     @BeforeEach()
     void beforeEach() {
@@ -76,26 +81,30 @@ class GoodsServiceImplTest {
 
     @Test
     @DisplayName("상품 등록")
-    void goodsCreate() {
+    void goodsCreate() throws IOException {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
+        Goods goods = GoodsFactory.createGoods();
         OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
         OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
                 .totalPrice(10000).optionValue(List.of(optionCreate)).optionDescription("설명").build();
         GoodsCreateRequest goodsCreateRequest = GoodsCreateRequest.builder().goodsName("상품이름").
                 optionCreateRequest(List.of(optionCreateRequest)).build();
 
+        List<String> list = s3Service.upload(any());
+        for (String img : list) {
+            Image image = Image.builder().fileUrl(img).goods(goods).build();
+            given(imageRepository.save(image)).willReturn(image);
+            verify(imageRepository).save(image);
+        }
         given(memberRepository.findByLoginId(any())).willReturn(Optional.ofNullable(member));
 
-        //when
-        goodsService.goodsCreate(goodsCreateRequest, List.of("imgPaths"));
+        goodsService.goodsCreate(goodsCreateRequest, any());
 
         //then
         verify(goodsRepository).save(any());
         verify(optionRepository).save(any());
-        verify(imageRepository).save(any());
-
     }
 
     @Test
@@ -180,12 +189,18 @@ class GoodsServiceImplTest {
         given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
         given(optionRepository.findByGoodsId(goods.getId())).willReturn(List.of(option));
 
+        List<String> list = s3Service.upload(any());
+        for (String img : list) {
+            Image image = Image.builder().fileUrl(img).goods(goods).build();
+            given(imageRepository.save(image)).willReturn(image);
+            verify(imageRepository).save(image);
+        }
+
         //when
-        goodsService.goodsEdit(goods.getId(), goodsEditRequest, List.of("imgPath"));
+        goodsService.goodsEdit(goods.getId(), goodsEditRequest, any());
 
         //then
         verify(optionRepository).save(any());
-        verify(imageRepository).save(any());
     }
 
     @Test
