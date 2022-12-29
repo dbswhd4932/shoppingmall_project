@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -25,7 +26,6 @@ public class GoodsEditRequest {
     private int price;
 
     private List<OptionCreateRequest> optionCreateRequest;
-
 
     private String goodsDescription;
 

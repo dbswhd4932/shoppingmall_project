@@ -16,13 +16,10 @@ import java.util.Map;
 @Builder
 public class OptionCreateRequest {
 
-    @Column
     private List<OptionCreate> optionValue;
 
-    @Column
     private int totalPrice;
 
-    @Column
     private String optionDescription;
 
 }

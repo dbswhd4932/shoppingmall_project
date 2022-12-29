@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -15,10 +16,8 @@ public class ReplyCreateRequest {
     @NotNull(message = "리뷰번호를 입력하세요.")
     private Long reviewId;
 
-//    @NotNull(message = "상품을 등록한 회원번호를 입력하세요.")
-//    private Long productMemberId;
-
-    @NotBlank(message = "댓글을 입력하세요.")
+    @NotNull(message = "댓글을 입력하세요.")
+    @Size(max = 255, message = "최대 255 글자까지만 작성할 수 있습니다.")
     private String replyComment;
 
 }
