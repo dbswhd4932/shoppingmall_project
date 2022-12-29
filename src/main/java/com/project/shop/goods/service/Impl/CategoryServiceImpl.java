@@ -30,6 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     // 카테고리 생성
     @Override
     public void categoryCreate(CategoryCreateRequest categoryCreateRequest) {
+        // 동일한 카테고리가 있으면 예외처리
         if (categoryRepository.findByCategory(categoryCreateRequest.getCategory()).isPresent()) {
             throw new BusinessException(CATEGORY_NAME_DUPLICATED);
         }
@@ -61,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
 
-        // 카테고리에 속한 상품이 있을 경우 예외처리
+        // 카테고리에 속한 상품이 있을 경우 예외
         if(!goodsRepository.findAllByCategory(category).isEmpty()) {
             throw new BusinessException(CATEGORY_EXIST_GOODS);
         }
