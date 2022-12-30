@@ -13,8 +13,6 @@ import java.util.List;
 @Builder
 public class OrderCreateRequest {
 
-    private List<orderItemCreate> orderItemCreates;
-
     @NotBlank(message = "수취인 이름을 입력하세요.")
     private String name;
 
@@ -29,6 +27,9 @@ public class OrderCreateRequest {
 
     @Nullable
     private String requirement;
+
+    @NotNull(message = "주문상품을 입력하세요.")
+    private List<orderItemCreate> orderItemCreates;
 
     @NotNull(message = "총 주문 금액을 입력하세요.")
     private int totalPrice;

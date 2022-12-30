@@ -68,7 +68,13 @@ public class Order extends BaseTimeEntity {
     }
 
     // 주문 생성
-    public static Order toOrder(OrderCreateRequest orderCreateRequest, int payTotalPrice, Member member) {
+    public static Order toOrder(OrderCreateRequest orderCreateRequest, Member member) {
+
+        int totalPrice = 0;
+        for (OrderCreateRequest.orderItemCreate orderItemCreate : orderCreateRequest.getOrderItemCreates()) {
+            totalPrice += orderItemCreate.getOrderPrice();
+        }
+
         return Order.builder()
                 .memberId(member.getId())
                 .name(orderCreateRequest.getName())
@@ -76,7 +82,7 @@ public class Order extends BaseTimeEntity {
                 .zipcode(orderCreateRequest.getZipcode())
                 .detailAddress(orderCreateRequest.getDetailAddress())
                 .requirement(orderCreateRequest.getRequirement())
-                .totalPrice(payTotalPrice)
+                .totalPrice(totalPrice)
                 .impUid(orderCreateRequest.getImpUid())
                 .merchantId(orderCreateRequest.getMerchantId())
                 .build();

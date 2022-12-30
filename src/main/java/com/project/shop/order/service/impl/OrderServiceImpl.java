@@ -49,8 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
         Member member = getMember();
 
-        int orderPrice = orderCreateRequest.getTotalPrice();
-        Order order = Order.toOrder(orderCreateRequest, orderPrice , member);
+        Order order = Order.toOrder(orderCreateRequest, member);
 
         // 주문_상품 DB 저장
         for (OrderCreateRequest.orderItemCreate orderItemCreate : orderCreateRequest.getOrderItemCreates()) {
@@ -59,6 +58,7 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = OrderItem.createOrderItem(member, goods.getId(), orderItemCreate.getOrderPrice(), orderItemCreate.getAmount(), order, goods.getGoodsName(), goods.getPrice());
             orderItemRepository.save(orderItem);
 
+            // 장바구니에 없는 상품이면 예외처리
             Cart cart = cartRepository.findByGoodsIdAndMember(goods.getId(), member).orElseThrow(
                     () -> new BusinessException(CART_NO_PRODUCTS));
 
@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
                 .cardCompany(orderCreateRequest.getCardCompany())
                 .cardNumber(orderCreateRequest.getCardNumber())
                 .order(order)
-                .payPrice(orderPrice)
+                .payPrice(order.getTotalPrice())
                 .build();
 
         // 결제 DB 저장
@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
         Pay pay = payRepository.findByOrderId(order.getId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_PAY));
 
-        // 결제 회원과 토큰 비교
+        // 결제 회원과 로그인한 회원이 다르면 예외처리
         if(!pay.getMemberId().equals(member.getId())) {
             throw new BusinessException(CAN_NOT_CANCEL_PAY);
         }
