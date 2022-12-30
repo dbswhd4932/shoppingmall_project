@@ -28,7 +28,9 @@ public class MemberFactory {
                 .email("user@test.com")
                 .phone("010-1111-1111")
                 .roles(List.of(Role.builder().roleType(RoleType.ROLE_USER).build(),
-                        Role.builder().roleType(RoleType.ROLE_SELLER).build()))
+                        Role.builder().roleType(RoleType.ROLE_SELLER).build(),
+                        Role.builder().roleType(RoleType.ROLE_ADMIN).build()
+                        ))
                 .loginType(LoginType.NO_SOCIAL)
                 .build();
 

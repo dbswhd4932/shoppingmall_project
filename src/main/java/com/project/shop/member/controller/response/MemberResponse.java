@@ -27,7 +27,7 @@ public class MemberResponse {
     private List<String> roles;
 
     // Member -> MemberResponse 변환
-    public MemberResponse toResponse(Member m) {
+    public static MemberResponse toResponse(Member m) {
         return MemberResponse.builder()
                 .loginId(m.getLoginId())
                 .name(m.getName())
