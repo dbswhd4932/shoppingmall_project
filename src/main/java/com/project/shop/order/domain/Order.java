@@ -38,6 +38,7 @@ public class Order extends BaseTimeEntity {
     @Column(nullable = false)
     private String detailAddress;   //수취인 상세주소
 
+    @Column
     private String requirement;     //요청사항
 
     @Column(nullable = false)
