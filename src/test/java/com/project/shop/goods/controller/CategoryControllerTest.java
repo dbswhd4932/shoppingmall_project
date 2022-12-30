@@ -3,100 +3,105 @@ package com.project.shop.goods.controller;
 import com.project.shop.config.WebSecurityConfig;
 import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.request.CategoryEditRequest;
-import com.project.shop.goods.controller.response.CategoryResponse;
+import com.project.shop.goods.domain.Category;
+import com.project.shop.goods.repository.CategoryRepository;
 import com.project.shop.goods.service.Impl.CategoryServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CategoryController.class)
-@MockBean(JpaMetamodelMappingContext.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 @ImportAutoConfiguration(WebSecurityConfig.class)
-@DisplayName("카테고리 컨트롤러 테스트")
-public class CategoryControllerTest extends ControllerSetting{
+@DisplayName("컨트롤러 카테고리 통합테스트")
+public class CategoryControllerTest extends ControllerSetting {
 
-    @MockBean
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
     CategoryServiceImpl categoryService;
 
+    @BeforeEach
+    void afterEach() {
+        categoryRepository.deleteAll();
+    }
+
     @Test
+    @WithMockUser(roles = "ADMIN")
+    @Transactional
     @DisplayName("카테고리 생성")
-    @WithMockUser(roles= "ADMIN")
-    void categoryCreateTest() throws Exception {
+    void createCategory() throws Exception {
         //given
-        CategoryCreateRequest categoryCreateRequest = CategoryCreateRequest
-                .builder().category("의류").build();
+        CategoryCreateRequest categoryCreateRequest =
+                CategoryCreateRequest.builder().category("벨트").build();
 
         //when
         mockMvc.perform(post("/api/categories")
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(categoryCreateRequest)))
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(categoryCreateRequest)))
                 .andExpect(status().isCreated());
 
         //then
-        verify(categoryService).categoryCreate(refEq(categoryCreateRequest));
+        assertThat(categoryRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("카테고리 전체조회")
-    void categoryFindAllTest() throws Exception {
+    @Transactional
+    @DisplayName("카테고리 조회")
+    void categoryFindAll() throws Exception {
         //given
-        CategoryResponse categoryResponse = CategoryResponse.builder().category("모자").build();
-        given(categoryService.categoryFindAll()).willReturn(List.of(categoryResponse));
-
-        //when then
-        mockMvc.perform(get("/api/categories")
-                .contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].category").value("모자"))
+        Category category = Category.builder().category("테스트").build();
+        categoryRepository.save(category);
+        //when
+        mockMvc.perform(get("/api/categories"))
                 .andExpect(status().isOk());
+        //then
+        assertThat(categoryService.categoryFindAll().size()).isEqualTo(1);
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     @DisplayName("카테고리 수정")
-    @WithMockUser(roles= "ADMIN")
     void categoryEdit() throws Exception {
         //given
-        CategoryEditRequest categoryEditRequest = CategoryEditRequest.builder().category("가방").build();
+        Category category = Category.builder().category("테스트").build();
+        categoryRepository.save(category);
+        CategoryEditRequest categoryEditRequest =
+                CategoryEditRequest.builder().category("모자").build();
 
         //when
-        mockMvc.perform(put("/api/categories/{categoryId}", 1L)
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(categoryEditRequest)))
+        mockMvc.perform(put("/api/categories/{categoryId}", category.getId())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(categoryEditRequest)))
                 .andExpect(status().isOk());
 
         //then
-        verify(categoryService).categoryEdit(anyLong(), refEq(categoryEditRequest));
-
-
-
+        assertThat(categoryRepository.findById(category.getId()).get().getCategory()).isEqualTo("모자");
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     @DisplayName("카테고리 삭제")
-    @WithMockUser(roles= "ADMIN")
-    void categoryDeleteTest() throws Exception {
+    void categoryDelete() throws Exception {
         //given
+        Category category = Category.builder().category("의류").build();
+        categoryRepository.save(category);
         //when
-        mockMvc.perform(delete("/api/categories/{categoryId}", 1L))
+        mockMvc.perform(delete("/api/categories/{categoryId}", category.getId()))
                 .andExpect(status().isNoContent());
-
         //then
-        verify(categoryService).categoryDelete(1L);
-
+        assertThat(categoryRepository.findAll().size()).isEqualTo(0);
     }
-
 }
