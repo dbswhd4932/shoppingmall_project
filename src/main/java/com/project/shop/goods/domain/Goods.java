@@ -32,7 +32,7 @@ public class Goods extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String goodsName;    //상품이름
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;  //카테고리(다대일)
 
