@@ -27,7 +27,7 @@ public class OrderResponse {
     private OrderStatus orderStatus;
     private LocalDateTime orderTime;
 
-    public static OrderResponse toOrderResponse(Order order) {
+    public static OrderResponse toResponse(Order order) {
         return OrderResponse.builder()
                 .orderId(order.getId())
                 .memberId(order.getMemberId())

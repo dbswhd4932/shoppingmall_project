@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderResponse> list = new ArrayList<>();
         for (Order order : orderList) {
             if (order.getMemberId().equals(member.getId())) {
-                list.add(OrderResponse.toOrderResponse(order));
+                list.add(OrderResponse.toResponse(order));
             }
         }
         return list;
