@@ -1,12 +1,11 @@
 package com.project.shop.order.controller.request;
 
 import lombok.*;
+import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -28,7 +27,7 @@ public class OrderCreateRequest {
     @NotBlank(message = "수취인 상세주소를 입력하세요.")
     private String detailAddress;
 
-    @Column
+    @Nullable
     private String requirement;
 
     @NotNull(message = "총 주문 금액을 입력하세요.")
@@ -37,7 +36,7 @@ public class OrderCreateRequest {
     @NotBlank(message = "아임포트 결제 ID 를 입력하세요.")
     private String impUid;
 
-    @NotBlank(message = "주문번호 ID 를 입력하세요.")
+    @NotBlank(message = "주문번호 를 입력하세요.")
     private String merchantId;
 
     @NotNull(message = "카드사를 입력하세요.")
