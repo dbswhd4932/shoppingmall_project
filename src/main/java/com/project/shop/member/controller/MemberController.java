@@ -49,6 +49,7 @@ public class MemberController {
     // 내 정보 가져오기
     @GetMapping("/members/me")
     @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "내 정보 조회")
     public MemberResponse findByDetailMyInfo() {
         return memberService.findByDetailMyInfo();
