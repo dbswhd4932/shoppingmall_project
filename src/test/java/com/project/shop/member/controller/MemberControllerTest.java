@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @ImportAutoConfiguration(WebSecurityConfig.class)
-@DisplayName("컨트롤러 회원 통합테스트")
+@DisplayName("회원 컨트롤러 통합테스트")
 class MemberControllerTest extends ControllerSetting {
 
     @Autowired
