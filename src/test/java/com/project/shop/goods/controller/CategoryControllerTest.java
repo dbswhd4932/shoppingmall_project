@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 @ImportAutoConfiguration(WebSecurityConfig.class)
 @DisplayName("컨트롤러 카테고리 통합테스트")
 public class CategoryControllerTest extends ControllerSetting {
@@ -30,17 +31,8 @@ public class CategoryControllerTest extends ControllerSetting {
     @Autowired
     CategoryRepository categoryRepository;
 
-    @Autowired
-    CategoryServiceImpl categoryService;
-
-    @BeforeEach
-    void afterEach() {
-        categoryRepository.deleteAll();
-    }
-
     @Test
     @WithMockUser(roles = "ADMIN")
-    @Transactional
     @DisplayName("카테고리 생성")
     void createCategory() throws Exception {
         //given
@@ -58,7 +50,6 @@ public class CategoryControllerTest extends ControllerSetting {
     }
 
     @Test
-    @Transactional
     @DisplayName("카테고리 조회")
     void categoryFindAll() throws Exception {
         //given
@@ -68,7 +59,7 @@ public class CategoryControllerTest extends ControllerSetting {
         mockMvc.perform(get("/api/categories"))
                 .andExpect(status().isOk());
         //then
-        assertThat(categoryService.categoryFindAll().size()).isEqualTo(1);
+        assertThat(categoryRepository.findAll().size()).isEqualTo(1);
     }
 
     @Test
