@@ -1,12 +1,15 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.config.WebSecurityConfig;
 import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
+import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.domain.OptionCreate;
+import com.project.shop.goods.repository.CategoryRepository;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.controller.request.CartCreateRequest;
@@ -16,15 +19,16 @@ import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -39,8 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@ImportAutoConfiguration(WebSecurityConfig.class)
-@WebAppConfiguration
+//@ImportAutoConfiguration(WebSecurityConfig.class)
+//@WebAppConfiguration
 @DisplayName("컨트롤러 장바구니 통합테스트")
 class CartControllerTest extends ControllerSetting {
 
@@ -57,39 +61,41 @@ class CartControllerTest extends ControllerSetting {
     GoodsRepository goodsRepository;
 
     @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
     WebApplicationContext context;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
-//    @BeforeEach
-//    void beforeEach() {
-//        mockMvc = MockMvcBuilders
-//                .webAppContextSetup(context)
-//                .alwaysDo(print())
-//                .apply(springSecurity())
-//                .build();
-//    }
+    @BeforeEach
+    void beforeEach() {
+        System.out.println("================== before 함수 호출 시작 ==================");
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
+        Category category = Category.builder().category("의류").build();
+        Goods goods = Goods.builder()
+                .memberId(member.getId())
+                .price(10000)
+                .category(category)
+                .goodsName("테스트상품2")
+                .description("상품설명")
+                .build();
+        memberRepository.save(member);
+        categoryRepository.save(category);
+        goodsRepository.save(goods);
+        System.out.println("================== before 함수 호출 끝 ==================");
+    }
 
     @Test
     @WithMockUser(username = "loginId", roles = "USER")
+    @Transactional
     @DisplayName("장바구니 상품 추가")
     void cartAddGoods() throws Exception {
         //given
-        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
-        Member member = memberFactory.createMember();
-        memberRepository.save(member);
-        OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
-        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
-                .totalPrice(1000)
-                .optionValue(List.of(optionCreate))
-                .optionDescription("설명")
-                .build();
-        Goods goods = GoodsFactory.createGoods();
-        goodsRepository.save(goods);
-        Option option = Option.toOption(optionCreateRequest, goods);
+        Goods goods = goodsRepository.findByGoodsName("테스트상품2").get();
         CartCreateRequest cartCreateRequest = CartCreateRequest.builder()
-                .optionNumber(option.getId())
                 .amount(10)
                 .goodsId(goods.getId())
                 .build();
@@ -107,28 +113,18 @@ class CartControllerTest extends ControllerSetting {
 
     @Test
     @WithMockUser(username = "loginId", roles = "USER")
+    @Transactional
     @DisplayName("장바구니 조회")
     void cartFind() throws Exception {
         //given
-        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
-        Member member = memberFactory.createMember();
-        memberRepository.save(member);
-        OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
-        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
-                .totalPrice(1000)
-                .optionValue(List.of(optionCreate))
-                .optionDescription("설명")
-                .build();
-        Goods goods = GoodsFactory.createGoods();
-        goodsRepository.save(goods);
-        Option option = Option.toOption(optionCreateRequest, goods);
+        Member member = memberRepository.findByLoginId("loginId").get();
         Cart cart = Cart.builder()
                 .id(1L)
                 .totalAmount(10)
-                .goodsId(goods.getId())
+                .goodsId(1L)
                 .member(member)
                 .totalPrice(10000)
-                .optionNumber(option.getId())
+                .optionNumber(1L)
                 .build();
         cartRepository.save(cart);
         CartResponse cartResponse = CartResponse.toResponse(cart);
@@ -147,36 +143,26 @@ class CartControllerTest extends ControllerSetting {
     @DisplayName("장바구니 수정")
     void cartEdit() throws Exception {
         //given
-        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
-        Member member = memberFactory.createMember();
-        memberRepository.save(member);
-        OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
-        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
-                .totalPrice(1000)
-                .optionValue(List.of(optionCreate))
-                .optionDescription("설명")
-                .build();
-        Goods goods = GoodsFactory.createGoods();
-        goodsRepository.save(goods);
-        Option option = Option.toOption(optionCreateRequest, goods);
+        Member member = memberRepository.findById(1L).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
         Cart cart = Cart.builder()
+                .id(1L)
                 .totalAmount(10)
-                .goodsId(goods.getId())
+                .goodsId(1L)
                 .member(member)
                 .totalPrice(10000)
-                .optionNumber(option.getId())
+                .optionNumber(1L)
                 .build();
         cartRepository.save(cart);
         CartEditRequest cartEditRequest = CartEditRequest.builder()
-                .optionNumber(option.getId())
                 .amount(20)
                 .build();
 
         //when
         mockMvc.perform(put("/api/carts/{cartId}", cart.getId())
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(cartEditRequest))
-                .with(user("loginId").roles("USER")))
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartEditRequest))
+                        .with(user("loginId").roles("USER")))
                 .andExpect(status().isOk());
         //then
         assertThat(cartRepository.findById(cart.getId()).get().getTotalAmount()).isEqualTo(20);
@@ -188,30 +174,19 @@ class CartControllerTest extends ControllerSetting {
     @DisplayName("장바구니 상품 삭제")
     void cartDeleteGoods() throws Exception {
         //given
-        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
-        Member member = memberFactory.createMember();
-        memberRepository.save(member);
-        OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
-        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
-                .totalPrice(1000)
-                .optionValue(List.of(optionCreate))
-                .optionDescription("설명")
-                .build();
-        Goods goods = GoodsFactory.createGoods();
-        goodsRepository.save(goods);
-        Option option = Option.toOption(optionCreateRequest, goods);
+        Member member = memberRepository.findByLoginId("loginId").get();
+        Goods goods = goodsRepository.findByGoodsName("테스트상품2").get();
         Cart cart = Cart.builder()
                 .totalAmount(10)
                 .goodsId(goods.getId())
                 .member(member)
                 .totalPrice(10000)
-                .optionNumber(option.getId())
                 .build();
         cartRepository.save(cart);
 
         //when
         mockMvc.perform(delete("/api/carts/{cartId}", cart.getId())
-                .with(user("loginId").roles("USER")))
+                        .with(user("loginId").roles("USER")))
                 .andExpect(status().isNoContent());
         //then
         assertThat(cartRepository.findAll().size()).isEqualTo(0);
