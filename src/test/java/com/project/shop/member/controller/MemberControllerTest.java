@@ -7,6 +7,7 @@ import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.domain.Member;
+import com.project.shop.member.domain.Role;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.Impl.MemberServiceImpl;
@@ -55,15 +56,6 @@ class MemberControllerTest extends ControllerSetting {
 
     @Autowired
     private WebApplicationContext context;
-
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .alwaysDo(print())
-                .apply(springSecurity())
-                .build();
-    }
 
     @Test
     @DisplayName("회원가입 - 정상적으로 가입 완료")
@@ -171,6 +163,10 @@ class MemberControllerTest extends ControllerSetting {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
+        for (Role role : member.getRoles()) {
+            roleRepository.save(role);
+        }
+
         memberRepository.save(member);
 
         //when
@@ -179,5 +175,7 @@ class MemberControllerTest extends ControllerSetting {
                 .andExpect(status().isNoContent());
 
         //then
+        assertThat(memberRepository.findByLoginId("loginId").get().getDeletedAt()).isNotNull();
+
     }
 }
