@@ -1,14 +1,10 @@
 package com.project.shop.member.controller;
 
-import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.domain.Option;
-import com.project.shop.goods.domain.OptionCreate;
 import com.project.shop.goods.repository.CategoryRepository;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
@@ -22,17 +18,12 @@ import com.project.shop.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -43,9 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-//@ImportAutoConfiguration(WebSecurityConfig.class)
-//@WebAppConfiguration
-@DisplayName("컨트롤러 장바구니 통합테스트")
+@DisplayName("장바구니 컨트롤러 통합테스트")
 class CartControllerTest extends ControllerSetting {
 
     @Autowired
@@ -64,9 +53,6 @@ class CartControllerTest extends ControllerSetting {
     CategoryRepository categoryRepository;
 
     @Autowired
-    WebApplicationContext context;
-
-    @Autowired
     PasswordEncoder passwordEncoder;
 
     @BeforeEach
@@ -79,7 +65,7 @@ class CartControllerTest extends ControllerSetting {
                 .memberId(member.getId())
                 .price(10000)
                 .category(category)
-                .goodsName("테스트상품2")
+                .goodsName("테스트상품")
                 .description("상품설명")
                 .build();
         memberRepository.save(member);
@@ -94,7 +80,7 @@ class CartControllerTest extends ControllerSetting {
     @DisplayName("장바구니 상품 추가")
     void cartAddGoods() throws Exception {
         //given
-        Goods goods = goodsRepository.findByGoodsName("테스트상품2").get();
+        Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
         CartCreateRequest cartCreateRequest = CartCreateRequest.builder()
                 .amount(10)
                 .goodsId(goods.getId())
@@ -175,7 +161,7 @@ class CartControllerTest extends ControllerSetting {
     void cartDeleteGoods() throws Exception {
         //given
         Member member = memberRepository.findByLoginId("loginId").get();
-        Goods goods = goodsRepository.findByGoodsName("테스트상품2").get();
+        Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
         Cart cart = Cart.builder()
                 .totalAmount(10)
                 .goodsId(goods.getId())
