@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,7 +56,8 @@ public class CategoryControllerTest extends ControllerSetting {
         Category category = Category.builder().category("테스트").build();
         categoryRepository.save(category);
         //when
-        mockMvc.perform(get("/api/categories"))
+        mockMvc.perform(get("/api/categories")
+                        .with(user("loginId")))
                 .andExpect(status().isOk());
         //then
         assertThat(categoryRepository.findAll().size()).isEqualTo(1);
