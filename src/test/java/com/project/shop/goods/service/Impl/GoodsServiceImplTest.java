@@ -8,10 +8,8 @@ import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
-import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.domain.Image;
-import com.project.shop.goods.domain.Option;
-import com.project.shop.goods.domain.OptionCreate;
+import com.project.shop.goods.domain.*;
+import com.project.shop.goods.repository.CategoryRepository;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
@@ -64,6 +62,9 @@ class GoodsServiceImplTest {
     MemberRepository memberRepository;
 
     @Mock
+    CategoryRepository categoryRepository;
+
+    @Mock
     PasswordEncoder passwordEncoder;
 
     @Mock
@@ -86,6 +87,7 @@ class GoodsServiceImplTest {
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
+        Category category = Category.builder().category("의류").build();
         OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
         OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
                 .totalPrice(10000).optionValue(List.of(optionCreate)).optionDescription("설명").build();
@@ -99,6 +101,7 @@ class GoodsServiceImplTest {
             verify(imageRepository).save(image);
         }
         given(memberRepository.findByLoginId(any())).willReturn(Optional.ofNullable(member));
+        given(categoryRepository.findById(category.getId())).willReturn(Optional.of(category));
 
         goodsService.goodsCreate(goodsCreateRequest, any());
 
