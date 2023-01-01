@@ -18,11 +18,11 @@ public class GoodsFactory {
                 .build();
     }
 
-    public static GoodsCreateRequest createRequest() {
+    public static GoodsCreateRequest createRequest(Long categoryId) {
         return GoodsCreateRequest.builder()
                 .goodsName("테스트상품")
                 .optionCreateRequest(null)
-                .category(new Category("테스트카테고리"))
+                .categoryId(categoryId)
                 .goodsDescription("테스트 상품 설명")
                 .price(10000)
                 .build();
