@@ -1,71 +1,133 @@
 package com.project.shop.goods.controller;
 
-import com.project.shop.config.WebSecurityConfig;
+import com.project.shop.factory.MemberFactory;
+import com.project.shop.factory.OrderFactory;
 import com.project.shop.goods.controller.request.ReplyCreateRequest;
 import com.project.shop.goods.controller.request.ReplyEditRequest;
 import com.project.shop.goods.controller.response.ReplyResponse;
+import com.project.shop.goods.domain.Category;
+import com.project.shop.goods.domain.Goods;
+import com.project.shop.goods.domain.Reply;
+import com.project.shop.goods.domain.Review;
+import com.project.shop.goods.repository.GoodsRepository;
+import com.project.shop.goods.repository.ReplyRepository;
+import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.Impl.ReplyServiceImpl;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.order.domain.Order;
+import com.project.shop.order.repository.OrderRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReplyController.class)
-@MockBean(JpaMetamodelMappingContext.class)
-@ImportAutoConfiguration(WebSecurityConfig.class)
-@DisplayName("대댓글 컨트롤러 테스트")
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
+@DisplayName("대댓글 컨트롤러 통합테스트")
 class ReplyControllerTest extends ControllerSetting {
 
-    @MockBean
+    @Autowired
     ReplyServiceImpl replyService;
 
+    @Autowired
+    ReplyRepository replyRepository;
+
+    @Autowired
+    ReviewRepository reviewRepository;
+
+    @Autowired
+    GoodsRepository goodsRepository;
+
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void beforeEach() {
+        System.out.println("================== before 함수 호출 시작 ==================");
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
+        memberRepository.save(member);
+        Order order = OrderFactory.order(member);
+        Goods goods = Goods.builder()
+                .memberId(member.getId())
+                .goodsName("테스트상품")
+                .category(new Category("의류"))
+                .price(10000)
+                .description("설명")
+                .build();
+        goodsRepository.save(goods);
+        orderRepository.save(order);
+        System.out.println("================== before 함수 호출 끝 ==================");
+    }
+
     @Test
-    @DisplayName("대댓글 생성")
     @WithMockUser(roles = "SELLER")
+    @DisplayName("대댓글 생성")
     void replyCreate() throws Exception {
         //given
-        ReplyCreateRequest replyCreateRequest
-                = ReplyCreateRequest.builder().reviewId(1L).replyComment("comment").build();
+        Member member = memberRepository.findByLoginId("loginId").get();
+        Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
+        Review review = Review.builder().goods(goods).memberId(member.getId()).comment("comment").build();
+        reviewRepository.save(review);
+        ReplyCreateRequest replyCreateRequest = ReplyCreateRequest.builder().replyComment("comment").build();
 
         //when
         mockMvc.perform(post("/api/replies")
+                        .with(user("loginId").roles("SELLER"))
+                        .queryParam("reviewId", String.valueOf(review.getId()))
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(replyCreateRequest)))
                 .andExpect(status().isCreated());
 
         //then
-        verify(replyService).replyCreate(refEq(replyCreateRequest));
+        assertThat(reviewRepository.findAll().size()).isEqualTo(1);
+
     }
 
     @Test
     @DisplayName("대댓글 조회")
     void replyFind() throws Exception {
         //given
-        ReplyResponse replyResponse = ReplyResponse.builder().comment("comment").build();
-        given(replyService.replyFind(1L)).willReturn(List.of(replyResponse));
+        Member member = memberRepository.findByLoginId("loginId").get();
+        Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
+        Review review = Review.builder().goods(goods).memberId(member.getId()).comment("comment").build();
+        reviewRepository.save(review);
+        Reply reply = Reply.builder()
+                .review(review)
+                .memberId(member.getId())
+                .comment("comment")
+                .build();
+        replyRepository.save(reply);
+        List<ReplyResponse> replyResponses = replyService.replyFind(review.getId());
 
-        //when then
+        //when
         mockMvc.perform(get("/api/reviews/reply")
-                        .queryParam("reviewId", "1"))
-                .andExpect(jsonPath("$.[0].comment").value("comment"))
+                        .queryParam("reviewId", String.valueOf(review.getId())))
                 .andExpect(status().isOk());
+
+        //then
+        assertThat(replyResponses.get(0).getComment()).isEqualTo("comment");
     }
 
     @Test
@@ -73,16 +135,24 @@ class ReplyControllerTest extends ControllerSetting {
     @WithMockUser(roles = "SELLER")
     void replyEdit() throws Exception {
         //given
+        Member member = memberRepository.findByLoginId("loginId").get();
+        Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
+        Review review = Review.builder().goods(goods).memberId(member.getId()).comment("comment").build();
+        reviewRepository.save(review);
+        Reply reply = Reply.builder().review(review).memberId(member.getId()).comment("replyComment").build();
+        replyRepository.save(reply);
         ReplyEditRequest replyEditRequest = ReplyEditRequest.builder().comment("editComment").build();
 
         //when
-        mockMvc.perform(put("/api/replies/{replyId}", 1L)
+        mockMvc.perform(put("/api/replies/{replyId}", reply.getId())
+                        .with(user("loginId").roles("SELLER"))
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(replyEditRequest)))
                 .andExpect(status().isOk());
 
         //then
-        verify(replyService).replyEdit(any(), refEq(replyEditRequest));
+        assertThat(reply.getComment()).isEqualTo("editComment");
+
     }
 
     @Test
@@ -90,12 +160,20 @@ class ReplyControllerTest extends ControllerSetting {
     @WithMockUser(roles = "SELLER , ADMIN")
     void replyDelete() throws Exception {
         //given
+        Member member = memberRepository.findByLoginId("loginId").get();
+        Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
+        Review review = Review.builder().goods(goods).memberId(member.getId()).comment("comment").build();
+        reviewRepository.save(review);
+        Reply reply = Reply.builder().review(review).memberId(member.getId()).comment("replyComment").build();
+        replyRepository.save(reply);
+
         //when
-        mockMvc.perform(delete("/api/replies/{replyId}", 1L))
+        mockMvc.perform(delete("/api/replies/{replyId}", reply.getId())
+                .with(user("loginId").roles("SELLER")))
                 .andExpect(status().isNoContent());
 
         //then
-        verify(replyService).replyDelete(1L);
+        assertThat(replyRepository.findAll().size()).isEqualTo(0);
 
     }
 
