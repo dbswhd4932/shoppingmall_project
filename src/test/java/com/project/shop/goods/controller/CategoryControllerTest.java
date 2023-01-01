@@ -5,8 +5,6 @@ import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.repository.CategoryRepository;
-import com.project.shop.goods.service.Impl.CategoryServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +48,7 @@ public class CategoryControllerTest extends ControllerSetting {
     }
 
     @Test
+    //todo 전체 테스트 시 401 에러 발생.
     @DisplayName("카테고리 조회")
     void categoryFindAll() throws Exception {
         //given
