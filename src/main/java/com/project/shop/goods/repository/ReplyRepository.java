@@ -13,4 +13,6 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
     @Query("select r from Reply r where r.review.id = :reviewId")
     List<Reply> findByReviewId(@Param("reviewId") Long reviewId);
+
+    Optional<Reply> findByIdAndMemberId(Long replyId, Long memberId);
 }

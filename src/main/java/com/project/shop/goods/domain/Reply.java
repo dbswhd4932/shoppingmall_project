@@ -54,10 +54,4 @@ public class Reply extends BaseTimeEntity {
                 .build();
     }
 
-    // 대댓글을 작성한 회원인지 확인
-    public void checkReply(Member member) {
-        if (!review.getGoods().getMemberId().equals(member.getId())) {
-            throw new BusinessException(NOT_WRITE_REPLY);
-        }
-    }
 }

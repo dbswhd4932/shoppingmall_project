@@ -69,10 +69,9 @@ public class ReplyServiceImpl implements ReplyService {
     public void replyEdit(Long replyId, ReplyEditRequest ReplyEditRequest) {
         Member member = getMember();
 
-        Reply reply = replyRepository.findById(replyId)
+        Reply reply = replyRepository.findByIdAndMemberId(replyId, member.getId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
 
-        reply.checkReply(member);
         reply.edit(ReplyEditRequest.getComment());
     }
 
@@ -81,10 +80,9 @@ public class ReplyServiceImpl implements ReplyService {
     public void replyDelete(Long replyId) {
         Member member = getMember();
 
-        Reply reply = replyRepository.findById(replyId)
+        Reply reply = replyRepository.findByIdAndMemberId(replyId, member.getId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
 
-        reply.checkReply(member);
         replyRepository.delete(reply);
     }
 
