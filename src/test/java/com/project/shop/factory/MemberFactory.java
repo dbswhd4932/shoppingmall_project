@@ -37,6 +37,23 @@ public class MemberFactory {
         return member;
     }
 
+    public Member createMember2() {
+        Member member = Member.builder()
+                .id(2L)
+                .loginId("loginId2")
+                .password(passwordEncoder.encode("1234"))
+                .name("name2")
+                .zipcode("123-123")
+                .detailAddress("seoul")
+                .email("user@test.com")
+                .phone("010-1111-1111")
+                .roles(List.of(Role.builder().roleType(RoleType.ROLE_USER).build()))
+                .loginType(LoginType.NO_SOCIAL)
+                .build();
+
+        return member;
+    }
+
     public MemberSignupRequest createSignupRequestDto() {
         MemberSignupRequest memberSignupRequest = MemberSignupRequest.builder()
                 .loginId("loginId")

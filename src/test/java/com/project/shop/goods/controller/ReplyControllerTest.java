@@ -86,11 +86,20 @@ class ReplyControllerTest extends ControllerSetting {
     @DisplayName("대댓글 생성")
     void replyCreate() throws Exception {
         //given
-        Member member = memberRepository.findByLoginId("loginId").get();
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member2 = memberFactory.createMember2();
+        memberRepository.save(member2);
         Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
-        Review review = Review.builder().goods(goods).memberId(member.getId()).comment("comment").build();
+        Review review = Review.builder()
+                .goods(goods)
+                .memberId(member2.getId())
+                .comment("comment")
+                .build();
         reviewRepository.save(review);
-        ReplyCreateRequest replyCreateRequest = ReplyCreateRequest.builder().replyComment("comment").build();
+        ReplyCreateRequest replyCreateRequest = ReplyCreateRequest
+                .builder()
+                .replyComment("comment")
+                .build();
 
         //when
         mockMvc.perform(post("/api/replies")
