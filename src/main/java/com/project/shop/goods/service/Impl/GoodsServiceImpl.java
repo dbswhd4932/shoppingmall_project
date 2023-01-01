@@ -8,9 +8,11 @@ import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
+import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
 import com.project.shop.goods.domain.Option;
+import com.project.shop.goods.repository.CategoryRepository;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.goods.repository.OptionRepository;
@@ -46,6 +48,7 @@ public class GoodsServiceImpl implements GoodsService {
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
     private final MemberRepository memberRepository;
+    private final CategoryRepository categoryRepository;
 
     // 상품 등록 + 이미지 추가(필수) + 옵션 추가(필수X)
     @Override
@@ -58,8 +61,11 @@ public class GoodsServiceImpl implements GoodsService {
             throw new BusinessException(ErrorCode.DUPLICATE_GOODS);
         }
 
+        Category category = categoryRepository.findById(goodsCreateRequest.getCategoryId()).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_CATEGORY));
+
         // 상품 정보저장
-        Goods goods = Goods.create(goodsCreateRequest, member);
+        Goods goods = Goods.create(goodsCreateRequest, category, member);
         goodsRepository.save(goods);
 
         // 옵션 정보 저장

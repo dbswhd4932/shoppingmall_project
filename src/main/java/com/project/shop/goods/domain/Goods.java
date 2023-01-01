@@ -68,11 +68,11 @@ public class Goods extends BaseTimeEntity {
     }
 
 
-    public static Goods create(GoodsCreateRequest goodsCreateRequest, Member member) {
+    public static Goods create(GoodsCreateRequest goodsCreateRequest, Category category, Member member) {
         return Goods.builder()
                 .goodsName(goodsCreateRequest.getGoodsName())
                 .memberId(member.getId())
-                .category(goodsCreateRequest.getCategory())
+                .category(category)
                 .price(goodsCreateRequest.getPrice())
                 .description(goodsCreateRequest.getGoodsDescription())
                 .build();
