@@ -106,14 +106,12 @@ class ReplyServiceImplTest {
         Reply reply = new Reply(1L, review, "replyComment");
         ReplyEditRequest replyEditRequest = new ReplyEditRequest("editComment");
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-        given(replyRepository.findById(1L)).willReturn(Optional.of(reply));
+        given(replyRepository.findByIdAndMemberId(1L,member.getId())).willReturn(Optional.of(reply));
 
         //when
         replyService.replyEdit(1L, replyEditRequest);
 
         //then
-        verify(memberRepository).findByLoginId(member.getLoginId());
-        verify(replyRepository).findById(1L);
         assertThat(reply.getComment()).isEqualTo("editComment");
 
     }
@@ -128,14 +126,12 @@ class ReplyServiceImplTest {
         Reply reply = new Reply(1L, review, "replyComment");
         ReplyEditRequest replyEditRequest = new ReplyEditRequest("editComment");
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-        given(replyRepository.findById(1L)).willReturn(Optional.of(reply));
+        given(replyRepository.findByIdAndMemberId(1L, member.getId())).willReturn(Optional.of(reply));
 
         //when
         replyService.replyDelete(1L);
 
         //then
-        verify(memberRepository).findByLoginId(member.getLoginId());
-        verify(replyRepository).findById(1L);
         verify(replyRepository).delete(reply);
     }
 }
