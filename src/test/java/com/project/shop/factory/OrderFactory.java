@@ -18,8 +18,8 @@ public class OrderFactory {
                 .detailAddress("detailAddress")
                 .requirement("requirement")
                 .totalPrice(10000)
-                .impUid("imp_11111111")
-                .merchantId("123412341234")
+                .impUid("imp_1111")
+                .merchantId("1111")
                 .build();
     }
 
