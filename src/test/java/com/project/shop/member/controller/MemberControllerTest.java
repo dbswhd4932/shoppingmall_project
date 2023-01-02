@@ -3,36 +3,34 @@ package com.project.shop.member.controller;
 import com.project.shop.config.WebSecurityConfig;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.global.error.exception.BusinessException;
+import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
+import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.Role;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.Impl.MemberServiceImpl;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
 import static com.project.shop.global.error.ErrorCode.DUPLICATED_LOGIN_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -54,11 +52,8 @@ class MemberControllerTest extends ControllerSetting {
     @Autowired
     MemberServiceImpl memberService;
 
-    @Autowired
-    private WebApplicationContext context;
-
     @Test
-    @DisplayName("회원가입 - 정상적으로 가입 완료")
+    @DisplayName("회원가입_성공")
     void memberSignup() throws Exception {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
@@ -75,7 +70,7 @@ class MemberControllerTest extends ControllerSetting {
     }
 
     @Test
-    @DisplayName("회원 가입 중복체크 - 중복 아이디가 존재해서 예외발생")
+    @DisplayName("회원아이디중복체크_실패_중복아이디존재")
     void loginIdDuplicateCheckSuccess() throws Exception {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
@@ -95,7 +90,7 @@ class MemberControllerTest extends ControllerSetting {
     }
 
     @Test
-    @DisplayName("회원 가입 중복체크 - 중복 아이디 없음")
+    @DisplayName("회원아이디중복체크_성공")
     void loginIdDuplicateCheckFail() throws Exception {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
@@ -110,8 +105,34 @@ class MemberControllerTest extends ControllerSetting {
     }
 
     @Test
+    @DisplayName("로그인_실패_아이디_비빌번호_오류")
+    void noSocialLoginUnAuthorized() throws Exception {
+        //given
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
+        memberRepository.save(member);
+        LoginRequest loginRequest = LoginRequest.builder().loginType(LoginType.NO_SOCIAL)
+                .loginId("loginId2")
+                .password("1234")
+                .build();
+
+        //when then
+        mockMvc.perform(post("/api/members/login")
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isUnauthorized());
+
+        //then
+        AuthenticationException exception = assertThrows(AuthenticationException.class, () -> {
+            memberService.login(loginRequest);
+        });
+        assertThat(exception.getMessage()).isEqualTo("자격 증명에 실패하였습니다.");
+
+    }
+
+    @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("내 정보 가져오기")
+    @DisplayName("내정보조회_성공")
     void findByDetailMyInfo() throws Exception {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
@@ -130,7 +151,7 @@ class MemberControllerTest extends ControllerSetting {
 
     @Test
     @WithMockUser(roles = "USER")
-    @DisplayName("회원 수정")
+    @DisplayName("회원수정_성공")
     void memberEdit() throws Exception {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
@@ -158,7 +179,7 @@ class MemberControllerTest extends ControllerSetting {
 
     @Test
     @WithMockUser(roles = {"USER", "SELLER"})
-    @DisplayName("회원 탈퇴")
+    @DisplayName("회원탈퇴_성공")
     void memberDelete() throws Exception {
         //given
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
