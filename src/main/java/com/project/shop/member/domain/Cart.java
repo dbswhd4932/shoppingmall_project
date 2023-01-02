@@ -35,6 +35,7 @@ public class Cart extends BaseTimeEntity {
     @Column(nullable = false)
     private int totalPrice;     //장바구니 총 가격
 
+    @Column
     private Long optionNumber;   //옵션 번호
 
     @Builder
