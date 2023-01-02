@@ -2,6 +2,7 @@ package com.project.shop.member.controller;
 
 import com.project.shop.config.WebSecurityConfig;
 import com.project.shop.factory.MemberFactory;
+import com.project.shop.global.config.security.JwtTokenDto;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
@@ -10,6 +11,7 @@ import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.domain.LoginType;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.Role;
+import com.project.shop.member.domain.RoleType;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.Impl.MemberServiceImpl;
@@ -24,6 +26,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.project.shop.global.error.ErrorCode.DUPLICATED_LOGIN_ID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -105,6 +109,71 @@ class MemberControllerTest extends ControllerSetting {
     }
 
     @Test
+    @DisplayName("로그인_성공_일반로그인")
+    void noSocialLogin() throws Exception {
+        //given
+        Role role = Role.builder().roleType(RoleType.ROLE_USER).build();
+        roleRepository.save(role);
+        Member member = Member.builder()
+                .loginId("loginId")
+                .password(passwordEncoder.encode("1234"))
+                .name("name")
+                .zipcode("123-123")
+                .detailAddress("seoul")
+                .email("user@test.com")
+                .phone("010-1111-1111")
+                .roles(List.of(role))
+                .loginType(LoginType.NO_SOCIAL)
+                .build();
+        memberRepository.save(member);
+
+        LoginRequest loginRequest = LoginRequest.builder()
+                .loginType(LoginType.NO_SOCIAL)
+                .loginId("loginId")
+                .password("1234")
+                .build();
+
+        JwtTokenDto tokenDto = memberService.login(loginRequest);
+
+        //when
+        mockMvc.perform(post("/api/members/login")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk());
+
+        //then
+        assertThat(tokenDto).isNotNull();
+
+    }
+
+    @Test
+    @DisplayName("로그인_성공_카카오로그인")
+    void kakaoLogin() throws Exception {
+        //given
+        LoginRequest loginRequest = LoginRequest.builder()
+                .loginType(LoginType.KAKAO)
+                .loginId("loginId")
+                .password("1234")
+                .email("kakao@test.com")
+                .build();
+
+        Member member = Member.kakaoCreate(loginRequest, passwordEncoder);
+        memberRepository.save(member);
+
+        JwtTokenDto tokenDto = memberService.login(loginRequest);
+
+        //when
+        mockMvc.perform(post("/api/members/login")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk());
+
+        //then
+        assertThat(tokenDto).isNotNull();
+
+    }
+
+    @Test
     @DisplayName("로그인_실패_아이디_비빌번호_오류")
     void noSocialLoginUnAuthorized() throws Exception {
         //given
@@ -118,8 +187,8 @@ class MemberControllerTest extends ControllerSetting {
 
         //when then
         mockMvc.perform(post("/api/members/login")
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest)))
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized());
 
         //then
