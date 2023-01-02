@@ -1,12 +1,10 @@
 package com.project.shop.order.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
-import com.project.shop.goods.domain.Goods;
 import com.project.shop.member.domain.Member;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.function.Supplier;
 
 @Getter
 @Setter

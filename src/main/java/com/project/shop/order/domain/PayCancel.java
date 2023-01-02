@@ -1,7 +1,6 @@
 package com.project.shop.order.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
-import com.project.shop.goods.domain.Goods;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
