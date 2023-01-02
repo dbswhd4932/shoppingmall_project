@@ -1,6 +1,5 @@
 package com.project.shop.goods.service.Impl;
 
-import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.domain.Category;
@@ -16,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.project.shop.global.error.ErrorCode.CATEGORY_EXIST_GOODS;
-import static com.project.shop.global.error.ErrorCode.CATEGORY_NAME_DUPLICATED;
+import static com.project.shop.global.error.ErrorCode.*;
 
 @Service
 @Transactional
@@ -51,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void categoryEdit(Long categoryId, CategoryEditRequest categoryEditRequest) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_CATEGORY));
 
         category.editCategory(categoryEditRequest);
     }
@@ -60,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void categoryDelete(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_CATEGORY));
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_CATEGORY));
 
         // 카테고리에 속한 상품이 있을 경우 예외
         if(!goodsRepository.findAllByCategory(category).isEmpty()) {
