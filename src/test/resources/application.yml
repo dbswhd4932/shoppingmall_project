@@ -4,6 +4,9 @@ spring:
 #    username: sa
 #    password:
 #    driver-class-name: org.h2.Driver
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
   jpa:
     hibernate:
       ddl-auto: create
