@@ -1,15 +1,11 @@
 package com.project.shop.goods.controller;
 
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
-import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.service.GoodsService;
-import com.project.shop.goods.service.Impl.S3Service;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +49,7 @@ public class GoodsController {
     @GetMapping("/goods/checkUpdateGoods")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 가격 변경 확인",
-            notes ="changeCheck True = 변경 / False = 변경 없음")
+            notes = "changeCheck True = 변경 / False = 변경 없음")
     public List<UpdateGoodsResponse> checkGoodsUpdate(@RequestBody List<UpdateCheckRequest> updateCheckRequest) {
         return goodsService.checkGoodsUpdate(updateCheckRequest);
     }

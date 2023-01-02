@@ -4,7 +4,6 @@ import com.project.shop.goods.controller.request.CategoryCreateRequest;
 import com.project.shop.goods.controller.request.CategoryEditRequest;
 import com.project.shop.goods.controller.response.CategoryResponse;
 import com.project.shop.goods.service.CategoryService;
-import com.project.shop.goods.service.Impl.CategoryServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,7 +43,7 @@ public class CategoryController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @ApiOperation(value = "카테고리 수정")
     public void categoryEdit(@PathVariable("categoryId") Long categoryId, @RequestBody CategoryEditRequest categoryEditRequest) {
-        categoryService.categoryEdit(categoryId , categoryEditRequest);
+        categoryService.categoryEdit(categoryId, categoryEditRequest);
     }
 
     // 카테고리 삭제
