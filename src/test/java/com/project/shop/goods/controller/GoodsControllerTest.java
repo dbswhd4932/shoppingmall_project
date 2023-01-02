@@ -2,6 +2,7 @@ package com.project.shop.goods.controller;
 
 import com.project.shop.config.WebSecurityConfig;
 import com.project.shop.factory.MemberFactory;
+import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
@@ -26,17 +27,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -87,19 +98,42 @@ class GoodsControllerTest extends ControllerSetting {
     @Test
     @WithMockUser(roles = "SELLER")
     @DisplayName("상품 등록")
-    //todo multipartFile ???
+    @Disabled
+        //todo multipartFile ???
     void goodsCreate() throws Exception {
         //given
-        Category category = Category.builder().category("의류").build();
+        Category category = categoryRepository.findByCategory("의류").get();
         OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
         OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
                 .totalPrice(1000)
                 .optionValue(List.of(optionCreate))
                 .optionDescription("설명")
                 .build();
+        GoodsCreateRequest goodsCreateRequest = GoodsCreateRequest.builder()
+                .goodsName("테스트상품2")
+                .categoryId(category.getId())
+                .optionCreateRequest(List.of(optionCreateRequest))
+                .price(10000)
+                .goodsDescription("설명")
+                .build();
 
-        //when
-        //then
+        MockMultipartFile file = new MockMultipartFile(
+                "image",
+                "image.png",
+                "image/png",
+                new FileInputStream("C:\\Users\\dbswh\\OneDrive\\바탕 화면\\image.png"));
+        String contents = objectMapper.writeValueAsString(goodsCreateRequest);
+
+        mockMvc.perform(
+                        multipart("/api/goods")
+                                .file(new MockMultipartFile("goodsCreateRequest", "", "application/json", contents.getBytes(StandardCharsets.UTF_8)))
+                                .file(file).part(new MockPart("loginId", "image".getBytes(StandardCharsets.UTF_8)))
+                                .contentType("multipart/form-data")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .characterEncoding("UTF-8")
+                                .with(user("loginId").roles("SELLER")))
+                .andExpect(status().isOk());
+
     }
 
     @Test
@@ -162,7 +196,7 @@ class GoodsControllerTest extends ControllerSetting {
 
     @Test
     @DisplayName("상품 단품 조회")
-    //todo 권한 필요없는데 401에러
+        //todo 권한 필요없는데 401에러
     void goodsDetailFind() throws Exception {
         //given
         Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
@@ -187,12 +221,11 @@ class GoodsControllerTest extends ControllerSetting {
 
         //when
         mockMvc.perform(get("/api/goods/keyword")
-                .queryParam("keyword", keyword))
+                        .queryParam("keyword", keyword))
                 .andExpect(status().isOk());
 
         //then
         assertThat(goodsResponses.get(0).getGoodsName()).isEqualTo("테스트상품");
-
 
 
     }
@@ -221,7 +254,7 @@ class GoodsControllerTest extends ControllerSetting {
 
         //when
         mockMvc.perform(delete("/api/goods/{goodsId}", findGoods.getId())
-                .with(user("loginId").roles("SELLER")))
+                        .with(user("loginId").roles("SELLER")))
                 .andExpect(status().isNoContent());
 
         //then
