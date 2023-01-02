@@ -1,7 +1,6 @@
 package com.project.shop.goods.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.shop.global.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -1,7 +1,6 @@
 package com.project.shop.goods.domain;
 
 import com.project.shop.global.common.BaseTimeEntity;
-import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.ReplyCreateRequest;
 import com.project.shop.member.domain.Member;
 import lombok.AccessLevel;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import static com.project.shop.global.error.ErrorCode.NOT_WRITE_REPLY;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

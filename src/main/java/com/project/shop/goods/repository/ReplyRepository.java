@@ -1,7 +1,6 @@
 package com.project.shop.goods.repository;
 
 import com.project.shop.goods.domain.Reply;
-import com.project.shop.goods.domain.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
