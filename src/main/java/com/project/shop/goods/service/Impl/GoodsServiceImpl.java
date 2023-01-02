@@ -21,6 +21,7 @@ import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -131,14 +132,13 @@ public class GoodsServiceImpl implements GoodsService {
         return list;
     }
 
-
     // 상품 상세(정보)조회
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "goodsFind", key = "#goodsId")
     public GoodsResponse goodsDetailFind(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
-
         return GoodsResponse.toResponse(goods);
     }
 
