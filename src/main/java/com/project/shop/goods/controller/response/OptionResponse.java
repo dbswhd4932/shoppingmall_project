@@ -6,6 +6,7 @@ import com.project.shop.goods.domain.Option;
 import com.project.shop.goods.domain.OptionCreate;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OptionResponse {
+public class OptionResponse implements Serializable {
 
     private Long goodsId;
     private List<OptionCreate> optionValue;

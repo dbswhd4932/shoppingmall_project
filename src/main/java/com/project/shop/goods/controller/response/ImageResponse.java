@@ -4,6 +4,7 @@ import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ImageResponse {
+public class ImageResponse implements Serializable {
 
     private String fileUrl;
 
