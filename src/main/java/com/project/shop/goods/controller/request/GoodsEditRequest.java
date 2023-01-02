@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.validation.constraints.Min;
@@ -25,8 +26,10 @@ public class GoodsEditRequest {
     @Min(value = 1000 , message = "가격은 1000원 이상이어야 합니다.")
     private int price;
 
+    @Nullable
     private List<OptionCreateRequest> optionCreateRequest;
 
+    @Nullable
     private String goodsDescription;
 
 }
