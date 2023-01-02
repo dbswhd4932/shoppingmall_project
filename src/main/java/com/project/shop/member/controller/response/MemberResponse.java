@@ -1,13 +1,7 @@
 package com.project.shop.member.controller.response;
 
 import com.project.shop.member.domain.Member;
-import com.project.shop.member.domain.Role;
-import com.project.shop.member.domain.RoleType;
 import lombok.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.ArrayList;
 import java.util.List;
 
 

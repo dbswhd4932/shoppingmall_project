@@ -1,6 +1,5 @@
 package com.project.shop.member.domain;
 
-import lombok.ToString;
 
 public enum RoleType {
     ROLE_USER("ROLE_USER"),
