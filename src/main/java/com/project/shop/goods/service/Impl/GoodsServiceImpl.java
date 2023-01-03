@@ -1,5 +1,6 @@
 package com.project.shop.goods.service.Impl;
 
+import com.project.shop.global.common.TimerAop;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
@@ -86,6 +87,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 전체 검색
+    @TimerAop
     @Override
     @Transactional(readOnly = true)
     public List<GoodsResponse> goodsFindAll(Pageable pageable) {
@@ -133,6 +135,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 상세(정보)조회
+    @TimerAop
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "goodsFind", key = "#goodsId")
@@ -143,6 +146,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 검색 ( 키워드 )
+    @TimerAop
     @Override
     @Transactional(readOnly = true)
     public List<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable) {
