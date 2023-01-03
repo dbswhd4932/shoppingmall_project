@@ -97,7 +97,6 @@ public class GoodsServiceImpl implements GoodsService {
         for (Goods good : goods) {
             list.add(GoodsResponse.toResponse(good));
         }
-        System.out.println("나는 이 작업이 끝나고 나서 다시 1000ms 후에 실행될거야");
         return list;
     }
 
