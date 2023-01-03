@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -87,8 +88,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 전체 검색
-    @TimerAop
     @Override
+    @TimerAop
     @Transactional(readOnly = true)
     public List<GoodsResponse> goodsFindAll(Pageable pageable) {
         Page<Goods> goods = goodsRepository.findAll(pageable);
@@ -96,6 +97,7 @@ public class GoodsServiceImpl implements GoodsService {
         for (Goods good : goods) {
             list.add(GoodsResponse.toResponse(good));
         }
+        System.out.println("나는 이 작업이 끝나고 나서 다시 1000ms 후에 실행될거야");
         return list;
     }
 
@@ -135,8 +137,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 상세(정보)조회
-    @TimerAop
     @Override
+    @TimerAop
     @Transactional(readOnly = true)
     @Cacheable(value = "goodsFind", key = "#goodsId")
     public GoodsResponse goodsDetailFind(Long goodsId) {
@@ -146,8 +148,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     // 상품 검색 ( 키워드 )
-    @TimerAop
     @Override
+    @TimerAop
     @Transactional(readOnly = true)
     public List<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable) {
         // keyword 로 검색 후 모든 상품 찾기
