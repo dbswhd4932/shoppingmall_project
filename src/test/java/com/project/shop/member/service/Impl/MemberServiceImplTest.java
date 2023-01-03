@@ -25,9 +25,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -42,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,7 +70,7 @@ class MemberServiceImplTest {
     @Mock
     RoleRepository roleRepository;
 
-    @Mock
+    @MockBean
     AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Mock
@@ -135,15 +139,24 @@ class MemberServiceImplTest {
 
     @Test
     @DisplayName("일반 로그인")
-    @WithMockUser(username = "test", roles = "USER")
-    void noSocialLogin() {
+    void noSocialLogin() throws Exception {
         //given
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
+        given(memberRepository.findByLoginId("loginId")).willReturn(Optional.ofNullable(member));
         LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.NO_SOCIAL, "test@test.com");
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
 
-        Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        given(authenticationManagerBuilder.getObject()).willReturn((AuthenticationManager) authenticate);
+        ObjectPostProcessor<Object> opp = mock(ObjectPostProcessor.class);
+        AuthenticationProvider provider = mock(AuthenticationProvider.class);
+        AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder(opp);
+        builder.authenticationProvider(provider);
+        builder.build();
+
+//        Authentication authenticate = builder.getObject().authenticate(authenticationToken);
+        JwtTokenDto accessToken = JwtTokenDto.builder().accessToken("accessToken").accessTokenExpiresIn(1000000L).build();
+
         //when
         memberService.login(loginRequest);
 

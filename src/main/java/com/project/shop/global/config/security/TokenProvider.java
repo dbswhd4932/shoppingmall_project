@@ -29,7 +29,6 @@ public class TokenProvider {
     private static final String BEARER_TYPE = "Bearer";
     private static final String MEMBER_ID_CLAIM_KEY = "memberId";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;        // 1일
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;   // 7일
 
     private final MemberRepository memberRepository;
 
@@ -64,7 +63,7 @@ public class TokenProvider {
                 .build();
     }
 
-    // 유저 정보를 가지고 AccessToken , RefreshToken을 생성하는 메서드
+    // 유저 정보를 가지고 AccessToken 생성
     public JwtTokenDto generateToken(Authentication authentication) {
         //권한 가져오기
         String collect = authentication.getAuthorities().stream()
