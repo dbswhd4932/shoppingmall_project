@@ -46,6 +46,9 @@ dependencies {
     implementation 'org.hibernate:hibernate-jcache:6.0.2.Final'
     implementation 'javax.cache:cache-api:1.1.1'
 
+    // aop 설정
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
