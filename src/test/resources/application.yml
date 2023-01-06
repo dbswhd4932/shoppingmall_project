@@ -31,3 +31,11 @@ cloud:
 
 jwt:
   header: Authorization
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
