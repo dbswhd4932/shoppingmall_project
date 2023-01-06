@@ -9,6 +9,7 @@ import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.order.controller.request.PayCancelRequest;
+import com.project.shop.order.controller.response.OrderResponse;
 import com.project.shop.order.domain.*;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.response.OrderPageResponse;
@@ -97,6 +98,22 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return list;
+    }
+
+    // 주문 단건 조회
+    @Override
+    public OrderResponse orderFindOne(Long orderId) {
+        Member member = getMember();
+        Order order = orderRepository.findByIdAndMemberId(orderId, member.getId()).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_ORDERS));
+        OrderResponse orderResponse = OrderResponse.toResponse(order);
+        List<OrderItem> orderItems = orderItemRepository.findAllByOrder(order);
+        List<Long> list = new ArrayList<>();
+        for (OrderItem orderItem : orderItems) {
+            list.add(orderItem.getGoodsId());
+        }
+        orderResponse.setGoodsId(list);
+        return orderResponse;
     }
 
     // 결제취소

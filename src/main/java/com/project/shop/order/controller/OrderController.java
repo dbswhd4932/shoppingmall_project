@@ -3,6 +3,7 @@ package com.project.shop.order.controller;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.request.PayCancelRequest;
 import com.project.shop.order.controller.response.OrderPageResponse;
+import com.project.shop.order.controller.response.OrderResponse;
 import com.project.shop.order.domain.MerchantId;
 import com.project.shop.order.service.OrderService;
 import io.swagger.annotations.ApiOperation;
@@ -49,6 +50,14 @@ public class OrderController {
     @ApiOperation(value = "주문 조회")
     public List<OrderPageResponse> orderFindMember(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return orderService.orderFindMember(pageable);
+    }
+
+    @GetMapping("/orders/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('USER')")
+    @ApiOperation(value = "주문 단건 조회")
+    public OrderResponse orderFindOne(@PathVariable("orderId") Long orderId) {
+        return orderService.orderFindOne(orderId);
     }
 
     // 결제 취소
