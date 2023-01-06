@@ -7,7 +7,6 @@ import com.project.shop.goods.controller.request.ReplyEditRequest;
 import com.project.shop.goods.controller.response.ReplyResponse;
 import com.project.shop.goods.domain.Reply;
 import com.project.shop.goods.domain.Review;
-import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ReplyRepository;
 import com.project.shop.goods.repository.ReviewRepository;
 import com.project.shop.goods.service.ReplyService;
@@ -43,7 +42,7 @@ public class ReplyServiceImpl implements ReplyService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_REVIEW));
 
         // 해당 상품을 판매하고 있는 회원인지 확인
-        if(!review.getGoods().getMemberId().equals(member.getId())){
+        if (!review.getGoods().getMemberId().equals(member.getId())) {
             throw new BusinessException(NOT_SELLING_GOODS);
         }
 
@@ -58,7 +57,7 @@ public class ReplyServiceImpl implements ReplyService {
         List<Reply> replyList = replyRepository.findByReviewId(reviewId);
 
         // 대댓글이 없으면 예외처리
-        if(replyList.isEmpty()) throw new BusinessException(NOT_FOUND_REPLY);
+        if (replyList.isEmpty()) throw new BusinessException(NOT_FOUND_REPLY);
 
         return replyList.stream()
                 .map(reply -> ReplyResponse.toResponse(reply)).collect(toList());

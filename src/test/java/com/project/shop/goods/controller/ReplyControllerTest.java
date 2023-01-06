@@ -92,17 +92,12 @@ class ReplyControllerTest extends ControllerSetting {
     @DisplayName("대댓글 생성")
     void replyCreate() throws Exception {
         //given
-        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
-        Member member2 = memberFactory.createMember2();
-        memberRepository.save(member2);
-        Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
-        Review review = Review.builder()
-                .goods(goods)
-                .memberId(member2.getId())
-                .comment("comment")
-                .build();
-        Review t = reviewRepository.save(review);
-        System.out.println("testsetsetsetset" +t.getId());
+        Member findMember = memberRepository.findByLoginId("loginId").get();
+        Goods goods = Goods.builder().goodsName("상품명").memberId(findMember.getId()).price(10000).build();
+        Goods saveGoods = goodsRepository.save(goods);
+        Review review = Review.builder().memberId(findMember.getId()).goods(saveGoods).comment("commentTest").build();
+        reviewRepository.save(review);
+
         ReplyCreateRequest replyCreateRequest = ReplyCreateRequest
                 .builder()
                 .replyComment("comment")
@@ -185,7 +180,7 @@ class ReplyControllerTest extends ControllerSetting {
 
         //when
         mockMvc.perform(delete("/api/replies/{replyId}", reply.getId())
-                .with(user("loginId").roles("SELLER")))
+                        .with(user("loginId").roles("SELLER")))
                 .andExpect(status().isNoContent());
 
         //then
