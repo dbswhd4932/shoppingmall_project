@@ -17,7 +17,6 @@ import java.util.List;
 @Builder
 public class OptionResponse implements Serializable {
 
-    private Long goodsId;
     private List<OptionCreate> optionValue;
     private int totalPrice;
     private String optionDescription;
@@ -26,7 +25,6 @@ public class OptionResponse implements Serializable {
         List<OptionResponse> list = new ArrayList<>();
         for (Option option : goods.getOptions()) {
             OptionResponse optionResponse = OptionResponse.builder()
-                            .goodsId(goods.getId())
                             .optionValue(option.getOptionValue())
                             .totalPrice(option.getTotalPrice())
                             .optionDescription(option.getOptionDescription())

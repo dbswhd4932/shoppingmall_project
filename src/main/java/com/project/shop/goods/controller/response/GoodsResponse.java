@@ -14,6 +14,7 @@ import java.util.List;
 public class GoodsResponse implements Serializable {
 
     private Long memberId;
+    private Long goodsId;
     private String goodsName;
     private String categoryName;
     private int price;
@@ -24,6 +25,7 @@ public class GoodsResponse implements Serializable {
     public static GoodsResponse toResponse(Goods goods) {
         return GoodsResponse.builder()
                 .memberId(goods.getMemberId())
+                .goodsId(goods.getId())
                 .goodsName(goods.getGoodsName())
                 .categoryName(goods.getCategory().getCategory())
                 .price(goods.getPrice())
