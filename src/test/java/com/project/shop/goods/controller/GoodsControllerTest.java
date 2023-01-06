@@ -30,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +40,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.MULTIPART_MIXED_VALUE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -91,8 +94,6 @@ class GoodsControllerTest extends ControllerSetting {
     @Test
     @WithMockUser(roles = "SELLER")
     @DisplayName("상품 등록")
-    @Disabled
-        //todo multipartFile ???
     void goodsCreate() throws Exception {
         //given
         Category category = categoryRepository.findByCategory("의류").get();
@@ -110,21 +111,25 @@ class GoodsControllerTest extends ControllerSetting {
                 .goodsDescription("설명")
                 .build();
 
-        MockMultipartFile multipartFile1 = new MockMultipartFile("file", "test.txt", "text/plain", "test file".getBytes(StandardCharsets.UTF_8));
-        MockMultipartFile multipartFile2 = new MockMultipartFile("file", "test2.txt", "text/plain", "test file2".getBytes(StandardCharsets.UTF_8));
-
+        MockMultipartFile multipartFile =
+                new MockMultipartFile("multipartFiles",
+                        "스크린샷_20221219_050536.png",
+                        "image/png", "스크린샷_20221219_050536.png"
+                        .getBytes());
         String content = objectMapper.writeValueAsString(goodsCreateRequest);
-        MockMultipartFile json = new MockMultipartFile("json", "json", "application/json", content.getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile json = new MockMultipartFile("goodsCreateRequest", "goodsCreateRequest", "application/json", content.getBytes(StandardCharsets.UTF_8));
 
+        //when
         mockMvc.perform(multipart("/api/goods")
-                        .file(multipartFile1)
-                        .file(multipartFile2)
                         .file(json)
-                        .contentType("multipart/mixed")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
+                        .file(multipartFile)
+                        .contentType(MULTIPART_MIXED_VALUE)
+                        .characterEncoding(StandardCharsets.UTF_8)
                 .with(user("loginId").roles("SELLER")))
                 .andExpect(status().isCreated());
+
+        //then
+        assertThat(goodsRepository.findAll().size()).isEqualTo(2);
 
     }
 
@@ -188,7 +193,6 @@ class GoodsControllerTest extends ControllerSetting {
 
     @Test
     @DisplayName("상품 단품 조회")
-        //todo 권한 필요없는데 401에러
     void goodsDetailFind() throws Exception {
         //given
         Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
