@@ -2,7 +2,8 @@ package com.project.shop.member.service;
 
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
-import com.project.shop.member.controller.response.CartResponse;
+import com.project.shop.member.controller.response.CartPageResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface CartService {
     void cartAddGoods(CartCreateRequest cartCreateRequest);
 
     // 장바구니 조회
-    List<CartResponse> cartFindMember();
+    List<CartPageResponse> cartFindMember(Pageable pageable);
 
     // 장바구니 수정
     void editCartItem(Long cartId, CartEditRequest cartEditRequest);

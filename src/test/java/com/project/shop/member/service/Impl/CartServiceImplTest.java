@@ -10,7 +10,7 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
-import com.project.shop.member.controller.response.CartResponse;
+import com.project.shop.member.controller.response.CartPageResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
@@ -98,11 +98,11 @@ class CartServiceImplTest {
         given(cartRepository.findByMemberId(member.getId())).willReturn(List.of(cart));
 
         //when
-        List<CartResponse> cartResponses = cartService.cartFindMember();
+        List<CartPageResponse> cartPageRespons = cartService.cartFindMember();
 
         //then
-        assertThat(cartResponses.size()).isEqualTo(1);
-        assertThat(cartResponses.get(0).getTotalPrice()).isEqualTo(1000);
+        assertThat(cartPageRespons.size()).isEqualTo(1);
+        assertThat(cartPageRespons.get(0).getTotalPrice()).isEqualTo(1000);
     }
 
     @Test

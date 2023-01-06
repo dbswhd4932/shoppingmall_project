@@ -10,7 +10,7 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
-import com.project.shop.member.controller.response.CartResponse;
+import com.project.shop.member.controller.response.CartPageResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
@@ -113,7 +113,7 @@ class CartControllerTest extends ControllerSetting {
                 .optionNumber(1L)
                 .build();
         cartRepository.save(cart);
-        CartResponse cartResponse = CartResponse.toResponse(cart);
+        CartPageResponse cartPageResponse = CartPageResponse.toResponse(cart);
 
         //when
         mockMvc.perform(get("/api/carts")
@@ -121,7 +121,7 @@ class CartControllerTest extends ControllerSetting {
                 .andExpect(status().isOk());
 
         //then
-        assertThat(cartResponse.getTotalAmount()).isEqualTo(10);
+        assertThat(cartPageResponse.getTotalAmount()).isEqualTo(10);
     }
 
     @Test

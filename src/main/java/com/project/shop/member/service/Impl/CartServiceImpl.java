@@ -7,13 +7,15 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
-import com.project.shop.member.controller.response.CartResponse;
+import com.project.shop.member.controller.response.CartPageResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.service.CartService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -74,17 +76,18 @@ public class CartServiceImpl implements CartService {
     // 장바구니 조회
     @Override
     @Transactional(readOnly = true)
-    public List<CartResponse> cartFindMember() {
+    public List<CartPageResponse> cartFindMember(Pageable pageable) {
 
         Member member = getMember();
 
-        List<Cart> carts = cartRepository.findByMemberId(member.getId());
+        Page<Cart> carts = cartRepository.findAllByMemberId(member.getId(), pageable);
+        List<CartPageResponse> list = new ArrayList<>();
 
-        List<CartResponse> list = new ArrayList<>();
         for (Cart cart : carts) {
-            list.add(CartResponse.toResponse(cart));
+            CartPageResponse cartPageResponse = CartPageResponse.toResponse(cart, carts);
+            list.add(cartPageResponse);
         }
-        //todo carts.stream().map(cart -> list.add(CartResponse.toResponse(cart))).collect(Collectors.toList()); -> 무시되었습니다 ?
+
         return list;
     }
 
