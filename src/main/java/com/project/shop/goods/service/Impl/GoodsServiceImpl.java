@@ -7,6 +7,7 @@ import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
+import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Category;
@@ -24,8 +25,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -91,13 +92,17 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @TimerAop
     @Transactional(readOnly = true)
-    public List<GoodsResponse> goodsFindAll(Pageable pageable) {
+    public List<GoodsPageResponse> goodsFindAll(Pageable pageable) {
         Page<Goods> goods = goodsRepository.findAll(pageable);
-        List<GoodsResponse> list = new ArrayList<>();
+        List<GoodsPageResponse> list = new ArrayList<>();
+
         for (Goods good : goods) {
-            list.add(GoodsResponse.toResponse(good));
+            GoodsPageResponse goodsPageResponse = GoodsPageResponse.toResponse(good, goods);
+            list.add(goodsPageResponse);
         }
+
         return list;
+
     }
 
     // 상품 가격 변경 확인
@@ -150,15 +155,15 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @TimerAop
     @Transactional(readOnly = true)
-    public List<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable) {
+    public List<GoodsPageResponse> goodsFindKeyword(String keyword, Pageable pageable) {
         // keyword 로 검색 후 모든 상품 찾기
-        List<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword);
+        Page<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword);
 
-        List<GoodsResponse> list = new ArrayList<>();
+        List<GoodsPageResponse> list = new ArrayList<>();
         // 상품의 이미지 찾아서 응답에 추가 설정
         for (Goods good : goods) {
-            GoodsResponse goodsResponse = GoodsResponse.toResponse(good);
-            list.add(goodsResponse);
+            GoodsPageResponse goodsPageResponse = GoodsPageResponse.toResponse(good, goods);
+            list.add(goodsPageResponse);
         }
         return list;
     }

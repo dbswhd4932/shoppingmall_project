@@ -3,6 +3,7 @@ package com.project.shop.goods.service;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
+import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,7 @@ public interface GoodsService {
     void goodsCreate(GoodsCreateRequest goodsCreateRequest,  List<MultipartFile> imgPaths) throws IOException;
 
     // 상품 전체 검색 - 페이징 기능
-    List<GoodsResponse> goodsFindAll(Pageable pageable);
+    List<GoodsPageResponse> goodsFindAll(Pageable pageable);
 
     // 상품 가격 변경 확인
     List<UpdateGoodsResponse> checkGoodsUpdate(List<UpdateCheckRequest> updateCheckRequest);
@@ -26,7 +27,7 @@ public interface GoodsService {
     GoodsResponse goodsDetailFind(Long goodsId);
 
     // 상품 검색 기능
-    List<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable);
+    List<GoodsPageResponse> goodsFindKeyword(String keyword, Pageable pageable);
 
     // 상품 수정
     void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest, List<MultipartFile> imgPaths);

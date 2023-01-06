@@ -3,11 +3,13 @@ package com.project.shop.goods.controller;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
+import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.service.GoodsService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -42,7 +44,7 @@ public class GoodsController {
     @GetMapping("/goods")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 전체 조회")
-    public List<GoodsResponse> goodsFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public List<GoodsPageResponse> goodsFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindAll(pageable);
     }
 
@@ -66,7 +68,7 @@ public class GoodsController {
     @GetMapping("/goods/keyword")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 검색")
-    public List<GoodsResponse> goodsFindKeyword(@RequestParam String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public List<GoodsPageResponse> goodsFindKeyword(@RequestParam String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindKeyword(keyword, pageable);
     }
 
