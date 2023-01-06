@@ -20,11 +20,13 @@ import com.project.shop.order.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -38,6 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @DisplayName("대댓글 컨트롤러 통합테스트")
 class ReplyControllerTest extends ControllerSetting {
 
@@ -62,12 +66,14 @@ class ReplyControllerTest extends ControllerSetting {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    private Member member;
+
     @BeforeEach
     void beforeEach() {
         System.out.println("================== before 함수 호출 시작 ==================");
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
-        memberRepository.save(member);
+        this.member = memberRepository.save(member);
         Order order = OrderFactory.order(member);
         Goods goods = Goods.builder()
                 .memberId(member.getId())
@@ -95,7 +101,8 @@ class ReplyControllerTest extends ControllerSetting {
                 .memberId(member2.getId())
                 .comment("comment")
                 .build();
-        reviewRepository.save(review);
+        Review t = reviewRepository.save(review);
+        System.out.println("testsetsetsetset" +t.getId());
         ReplyCreateRequest replyCreateRequest = ReplyCreateRequest
                 .builder()
                 .replyComment("comment")

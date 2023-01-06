@@ -1,7 +1,5 @@
 package com.project.shop.order.controller;
 
-import com.project.shop.config.WebSecurityConfig;
-import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.factory.OrderFactory;
 import com.project.shop.goods.domain.Category;
@@ -14,28 +12,22 @@ import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.request.PayCancelRequest;
-import com.project.shop.order.controller.response.OrderResponse;
+import com.project.shop.order.controller.response.OrderPageResponse;
 import com.project.shop.order.domain.Order;
 import com.project.shop.order.domain.OrderStatus;
 import com.project.shop.order.domain.Pay;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayRepository;
 import com.project.shop.order.service.impl.OrderServiceImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,14 +35,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -159,14 +147,14 @@ class OrderControllerTest extends ControllerSetting {
         Order order = OrderFactory.order(member);
         orderRepository.save(order);
 
-        List<OrderResponse> orderResponses = orderService.orderFindMember(pageable);
+        List<OrderPageResponse> orderPageRespons = orderService.orderFindMember(pageable);
         //when
         mockMvc.perform(get("/api/orders")
                         .with(user("loginId").roles("USER")))
                 .andExpect(status().isOk());
 
         //then
-        assertThat(orderResponses.size()).isEqualTo(1);
+        assertThat(orderPageRespons.size()).isEqualTo(1);
 
     }
 

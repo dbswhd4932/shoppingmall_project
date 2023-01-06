@@ -5,6 +5,7 @@ import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
+import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Category;
@@ -29,20 +30,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockPart;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -117,22 +110,21 @@ class GoodsControllerTest extends ControllerSetting {
                 .goodsDescription("설명")
                 .build();
 
-        MockMultipartFile file = new MockMultipartFile(
-                "image",
-                "image.png",
-                "image/png",
-                new FileInputStream("C:\\Users\\dbswh\\OneDrive\\바탕 화면\\image.png"));
-        String contents = objectMapper.writeValueAsString(goodsCreateRequest);
+        MockMultipartFile multipartFile1 = new MockMultipartFile("file", "test.txt", "text/plain", "test file".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile multipartFile2 = new MockMultipartFile("file", "test2.txt", "text/plain", "test file2".getBytes(StandardCharsets.UTF_8));
 
-        mockMvc.perform(
-                        multipart("/api/goods")
-                                .file(new MockMultipartFile("goodsCreateRequest", "", "application/json", contents.getBytes(StandardCharsets.UTF_8)))
-                                .file(file).part(new MockPart("loginId", "image".getBytes(StandardCharsets.UTF_8)))
-                                .contentType("multipart/form-data")
-                                .accept(MediaType.APPLICATION_JSON)
-                                .characterEncoding("UTF-8")
-                                .with(user("loginId").roles("SELLER")))
-                .andExpect(status().isOk());
+        String content = objectMapper.writeValueAsString(goodsCreateRequest);
+        MockMultipartFile json = new MockMultipartFile("json", "json", "application/json", content.getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/goods")
+                        .file(multipartFile1)
+                        .file(multipartFile2)
+                        .file(json)
+                        .contentType("multipart/mixed")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                .with(user("loginId").roles("SELLER")))
+                .andExpect(status().isCreated());
 
     }
 
@@ -217,7 +209,7 @@ class GoodsControllerTest extends ControllerSetting {
         //given
         String keyword = "테스트";
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
-        List<GoodsResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
+        List<GoodsPageResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
 
         //when
         mockMvc.perform(get("/api/goods/keyword")

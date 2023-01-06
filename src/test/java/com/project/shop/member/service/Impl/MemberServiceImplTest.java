@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -70,7 +71,7 @@ class MemberServiceImplTest {
     @Mock
     RoleRepository roleRepository;
 
-    @MockBean
+    @Mock(stubOnly = true)
     AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Mock
@@ -150,13 +151,19 @@ class MemberServiceImplTest {
 
         ObjectPostProcessor<Object> opp = mock(ObjectPostProcessor.class);
         AuthenticationProvider provider = mock(AuthenticationProvider.class);
-        AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder(opp);
-        builder.authenticationProvider(provider);
-        builder.build();
+        AuthenticationManagerBuilder builder = mock(AuthenticationManagerBuilder.class);
+        AuthenticationManager aa = builder.build();
+        given(aa.authenticate(authenticationToken)).willReturn(authenticationToken);
 
-//        Authentication authenticate = builder.getObject().authenticate(authenticationToken);
+
+        //given(SecurityContextHolder.getContext().setAuthentication(Mockito.any()));
+
+//        builder.authenticationProvider(provider);
+//        builder.build();
+
+
         JwtTokenDto accessToken = JwtTokenDto.builder().accessToken("accessToken").accessTokenExpiresIn(1000000L).build();
-
+        given(         tokenProvider.generateToken(authenticationToken)).willReturn(accessToken);
         //when
         memberService.login(loginRequest);
 

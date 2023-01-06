@@ -21,9 +21,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -113,7 +120,11 @@ class CartControllerTest extends ControllerSetting {
                 .optionNumber(1L)
                 .build();
         cartRepository.save(cart);
-        CartPageResponse cartPageResponse = CartPageResponse.toResponse(cart);
+        List<Cart> list = new ArrayList<>();
+        list.add(cart);
+        PageImpl<Cart> carts = new PageImpl<>(list);
+
+        CartPageResponse cartPageResponse = CartPageResponse.toResponse(cart,carts);
 
         //when
         mockMvc.perform(get("/api/carts")

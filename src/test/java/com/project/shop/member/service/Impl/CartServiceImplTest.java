@@ -22,11 +22,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -94,11 +96,17 @@ class CartServiceImplTest {
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Cart cart = new Cart(1L, member, 1L, 10, 1000, 1L);
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
+        List<Cart> list = new ArrayList<>();
+        list.add(cart);
+
+        PageImpl<Cart> carts = new PageImpl<>(list);
+
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-        given(cartRepository.findByMemberId(member.getId())).willReturn(List.of(cart));
+        given(cartRepository.findAllByMemberId(member.getId(),pageable)).willReturn(carts);
 
         //when
-        List<CartPageResponse> cartPageRespons = cartService.cartFindMember();
+        List<CartPageResponse> cartPageRespons = cartService.cartFindMember(pageable);
 
         //then
         assertThat(cartPageRespons.size()).isEqualTo(1);
