@@ -19,6 +19,7 @@ bin/
 
 ### IntelliJ IDEA ###
 application.yml
+src/test/resources/application.yml
 *.yml
 application.properties
 .idea
