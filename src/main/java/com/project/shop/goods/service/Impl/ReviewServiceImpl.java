@@ -3,7 +3,7 @@ package com.project.shop.goods.service.Impl;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
-import com.project.shop.goods.controller.response.ReviewResponse;
+import com.project.shop.goods.controller.response.ReviewPageResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.repository.GoodsRepository;
@@ -14,12 +14,14 @@ import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.order.domain.OrderItem;
 import com.project.shop.order.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,10 +60,17 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 전체
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponse> reviewFindAll(Long goodsId, Pageable pageable) {
+    public List<ReviewPageResponse> reviewFindAll(Long goodsId, Pageable pageable) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
-        return reviewRepository.findAllByGoods(goods, pageable).stream()
-                .map(ReviewResponse::toResponse).collect(Collectors.toList());
+        Page<Review> reviews = reviewRepository.findAllByGoods(goods, pageable);
+        List<ReviewPageResponse> list = new ArrayList<>();
+
+        for (Review review : reviews) {
+            ReviewPageResponse reviewPageResponse = ReviewPageResponse.toResponse(review, reviews);
+            list.add(reviewPageResponse);
+        }
+
+        return list;
     }
 
     // 리뷰 수정

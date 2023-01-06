@@ -6,7 +6,7 @@ import com.project.shop.factory.MemberFactory;
 import com.project.shop.factory.OrderFactory;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
-import com.project.shop.goods.controller.response.ReviewResponse;
+import com.project.shop.goods.controller.response.ReviewPageResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.repository.GoodsRepository;
@@ -124,7 +124,7 @@ class ReviewControllerTest extends ControllerSetting {
         Review review = Review.builder().goods(goods).memberId(member.getId()).comment("comment").build();
         reviewRepository.save(review);
 
-        List<ReviewResponse> reviewResponses = reviewService.reviewFindAll(goods.getId(), pageable);
+        List<ReviewPageResponse> reviewResponses = reviewService.reviewFindAll(goods.getId(), pageable);
 
         //when
         mockMvc.perform(get("/api/goods/reviews")

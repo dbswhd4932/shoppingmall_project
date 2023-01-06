@@ -2,7 +2,7 @@ package com.project.shop.goods.controller;
 
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
-import com.project.shop.goods.controller.response.ReviewResponse;
+import com.project.shop.goods.controller.response.ReviewPageResponse;
 import com.project.shop.goods.service.ReviewService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class ReviewController {
     @GetMapping("/goods/reviews")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "리뷰 조회")
-    public List<ReviewResponse> reviewFindAll(Long goodsId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public List<ReviewPageResponse> reviewFindAll(Long goodsId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return reviewService.reviewFindAll(goodsId, pageable);
     }
 
