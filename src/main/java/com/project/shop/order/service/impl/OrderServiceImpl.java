@@ -11,7 +11,7 @@ import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.order.controller.request.PayCancelRequest;
 import com.project.shop.order.domain.*;
 import com.project.shop.order.controller.request.OrderCreateRequest;
-import com.project.shop.order.controller.response.OrderResponse;
+import com.project.shop.order.controller.response.OrderPageResponse;
 import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayCancelRepository;
@@ -84,16 +84,18 @@ public class OrderServiceImpl implements OrderService {
     // 주문 조회
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> orderFindMember(Pageable pageable) {
+    public List<OrderPageResponse> orderFindMember(Pageable pageable) {
         Member member = getMember();
-
         Page<Order> orderList = orderRepository.findAll(pageable);
-        List<OrderResponse> list = new ArrayList<>();
+        List<OrderPageResponse> list = new ArrayList<>();
+
         for (Order order : orderList) {
             if (order.getMemberId().equals(member.getId())) {
-                list.add(OrderResponse.toResponse(order));
+                OrderPageResponse orderPageResponse = OrderPageResponse.toResponse(order, orderList);
+                list.add(orderPageResponse);
             }
         }
+
         return list;
     }
 

@@ -12,7 +12,7 @@ import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.request.PayCancelRequest;
-import com.project.shop.order.controller.response.OrderResponse;
+import com.project.shop.order.controller.response.OrderPageResponse;
 import com.project.shop.order.domain.Order;
 import com.project.shop.order.domain.OrderItem;
 import com.project.shop.order.domain.Pay;
@@ -130,10 +130,10 @@ class OrderServiceImplTest {
         given(orderRepository.findAll(pageable)).willReturn(orders);
 
         //when
-        List<OrderResponse> orderResponses = orderService.orderFindMember(pageable);
+        List<OrderPageResponse> orderPageRespons = orderService.orderFindMember(pageable);
 
         //then
-        assertThat(orderResponses.size()).isEqualTo(1);
+        assertThat(orderPageRespons.size()).isEqualTo(1);
     }
 
     @Test
