@@ -15,11 +15,13 @@ import com.project.shop.member.domain.*;
 import com.project.shop.global.config.security.JwtTokenDto;
 import com.project.shop.global.config.security.TokenProvider;
 import com.project.shop.member.repository.CartRepository;
+import com.project.shop.member.repository.MemberLoginHistoryRepository;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.repository.RoleRepository;
 import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -31,6 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+
+import static com.project.shop.global.error.ErrorCode.NOT_FOUND_MEMBER;
+import static com.project.shop.global.error.ErrorCode.OTHER_LOGIN_TYPE;
 
 
 @Service
@@ -49,6 +54,7 @@ public class MemberServiceImpl implements MemberService {
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
     private final CartRepository cartRepository;
+    private final MemberLoginHistoryRepository memberLoginHistoryRepository;
 
     // 회원생성
     @Override
@@ -109,6 +115,11 @@ public class MemberServiceImpl implements MemberService {
             return tokenDto;
         }
 
+        // 로그인한 회원의 타입이 NO_SOCIAL 이 아니라면 예외 (로그인타입 KAKAO 는 조건문으로 확인완료)
+        Member member = memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_MEMBER));
+        if (!member.getLoginType().equals(LoginType.NO_SOCIAL)) throw new BusinessException(OTHER_LOGIN_TYPE);
+
         // 일반 회원 로그인
         // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
@@ -127,7 +138,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberResponse findByDetailMyInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
 
         MemberResponse memberResponse = new MemberResponse().toResponse(member);
 
@@ -175,12 +186,19 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Override
+    @Scheduled(cron = "0 0 00 * * *")
+    public void schedulerLoginHistoryDeleteCron() {
+        memberLoginHistoryRepository.deleteAll();
+        System.out.println("히스토리 삭제!");
+    }
+
     private Member getMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();
 
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+                () -> new BusinessException(NOT_FOUND_MEMBER));
         return member;
     }
 }
