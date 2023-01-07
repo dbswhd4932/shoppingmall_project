@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberEditHistory {
+public class MemberLoginHistory {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private Long memberId;
+    private String loginId;
 
     @Column
     private LocalDateTime time;
