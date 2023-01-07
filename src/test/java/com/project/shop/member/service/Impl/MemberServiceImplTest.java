@@ -1,21 +1,18 @@
 package com.project.shop.member.service.Impl;
 
-import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
+import com.project.shop.global.config.security.JwtTokenDto;
+import com.project.shop.global.config.security.TokenProvider;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.domain.Image;
-import com.project.shop.goods.repository.GoodsRepository;
-import com.project.shop.goods.repository.ImageRepository;
 import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
-import com.project.shop.member.domain.*;
-import com.project.shop.global.config.security.JwtTokenDto;
-import com.project.shop.global.config.security.TokenProvider;
-import com.project.shop.member.repository.CartRepository;
+import com.project.shop.member.domain.LoginType;
+import com.project.shop.member.domain.Member;
+import com.project.shop.member.domain.Role;
+import com.project.shop.member.domain.RoleType;
 import com.project.shop.member.repository.MemberRepository;
 import com.project.shop.member.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,22 +21,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,23 +50,16 @@ class MemberServiceImplTest {
     MemberRepository memberRepository;
 
     @Mock
-    GoodsRepository goodsRepository;
-
-    @Mock
-    CartRepository cartRepository;
-
-    @Mock
-    ImageRepository imageRepository;
-
-    @Mock
     RoleRepository roleRepository;
 
-    @Mock(stubOnly = true)
+    @Mock
+    SecurityContextHolder securityContextHolder;
+
+    @MockBean
     AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Mock
     TokenProvider tokenProvider;
-
 
 
     @Mock
@@ -128,7 +111,7 @@ class MemberServiceImplTest {
     void SocialLogin() {
         //given
         LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.KAKAO, "test@test.com");
-        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken",  1234L);
+        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
         given(tokenProvider.generateTokenNoSecurity(loginRequest)).willReturn(tokenDto);
 
         //when
@@ -142,28 +125,12 @@ class MemberServiceImplTest {
     @DisplayName("일반 로그인")
     void noSocialLogin() throws Exception {
         //given
-        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
-        Member member = memberFactory.createMember();
-        given(memberRepository.findByLoginId("loginId")).willReturn(Optional.ofNullable(member));
-        LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.NO_SOCIAL, "test@test.com");
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
+        LoginRequest loginRequest = LoginRequest.builder().loginId("loginId").password("1234").loginType(LoginType.NO_SOCIAL).build();
+        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
+        AuthenticationManagerBuilder managerBuilder = mock(AuthenticationManagerBuilder.class);
+        AuthenticationManager object = managerBuilder.getObject();
+        System.out.println("authenticationManager = " + object);
 
-        ObjectPostProcessor<Object> opp = mock(ObjectPostProcessor.class);
-        AuthenticationProvider provider = mock(AuthenticationProvider.class);
-        AuthenticationManagerBuilder builder = mock(AuthenticationManagerBuilder.class);
-        AuthenticationManager aa = builder.build();
-        given(aa.authenticate(authenticationToken)).willReturn(authenticationToken);
-
-
-        //given(SecurityContextHolder.getContext().setAuthentication(Mockito.any()));
-
-//        builder.authenticationProvider(provider);
-//        builder.build();
-
-
-        JwtTokenDto accessToken = JwtTokenDto.builder().accessToken("accessToken").accessTokenExpiresIn(1000000L).build();
-        given(         tokenProvider.generateToken(authenticationToken)).willReturn(accessToken);
         //when
         memberService.login(loginRequest);
 
