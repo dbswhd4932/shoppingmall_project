@@ -1,4 +1,4 @@
-package com.project.shop.global.common;
+package com.project.shop.global.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -15,7 +15,7 @@ import org.springframework.util.StopWatch;
 public class ExecutionTimer {
 
     // 조인포인트를 어노테이션으로 설정
-    @Pointcut("@annotation(com.project.shop.global.common.TimerAop)")
+    @Pointcut("@annotation(com.project.shop.global.aspect.TimerAop)")
     private void timer(){}; // 변수처럼 사용할 수 있다.
 
     @Around("timer()")

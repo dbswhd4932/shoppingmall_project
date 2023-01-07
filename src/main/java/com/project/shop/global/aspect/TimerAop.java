@@ -1,4 +1,4 @@
-package com.project.shop.global.common;
+package com.project.shop.global.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
