@@ -108,25 +108,24 @@ class GoodsServiceImplTest {
         verify(optionRepository).save(any());
     }
 
-//    @Test
-//    @DisplayName("상품 전체 조회")
-//    void goodsFindAll() {
-//        //given
-//        Goods goods = GoodsFactory.createGoods();
-//        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
-//        List<Goods> goodsList = new ArrayList<>();
-//        goodsList.add(goods);
-//
-//        PageImpl<Goods> goodsPage = new PageImpl<>(goodsList);
-//
-//        given(goodsRepository.findAll(pageable)).willReturn(goodsPage);
-//
-//        //when
-//        List<GoodsResponse> goodsResponses = goodsService.goodsFindAll(pageable);
-//
-//        //then
-//        assertThat(goodsResponses.size()).isEqualTo(1);
-//    }
+    @Test
+    @DisplayName("상품 전체 조회")
+    void goodsFindAll() {
+        //given
+        Goods goods = GoodsFactory.createGoods();
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
+        List<Goods> goodsList = new ArrayList<>();
+        goodsList.add(goods);
+
+        PageImpl<Goods> goodsPage = new PageImpl<>(goodsList);
+        given(goodsRepository.findAll(pageable)).willReturn(goodsPage);
+
+        //when
+        List<GoodsPageResponse> goodsResponses = goodsService.goodsFindAll(pageable);
+
+        //then
+        assertThat(goodsResponses.size()).isEqualTo(1);
+    }
 
     @Test
     @DisplayName("상품 가격 변경 확인")
