@@ -30,13 +30,11 @@ public abstract class BaseTimeEntity {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Column(name = "created_at", updatable = false)
-    @JsonIgnore
     private LocalDateTime cratedAt;
 
     @LastModifiedDate
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Column(name = "updated_at", updatable = true)
-    @JsonIgnore
     private LocalDateTime updatedAt;
 }
