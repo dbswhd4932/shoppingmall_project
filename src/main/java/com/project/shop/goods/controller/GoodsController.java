@@ -73,13 +73,13 @@ public class GoodsController {
     }
 
     // 상품 수정
-    @PutMapping("/goods/{goodsId}")
+    @PostMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('SELLER')")
     @ApiOperation(value = "상품 수정")
     public void goodsEdit(@PathVariable("goodsId") Long goodsId,
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
-                          @RequestPart(required = false) List<MultipartFile> multipartFiles) {
+                          @RequestPart List<MultipartFile> multipartFiles) {
 
         goodsService.goodsEdit(goodsId, goodsEditRequest, multipartFiles);
     }
