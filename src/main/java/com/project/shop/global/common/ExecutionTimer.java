@@ -16,8 +16,7 @@ public class ExecutionTimer {
 
     // 조인포인트를 어노테이션으로 설정
     @Pointcut("@annotation(com.project.shop.global.common.TimerAop)")
-    private void timer(){
-    };
+    private void timer(){}; // 변수처럼 사용할 수 있다.
 
     @Around("timer()")
     public Object ExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
