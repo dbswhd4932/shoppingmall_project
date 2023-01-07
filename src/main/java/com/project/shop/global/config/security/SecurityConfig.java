@@ -23,14 +23,6 @@ public class SecurityConfig {
 
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers(
-                "/h2-console/**"
-                , "/favicon.ico"
-                , "/error");
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
@@ -49,11 +41,7 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests() // 설정시작
-//                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/api/members/**").permitAll()
-                .antMatchers("/api/goods/**").permitAll()
-                .antMatchers(PERMIT_URL_ARRAY).permitAll()
-                .anyRequest().permitAll() // 이외는 인증필요
+                .antMatchers("/h2-console/**").permitAll()
                 .and()
                 // 권한이나 인증이 필요한 곳에서 불리는 검증 필터
                 .apply(new JwtSecurityConfig(tokenProvider));
