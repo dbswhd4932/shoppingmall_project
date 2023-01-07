@@ -70,7 +70,6 @@ class ReviewControllerTest extends ControllerSetting {
 
     @BeforeEach
     void beforeEach() {
-        System.out.println("================== before 함수 호출 시작 ==================");
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         memberRepository.save(member);
@@ -78,7 +77,6 @@ class ReviewControllerTest extends ControllerSetting {
         Goods goods = GoodsFactory.createGoods();
         goodsRepository.save(goods);
         orderRepository.save(order);
-        System.out.println("================== before 함수 호출 끝 ==================");
     }
 
     @Test

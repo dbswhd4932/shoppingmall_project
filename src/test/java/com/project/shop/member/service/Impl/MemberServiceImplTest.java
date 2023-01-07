@@ -52,9 +52,6 @@ class MemberServiceImplTest {
     @Mock
     RoleRepository roleRepository;
 
-    @Mock
-    SecurityContextHolder securityContextHolder;
-
     @MockBean
     AuthenticationManagerBuilder authenticationManagerBuilder;
 

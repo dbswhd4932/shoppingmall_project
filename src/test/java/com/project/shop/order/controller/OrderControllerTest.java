@@ -73,7 +73,6 @@ class OrderControllerTest extends ControllerSetting {
 
     @BeforeEach
     void beforeEach() {
-        System.out.println("================== before 함수 호출 시작 ==================");
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         memberRepository.save(member);
@@ -87,15 +86,6 @@ class OrderControllerTest extends ControllerSetting {
                 .description("상품설명")
                 .build();
         goodsRepository.save(goods);
-        //todo 여기서 진행하면 무결성 참조오류
-//        Cart cart = Cart.builder()
-//                .totalAmount(10)
-//                .totalPrice(100000)
-//                .goodsId(goods.getId())
-//                .member(member)
-//                .build();
-//        cartRepository.save(cart);
-        System.out.println("================== before 함수 호출 끝 ==================");
     }
 
     @Test

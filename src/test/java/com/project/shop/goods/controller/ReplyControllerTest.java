@@ -66,14 +66,11 @@ class ReplyControllerTest extends ControllerSetting {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    private Member member;
-
     @BeforeEach
     void beforeEach() {
-        System.out.println("================== before 함수 호출 시작 ==================");
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
-        this.member = memberRepository.save(member);
+        memberRepository.save(member);
         Order order = OrderFactory.order(member);
         Goods goods = Goods.builder()
                 .memberId(member.getId())
@@ -84,7 +81,6 @@ class ReplyControllerTest extends ControllerSetting {
                 .build();
         goodsRepository.save(goods);
         orderRepository.save(order);
-        System.out.println("================== before 함수 호출 끝 ==================");
     }
 
     @Test

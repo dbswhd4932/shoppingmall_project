@@ -22,9 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +61,6 @@ class CartControllerTest extends ControllerSetting {
 
     @BeforeEach
     void beforeEach() {
-        System.out.println("================== before 함수 호출 시작 ==================");
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Category category = Category.builder().category("의류").build();
@@ -78,7 +74,6 @@ class CartControllerTest extends ControllerSetting {
         memberRepository.save(member);
         categoryRepository.save(category);
         goodsRepository.save(goods);
-        System.out.println("================== before 함수 호출 끝 ==================");
     }
 
     @Test
