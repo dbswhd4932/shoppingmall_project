@@ -3,6 +3,7 @@ package com.project.shop.goods.controller;
 import com.project.shop.config.WebSecurityConfig;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
+import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsPageResponse;
@@ -18,7 +19,6 @@ import com.project.shop.goods.service.Impl.GoodsServiceImpl;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockPart;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +41,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.MULTIPART_MIXED_VALUE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -71,10 +68,8 @@ class GoodsControllerTest extends ControllerSetting {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-
     @BeforeEach
     void beforeEach() {
-        System.out.println("================== before 함수 호출 시작 ==================");
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Category category = Category.builder().category("의류").build();
@@ -88,7 +83,6 @@ class GoodsControllerTest extends ControllerSetting {
                 .description("상품설명")
                 .build();
         goodsRepository.save(goods);
-        System.out.println("================== before 함수 호출 끝 ==================");
     }
 
     @Test
@@ -228,8 +222,44 @@ class GoodsControllerTest extends ControllerSetting {
 
     @Test
     @DisplayName("상품 수정")
-    @Disabled
-    void goodsEdit() {
+    void goodsEdit() throws Exception {
+        //given
+        Member findMember = memberRepository.findByLoginId("loginId").get();
+        Goods goods = Goods.builder().goodsName("상품명").memberId(findMember.getId()).price(10000).build();
+        Goods saveGoods = goodsRepository.save(goods);
+        Category category = categoryRepository.findByCategory("의류").get();
+        OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
+        OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
+                .totalPrice(1000)
+                .optionValue(List.of(optionCreate))
+                .optionDescription("설명")
+                .build();
+        GoodsEditRequest goodsEditRequest = GoodsEditRequest.builder().goodsName("test").categoryId(category.getId())
+                .optionCreateRequest(List.of(optionCreateRequest))
+                .price(20000)
+                .goodsDescription("설명")
+                .build();
+
+        MockMultipartFile multipartFile =
+                new MockMultipartFile("multipartFiles",
+                        "스크린샷_20221219_050536.png",
+                        "image/png", "스크린샷_20221219_050536.png"
+                        .getBytes());
+        String content = objectMapper.writeValueAsString(goodsEditRequest);
+        MockMultipartFile json = new MockMultipartFile("goodsEditRequest", "goodsEditRequest", "application/json", content.getBytes(StandardCharsets.UTF_8));
+
+        //when
+        mockMvc.perform(multipart("/api/goods/{goodsId}" , saveGoods.getId())
+                .file(json)
+                .file(multipartFile)
+                .contentType(MULTIPART_MIXED_VALUE)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .with(user("loginId").roles("SELLER")))
+                .andExpect(status().isOk());
+
+        //then
+        assertThat(goods.getGoodsName()).isEqualTo("test");
+        assertThat(goods.getPrice()).isEqualTo(20000);
     }
 
     @Test
