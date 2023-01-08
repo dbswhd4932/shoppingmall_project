@@ -13,7 +13,7 @@
     <cache-template name="myDefaultTemplate">
         <!-- 만료시간 -->
         <expiry>
-            <ttl unit="seconds">10</ttl>
+            <ttl unit="minutes">1</ttl>
         </expiry>
         <!-- 메모리 크기  -->
         <heap>20</heap>

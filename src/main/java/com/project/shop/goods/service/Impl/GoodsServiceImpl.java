@@ -91,7 +91,9 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @TimerAop
     @Transactional(readOnly = true)
+    @Cacheable(value = "goodsFind", key = "#pageable")
     public List<GoodsPageResponse> goodsFindAll(Pageable pageable) {
+        System.out.println("=============== EHcache 시작 ===============");
         Page<Goods> goods = goodsRepository.findAll(pageable);
         List<GoodsPageResponse> list = new ArrayList<>();
 
@@ -99,7 +101,7 @@ public class GoodsServiceImpl implements GoodsService {
             GoodsPageResponse goodsPageResponse = GoodsPageResponse.toResponse(good, goods);
             list.add(goodsPageResponse);
         }
-
+        System.out.println("=============== EHcache 종료 ===============");
         return list;
 
     }
@@ -143,7 +145,6 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @TimerAop
     @Transactional(readOnly = true)
-    @Cacheable(value = "goodsFind", key = "#goodsId")
     public GoodsResponse goodsDetailFind(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
