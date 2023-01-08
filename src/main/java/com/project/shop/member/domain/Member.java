@@ -57,6 +57,7 @@ public class Member extends BaseTimeEntity {
     private LoginType loginType;    //로그인타입 ( NO_SOCIAL , KAKAO )
 
     @OneToMany(mappedBy = "member")
+    @Builder.Default // 필드 초기화 무시
     private List<Role> roles = new ArrayList<>();
 
     // 회원 생성
