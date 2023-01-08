@@ -1,8 +1,7 @@
 package com.project.shop.goods.controller.response;
 
 import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.domain.Image;
-import com.project.shop.goods.domain.Option;
+import com.project.shop.goods.domain.Options;
 import com.project.shop.goods.domain.OptionCreate;
 import lombok.*;
 
@@ -23,11 +22,11 @@ public class OptionResponse implements Serializable {
 
     public static List<OptionResponse> toResponse(Goods goods) {
         List<OptionResponse> list = new ArrayList<>();
-        for (Option option : goods.getOptions()) {
+        for (Options options : goods.getOptions()) {
             OptionResponse optionResponse = OptionResponse.builder()
-                            .optionValue(option.getOptionValue())
-                            .totalPrice(option.getTotalPrice())
-                            .optionDescription(option.getOptionDescription())
+                            .optionValue(options.getOptionValue())
+                            .totalPrice(options.getTotalPrice())
+                            .optionDescription(options.getOptionDescription())
                             .build();
             list.add(optionResponse);
         }

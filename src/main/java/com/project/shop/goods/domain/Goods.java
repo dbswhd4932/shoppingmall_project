@@ -50,7 +50,7 @@ public class Goods extends BaseTimeEntity {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
-    private List<Option> options = new ArrayList<>();
+    private List<Options> options = new ArrayList<>();
 
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();

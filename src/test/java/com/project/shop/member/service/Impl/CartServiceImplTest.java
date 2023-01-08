@@ -4,7 +4,7 @@ import com.project.shop.factory.CartFactory;
 import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.domain.Option;
+import com.project.shop.goods.domain.Options;
 import com.project.shop.goods.domain.OptionCreate;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
@@ -123,13 +123,13 @@ class CartServiceImplTest {
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         Goods goods = GoodsFactory.createGoods();
-        Option option = new Option(1L, goods, List.of(new OptionCreate("key", "value")), 1000, "설명");
+        Options options = new Options(1L, goods, List.of(new OptionCreate("key", "value")), 1000, "설명");
         Cart cart = new Cart(1L, member, 1L, 10, 1000, 1L);
         CartEditRequest cartEditRequest = new CartEditRequest(100, 2L);
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
         given(cartRepository.findByIdAndMember(cart.getId(), member)).willReturn(Optional.of(cart));
         given(goodsRepository.findById(cart.getGoodsId())).willReturn(Optional.ofNullable(goods));
-        given(optionRepository.findByGoodsId(Objects.requireNonNull(goods).getId())).willReturn(List.of(option));
+        given(optionRepository.findByGoodsId(Objects.requireNonNull(goods).getId())).willReturn(List.of(options));
 
         //when
         cartService.editCartItem(cart.getId(), cartEditRequest);

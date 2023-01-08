@@ -2,7 +2,7 @@ package com.project.shop.member.service.Impl;
 
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.domain.Option;
+import com.project.shop.goods.domain.Options;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.controller.request.CartCreateRequest;
@@ -46,9 +46,9 @@ public class CartServiceImpl implements CartService {
                 () -> new BusinessException(NOT_FOUND_GOODS));
 
         // 옵션이 있는 상품일 경우 optionRepository 에서 찾아서 초기화 해줍니다.
-        Option option = null;
+        Options options = null;
         if (!optionRepository.findByGoodsId(cartCreateRequest.getGoodsId()).isEmpty()) {
-            option = optionRepository.findByIdAndGoodsId(cartCreateRequest.getOptionNumber(), goods.getId()).orElseThrow(
+            options = optionRepository.findByIdAndGoodsId(cartCreateRequest.getOptionNumber(), goods.getId()).orElseThrow(
                     () -> new BusinessException(NOT_FOUND_OPTION));
         }
 
@@ -59,7 +59,7 @@ public class CartServiceImpl implements CartService {
         int goodsTotalPrice = goods.getPrice();
         // 옵션이 있는 상품이면 상품 최종 가격변경(기본상품 + 옵션가격)
         if (!goods.getOptions().isEmpty()) {
-            goodsTotalPrice = option.getTotalPrice();
+            goodsTotalPrice = options.getTotalPrice();
         }
 
         Cart cart = Cart.builder()
@@ -103,7 +103,7 @@ public class CartServiceImpl implements CartService {
         Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_GOODS));
 
-        List<Option> options = optionRepository.findByGoodsId(goods.getId());
+        List<Options> options = optionRepository.findByGoodsId(goods.getId());
 
         // 옵션이 없는 상품
         if (options.isEmpty()) {
@@ -112,7 +112,7 @@ public class CartServiceImpl implements CartService {
         }
 
         // 옵션 있는 상품
-        for (Option option : options) {
+        for (Options option : options) {
             if (option.getId().equals(cartEditRequest.getOptionNumber())) {
                 cart.edit(option, cartEditRequest);
                 return;

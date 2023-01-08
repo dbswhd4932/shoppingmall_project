@@ -13,7 +13,7 @@ import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Category;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
-import com.project.shop.goods.domain.Option;
+import com.project.shop.goods.domain.Options;
 import com.project.shop.goods.repository.CategoryRepository;
 import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.ImageRepository;
@@ -73,8 +73,8 @@ public class GoodsServiceImpl implements GoodsService {
 
         // 옵션 정보 저장
         for (OptionCreateRequest optionCreateRequest : goodsCreateRequest.getOptionCreateRequest()) {
-            Option option = Option.toOption(optionCreateRequest, goods);
-            optionRepository.save(option);
+            Options options = Options.toOption(optionCreateRequest, goods);
+            optionRepository.save(options);
         }
 
         // S3 저장
@@ -129,12 +129,12 @@ public class GoodsServiceImpl implements GoodsService {
             }
 
             // 옵션이 있는 상품이면
-            Option option = optionRepository.findByIdAndGoodsId(request.getOptionId(), request.getGoodsId()).orElseThrow(
+            Options options = optionRepository.findByIdAndGoodsId(request.getOptionId(), request.getGoodsId()).orElseThrow(
                     () -> new BusinessException(NOT_FOUND_OPTION));
             UpdateGoodsResponse goodsResponse = UpdateGoodsResponse.builder()
-                    .goodsId(request.getGoodsId()).goodsPrice(option.getTotalPrice()).changeCheck(false).build();
+                    .goodsId(request.getGoodsId()).goodsPrice(options.getTotalPrice()).changeCheck(false).build();
             // DB 옵션 가격 != 입력한 가격 -> ChangeCheck true 로 변경
-            if (option.getTotalPrice() != request.getGoodsPrice())
+            if (options.getTotalPrice() != request.getGoodsPrice())
                 goodsResponse.setChangeCheck(true);
             list.add(goodsResponse);
         }
@@ -187,8 +187,8 @@ public class GoodsServiceImpl implements GoodsService {
         goods.update(goodsEditRequest);
 
         //기존 옵션 삭제
-        List<Option> options = optionRepository.findByGoodsId(goodsId);
-        for (Option option : options) {
+        List<Options> options = optionRepository.findByGoodsId(goodsId);
+        for (Options option : options) {
             optionRepository.deleteById(option.getId());
         }
 
@@ -196,7 +196,7 @@ public class GoodsServiceImpl implements GoodsService {
         if (!goodsEditRequest.getOptionCreateRequest().isEmpty() && goodsEditRequest.getGoodsDescription() != null) {
             List<OptionCreateRequest> optionCreateRequest = goodsEditRequest.getOptionCreateRequest();
             for (OptionCreateRequest createRequest : optionCreateRequest) {
-                Option option = Option.toOption(createRequest, goods);
+                Options option = Options.toOption(createRequest, goods);
                 optionRepository.save(option);
             }
         }

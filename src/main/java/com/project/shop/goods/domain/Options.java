@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Option extends BaseTimeEntity {
+public class Options extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,7 @@ public class Option extends BaseTimeEntity {
     private String optionDescription;
 
     @Builder
-    public Option(Long id, Goods goods, List<OptionCreate> optionValue, int totalPrice, String description) {
+    public Options(Long id, Goods goods, List<OptionCreate> optionValue, int totalPrice, String description) {
         this.id = id;
         this.goods = goods;
         this.optionValue = optionValue;
@@ -46,8 +46,8 @@ public class Option extends BaseTimeEntity {
         this.optionDescription = description;
     }
 
-    public static Option toOption(OptionCreateRequest optionCreateRequest, Goods goods) {
-        return Option.builder()
+    public static Options toOption(OptionCreateRequest optionCreateRequest, Goods goods) {
+        return Options.builder()
                 .goods(goods)
                 .optionValue(optionCreateRequest.getOptionValue())
                 .totalPrice(optionCreateRequest.getTotalPrice())

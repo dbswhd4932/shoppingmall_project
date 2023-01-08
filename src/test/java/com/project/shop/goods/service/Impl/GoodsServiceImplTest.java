@@ -188,12 +188,12 @@ class GoodsServiceImplTest {
         OptionCreate optionCreate = OptionCreate.builder().key("key").value("value").build();
         OptionCreateRequest optionCreateRequest = OptionCreateRequest.builder()
                 .totalPrice(10000).optionValue(List.of(optionCreate)).optionDescription("설명").build();
-        Option option = Option.toOption(optionCreateRequest, goods);
+        Options options = Options.toOption(optionCreateRequest, goods);
         GoodsEditRequest goodsEditRequest = new GoodsEditRequest("name", 1L, 3000, List.of(optionCreateRequest), "설명");
 
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
         given(goodsRepository.findById(goods.getId())).willReturn(Optional.of(goods));
-        given(optionRepository.findByGoodsId(goods.getId())).willReturn(List.of(option));
+        given(optionRepository.findByGoodsId(goods.getId())).willReturn(List.of(options));
 
         List<String> list = s3Service.upload(any());
         for (String img : list) {
