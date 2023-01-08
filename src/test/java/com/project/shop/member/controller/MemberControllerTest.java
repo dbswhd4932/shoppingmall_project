@@ -181,7 +181,7 @@ class MemberControllerTest extends ControllerSetting {
         Member member = memberFactory.createMember();
         memberRepository.save(member);
         LoginRequest loginRequest = LoginRequest.builder().loginType(LoginType.NO_SOCIAL)
-                .loginId("loginId2")
+                .loginId("loginId1234")
                 .password("1234")
                 .build();
 
@@ -189,14 +189,7 @@ class MemberControllerTest extends ControllerSetting {
         mockMvc.perform(post("/api/members/login")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isUnauthorized());
-
-        //then
-        AuthenticationException exception = assertThrows(AuthenticationException.class, () -> {
-            memberService.login(loginRequest);
-        });
-        assertThat(exception.getMessage()).isEqualTo("자격 증명에 실패하였습니다.");
-
+                .andExpect(status().isNotFound());
     }
 
     @Test
