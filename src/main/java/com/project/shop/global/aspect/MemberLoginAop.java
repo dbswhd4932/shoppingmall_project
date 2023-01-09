@@ -1,11 +1,8 @@
 package com.project.shop.global.aspect;
 
 import com.project.shop.member.controller.request.LoginRequest;
-import com.project.shop.member.controller.request.MemberEditRequest;
-import com.project.shop.member.domain.Member;
 import com.project.shop.member.domain.MemberLoginHistory;
 import com.project.shop.member.repository.MemberLoginHistoryRepository;
-import com.project.shop.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;

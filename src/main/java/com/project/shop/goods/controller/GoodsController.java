@@ -9,7 +9,6 @@ import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.service.GoodsService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;

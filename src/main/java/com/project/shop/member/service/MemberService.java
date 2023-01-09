@@ -18,7 +18,7 @@ public interface MemberService {
     void loginIdDuplicateCheck(String loginId);
 
     // 일반 로그인
-    JwtTokenDto login(LoginRequest noSocialLoginRequest);
+    JwtTokenDto login(LoginRequest loginRequest);
 
     // 회원 수정
     void memberEdit(MemberEditRequest memberEditRequest);
@@ -26,5 +26,7 @@ public interface MemberService {
     // 회원 삭제
     void memberDelete();
 
+    // 로그인 히스토리 삭제 스케줄러
+    void schedulerLoginHistoryDeleteCron();
 
 }

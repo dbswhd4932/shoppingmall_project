@@ -3,7 +3,6 @@ package com.project.shop.goods.controller.response;
 import com.project.shop.goods.domain.Goods;
 import lombok.*;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 

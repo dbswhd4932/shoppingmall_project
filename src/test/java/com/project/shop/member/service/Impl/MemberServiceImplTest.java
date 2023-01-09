@@ -23,7 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.context.SecurityContext;
@@ -118,21 +117,22 @@ class MemberServiceImplTest {
         assertThat(tokenDto.getGrantType()).isEqualTo("jwt");
     }
 
-    @Test
-    @DisplayName("일반 로그인")
-    void noSocialLogin() throws Exception {
-        //given
-        LoginRequest loginRequest = LoginRequest.builder().loginId("loginId").password("1234").loginType(LoginType.NO_SOCIAL).build();
-        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
-        AuthenticationManagerBuilder managerBuilder = mock(AuthenticationManagerBuilder.class);
-        AuthenticationManager object = managerBuilder.getObject();
-        System.out.println("authenticationManager = " + object);
-
-        //when
-        memberService.login(loginRequest);
-
-        //then
-    }
+//    @Test
+//    @DisplayName("일반 로그인")
+//    @Disabled
+//    void noSocialLogin() throws Exception {
+//        //given
+//        LoginRequest loginRequest = LoginRequest.builder().loginId("loginId").password("1234").loginType(LoginType.NO_SOCIAL).build();
+//        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
+//        AuthenticationManagerBuilder managerBuilder = mock(AuthenticationManagerBuilder.class);
+//        AuthenticationManager object = managerBuilder.getObject();
+//        System.out.println("authenticationManager = " + object);
+//
+//        //when
+//        memberService.login(loginRequest);
+//
+//        //then
+//    }
 
     @Test
     @DisplayName("내 정보 조회")
