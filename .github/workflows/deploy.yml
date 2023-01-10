@@ -26,7 +26,16 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-    
+        
+    - name: Set yml file
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: ${{ env.RESOURCE_PATH }}
+      env:
+        cloud.aws.credentials.access-key: ${{ secrets.aws_access_key }}
+        cloud.aws.credentials.secret-key: ${{ secrets.aws_secret_key }}
+        cloud.aws.credentials.region.static: ${{ secrets.region_static }}
+            
      ## gradle caching
     - name: Gradle Caching
       uses: actions/cache@v3
