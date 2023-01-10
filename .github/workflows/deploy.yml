@@ -50,4 +50,4 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
 
       - name: Deploy to AWS EC2 from S3
-        run: aws deploy create-deployment --application-name cicdapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name cicdapp_deploy --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
+        run: aws deploy create-deployment --application-name shop --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name shop-group --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
