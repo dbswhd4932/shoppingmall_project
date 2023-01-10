@@ -4,7 +4,6 @@ import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.domain.MemberLoginHistory;
 import com.project.shop.member.repository.MemberLoginHistoryRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 @Aspect
 @Component // Bean 으로 등록
 @AllArgsConstructor
-@Slf4j
 public class MemberLoginAop {
 
     private MemberLoginHistoryRepository memberLoginHistoryRepository;
