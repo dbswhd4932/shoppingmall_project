@@ -33,12 +33,12 @@ jobs:
         run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.yml
         shell: bash
 
-      #깃 이그노어 처리되어 깃 레포지토리에 저장되지 않은 properties 파일 깃액션 서버내 생성
-      - name: make application.properties
-        run:
-          mkdir ./src/main/resources |
-          touch ./src/main/resources/application.yml
-        shell: bash
+#      #깃 이그노어 처리되어 깃 레포지토리에 저장되지 않은 properties 파일 깃액션 서버내 생성
+#      - name: make application.properties
+#        run:
+#          mkdir ./src/main/resources |
+#          touch ./src/main/resources/application.yml
+#        shell: bash
 
       - name: Build with Gradle
         run: ./gradlew build
