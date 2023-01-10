@@ -52,8 +52,6 @@ dependencies {
     // aop 설정
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
-    implementation 'org.apache.tomcat:tomcat-jdbc:9.0.2'
-
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
