@@ -6,10 +6,10 @@ on:
 
 name: Deploy String boot to Amazon EC2
 env:
-  PROJECT_NAME: cicd_project
+  PROJECT_NAME: shop
   S3_BUCKET_NAME: cicdapp
-  CODE_DEPLOY_APP_NAME: cicdapp
-  DEPLOYMENT_GROUP_NAME: cicdapp_deploy
+  CODE_DEPLOY_APP_NAME: shop
+  DEPLOYMENT_GROUP_NAME: shop-group
 
 jobs:
   build:
