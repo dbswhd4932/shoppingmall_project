@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-REPOSITORY=/home/ec2-user/build/libs
+REPOSITORY=/home/ec2-user/app/build/libs
 cd $REPOSITORY
 
 JAR_NAME=$(ls $REPOSITORY/ | grep 'shop-0.0.1-SNAPSHOT.jar' | tail -n 1)
