@@ -32,9 +32,9 @@ jobs:
       with:
         files: ${{ env.RESOURCE_PATH }}
       env:
-        cloud.aws.credentials.access-key: ${{ secrets.aws_access_key }}
-        cloud.aws.credentials.secret-key: ${{ secrets.aws_secret_key }}
-        cloud.aws.credentials.region.static: ${{ secrets.region_static }}
+        cloud.aws.credentials.access-key: ${{ secrets.AWS_ACCESS_KEY }}
+        cloud.aws.credentials.secret-key: ${{ secrets.AWS_SECRET_KEY }}
+        cloud.aws.credentials.region.static: ${{ secrets.REGION_STATIC }}
             
      ## gradle caching
     - name: Gradle Caching
