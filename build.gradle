@@ -71,10 +71,15 @@ dependencies {
 
 }
 
+//https://mkyong.com/gradle/gradle-how-to-exclude-some-tests/
+//build 시 통합테스트는 제외
+test {
+    filter {
+        excludeTestsMatching "*ControllerTest*"
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-//test {
-//    exclude '**/*'
-//}
