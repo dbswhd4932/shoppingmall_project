@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+#
 REPOSITORY=/home/ec2-user/app/build/libs
 cd $REPOSITORY
 
