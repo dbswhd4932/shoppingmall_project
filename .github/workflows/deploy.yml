@@ -29,11 +29,11 @@ jobs:
         shell: bash
 
 #깃 이그노어 처리되어 깃 레포지토리에 저장되지 않은 properties 파일 깃액션 서버내 생성
-      - name: make application.properties
-        run:
-          mkdir ./src/main/resources |
-          touch ./src/main/resources/application.yml
-        shell: bash
+#      - name: make application.properties
+#        run:
+#          mkdir ./src/main/resources |
+#          touch ./src/main/resources/application.yml
+#        shell: bash
 
       #생성한 properties 파일에 깃 허브 내 secrets 경로에 환경변수로 저장한 properties 값을 저장
       - name: deliver application.yml
