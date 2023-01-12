@@ -83,3 +83,11 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+try {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+} catch (Exception ignored) {
+}
+
