@@ -1,5 +1,6 @@
 package com.project.shop.member.service.Impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.global.config.security.JwtTokenDto;
 import com.project.shop.global.config.security.TokenProvider;
@@ -23,7 +24,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -104,11 +107,11 @@ class MemberServiceImplTest {
 
     @Test
     @DisplayName("카카오 로그인")
-    void SocialLogin() {
+    void SocialLogin() throws JsonProcessingException {
         //given
         LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.KAKAO, "test@test.com");
         JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
-        given(tokenProvider.generateTokenNoSecurity(loginRequest)).willReturn(tokenDto);
+        given(tokenProvider.generateToken(loginRequest)).willReturn(tokenDto);
 
         //when
         memberService.login(loginRequest);
@@ -117,22 +120,23 @@ class MemberServiceImplTest {
         assertThat(tokenDto.getGrantType()).isEqualTo("jwt");
     }
 
-//    @Test
-//    @DisplayName("일반 로그인")
-//    @Disabled
-//    void noSocialLogin() throws Exception {
-//        //given
-//        LoginRequest loginRequest = LoginRequest.builder().loginId("loginId").password("1234").loginType(LoginType.NO_SOCIAL).build();
-//        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
-//        AuthenticationManagerBuilder managerBuilder = mock(AuthenticationManagerBuilder.class);
-//        AuthenticationManager object = managerBuilder.getObject();
-//        System.out.println("authenticationManager = " + object);
-//
-//        //when
-//        memberService.login(loginRequest);
-//
-//        //then
-//    }
+    @Test
+    @DisplayName("일반 로그인")
+    void noSocialLogin() throws Exception {
+        //given
+        LoginRequest loginRequest = LoginRequest.builder().loginId("loginId").password("1234").loginType(LoginType.NO_SOCIAL).build();
+        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
+        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+        Member member = memberFactory.createMember();
+        given(memberRepository.findByLoginId(loginRequest.getLoginId())).willReturn(Optional.ofNullable(member));
+        given(tokenProvider.generateToken(loginRequest)).willReturn(tokenDto);
+        //when
+        JwtTokenDto jwtTokenDto = memberService.login(loginRequest);
+
+        //then
+        assertThat(jwtTokenDto).isEqualTo(tokenDto);
+
+    }
 
     @Test
     @DisplayName("내 정보 조회")
