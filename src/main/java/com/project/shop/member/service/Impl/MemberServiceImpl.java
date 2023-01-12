@@ -1,5 +1,8 @@
 package com.project.shop.member.service.Impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.shop.global.config.security.JwtTokenDto;
+import com.project.shop.global.config.security.TokenProvider;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.Goods;
@@ -12,8 +15,6 @@ import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.domain.*;
-import com.project.shop.global.config.security.JwtTokenDto;
-import com.project.shop.global.config.security.TokenProvider;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberLoginHistoryRepository;
 import com.project.shop.member.repository.MemberRepository;
@@ -22,8 +23,6 @@ import com.project.shop.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,7 +47,6 @@ public class MemberServiceImpl implements MemberService {
     private final S3Service s3Service;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
     private final RoleRepository roleRepository;
     private final GoodsRepository goodsRepository;
@@ -86,7 +84,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 로그인
     @Override              // String memberId, String password
-    public JwtTokenDto login(LoginRequest loginRequest) {
+    public JwtTokenDto login(LoginRequest loginRequest) throws JsonProcessingException {
 
         // LoginType 이 KAKAO 일때
         if (loginRequest.getLoginType().equals(LoginType.KAKAO)) {
@@ -94,7 +92,7 @@ public class MemberServiceImpl implements MemberService {
 
             // 동일한 Email , LoginID 일 경우 토큰만 발급 후 리턴
             if (memberRepository.findByEmailAndLoginId(loginRequest.getEmail(), loginRequest.getLoginId()).isPresent()) {
-                JwtTokenDto tokenDto = tokenProvider.generateTokenNoSecurity(loginRequest);
+                JwtTokenDto tokenDto = tokenProvider.generateToken(loginRequest);
                 return tokenDto;
             }
 
@@ -102,16 +100,18 @@ public class MemberServiceImpl implements MemberService {
             if (memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent())
                 throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
 
-            // 동일한 Email , 다른 LoginID 일 경우 토큰발급 + Member DB 추가 저장
-            memberRepository.save(member);
-
             Role role = Role.builder()
                     .member(member)
                     .roleType(RoleType.ROLE_USER)
                     .build();
             roleRepository.save(role);
 
-            JwtTokenDto tokenDto = tokenProvider.generateTokenNoSecurity(loginRequest);
+            // member role 세팅
+            member.setRoles(role);
+            // 동일한 Email , 다른 LoginID 일 경우 토큰발급 + Member DB 추가 저장
+            memberRepository.save(member);
+
+            JwtTokenDto tokenDto = tokenProvider.generateToken(loginRequest);
             return tokenDto;
         }
 
@@ -120,16 +120,7 @@ public class MemberServiceImpl implements MemberService {
                 () -> new BusinessException(NOT_FOUND_MEMBER));
         if (!member.getLoginType().equals(LoginType.NO_SOCIAL)) throw new BusinessException(OTHER_LOGIN_TYPE);
 
-        // 일반 회원 로그인
-        // 1. 로그인 Id / Pw 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getLoginId(), loginRequest.getPassword());
-        // 2. 실제 검증 (사용자 비밀번호 체크)
-        // authenticate 메서드가 실행 될때 loadUserByUsername 메서드 실행
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // 3. 인증기반으로 jwt 토큰생성
-        JwtTokenDto tokenDto = tokenProvider.generateToken(authentication);
-        // 4. 토큰 리턴
+        JwtTokenDto tokenDto = tokenProvider.generateToken(loginRequest);
         return tokenDto;
     }
 

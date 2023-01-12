@@ -1,5 +1,6 @@
 package com.project.shop.member.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
@@ -17,8 +18,8 @@ public interface MemberService {
     // 회원 중복체크
     void loginIdDuplicateCheck(String loginId);
 
-    // 일반 로그인
-    JwtTokenDto login(LoginRequest loginRequest);
+    // 일반 로그인                               //자바 객체 -> JSON 문자열
+    JwtTokenDto login(LoginRequest loginRequest) throws JsonProcessingException;
 
     // 회원 수정
     void memberEdit(MemberEditRequest memberEditRequest);

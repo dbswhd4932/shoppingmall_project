@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
-@EnableWebSecurity
+@EnableWebSecurity(debug = true) // 시큐리티 동작 확인
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true) // preAuthorize 어노테이션 추가하기 위해
 public class SecurityConfig {

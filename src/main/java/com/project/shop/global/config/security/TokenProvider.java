@@ -1,5 +1,7 @@
 package com.project.shop.global.config.security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.member.controller.request.LoginRequest;
@@ -7,6 +9,7 @@ import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,13 +19,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class TokenProvider {
 
     private static final String AUTHORITIES_KEY  = "auth";
@@ -31,64 +34,26 @@ public class TokenProvider {
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24;        // 1일
 
     private final MemberRepository memberRepository;
+    private final ObjectMapper objectMapper;
 
     private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    //생성자
-    public TokenProvider(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
-
-    // 시큐리티 없이 토큰 생성
-    public JwtTokenDto generateTokenNoSecurity(LoginRequest loginRequest) {
-
+    public JwtTokenDto generateToken(LoginRequest loginRequest) throws JsonProcessingException {
 
         long nowTime = new Date().getTime();
         Member member = memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        List<String> roles = member.getRoles().stream().map(x -> x.getRoleType().toString()).toList();
+
+        String data = objectMapper.writeValueAsString(roles);
+
         Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 1일
         String accessToken = Jwts.builder()
-                .setSubject(loginRequest.getLoginId())          //"sub":"소셜닉네임"
-                .claim(MEMBER_ID_CLAIM_KEY, member.getId())    //"memberId":"1"
-                .claim(AUTHORITIES_KEY, "ROLE_USER")    // 소셜로그인은 ROLE_USER 고정
+                .setSubject(loginRequest.getLoginId())              //"sub":"소셜닉네임"
+                .claim(MEMBER_ID_CLAIM_KEY, member.getId())         //"memberId":"1"
+                .claim(AUTHORITIES_KEY, data)                       //"auth":"[ROLE_USER]"
                 .claim("LOGIN_TYPE", member.getLoginType()) // "LOGIN_TYPE":"KAKAO"
-                .setExpiration(accessTokenExpiresIn)           //"exp":"12345678"
-                .signWith(key)
-                .compact();
-
-        return JwtTokenDto.builder()
-                .grantType(BEARER_TYPE)
-                .accessToken(accessToken)
-                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
-                .build();
-    }
-
-    // 유저 정보를 가지고 AccessToken 생성
-    public JwtTokenDto generateToken(Authentication authentication) {
-        //권한 가져오기
-        String collect = authentication.getAuthorities().stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining());
-
-        /**
-         *  권한이 2개 이상일 경우 EX) [ROLE_ADMIN, ROLE_USER]
-         *  JWT auth 는 문자열 그대로  [ROLE_ADMIN, ROLE_USER] 로 들어가기 때문에, ROLE_ADMIN, ROLE_USER 로 커스텀이 필요합니다.
-         *  대괄호 [ ] 를 제거한 후 토큰 생성 시 auth 값에 추가해줍니다.
-         */
-        String authorization = collect.substring(1, collect.length() - 1);
-
-        long nowTime = new Date().getTime();
-
-        //AccessToken 생성
-        Date accessTokenExpiresIn = new Date(nowTime + ACCESS_TOKEN_EXPIRE_TIME); // 1일
-        Member member = memberRepository.findByLoginId(authentication.getName()).get();
-
-        String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())          //"sub":"loginId"
-                .claim(MEMBER_ID_CLAIM_KEY, member.getId())    //"memberId":"1"
-                .claim(AUTHORITIES_KEY, authorization)         //"auth":"ROLE_USER"
-                .claim("LOGIN_TYPE", member.getLoginType()) // "LOGIN_TYPE":"NO_SOCIAL"
-                .setExpiration(accessTokenExpiresIn)           //"exp":"12345678"
+                .setExpiration(accessTokenExpiresIn)                //"exp":"12345678"
                 .signWith(key)
                 .compact();
 
@@ -100,7 +65,7 @@ public class TokenProvider {
     }
 
     //JWT 토큰을 복호화해서 토큰에 들어있는 정보를 꺼내는 메서드
-    public Authentication getAuthentication(String accessToken) {
+    public Authentication getAuthentication(String accessToken) throws JsonProcessingException {
         //토큰 복호화
         Claims claims = parseClaims(accessToken);
 
@@ -109,8 +74,9 @@ public class TokenProvider {
         }
 
         // 클레임에서 권한 정보 가져오기
-        List<SimpleGrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(", "))
-                .map(role -> new SimpleGrantedAuthority(role))
+        List<String> data = objectMapper.readValue(claims.get(AUTHORITIES_KEY).toString(), List.class) ;
+        List<SimpleGrantedAuthority> authorities = data
+                .stream().map(role -> new SimpleGrantedAuthority(role))
                 .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication 리턴

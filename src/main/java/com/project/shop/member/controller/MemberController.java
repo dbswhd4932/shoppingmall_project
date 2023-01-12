@@ -1,5 +1,6 @@
 package com.project.shop.member.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
@@ -42,7 +43,7 @@ public class MemberController {
     @PostMapping("/members/login")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "일반 로그인")
-    public JwtTokenDto login(@RequestBody LoginRequest loginRequest) {
+    public JwtTokenDto login(@RequestBody LoginRequest loginRequest) throws JsonProcessingException {
         return memberService.login(loginRequest);
     }
 

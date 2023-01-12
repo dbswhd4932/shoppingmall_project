@@ -103,4 +103,9 @@ public class Member extends BaseTimeEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
+    // 회원 권한 적용
+    public void setRoles(Role role) {
+        this.getRoles().add(role);
+    }
+
 }
