@@ -43,11 +43,9 @@ dependencies {
     //자바 역직렬화 문제 해결 패키지
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-    // 캐시 설정 (ehcache)
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'org.ehcache:ehcache:3.1.0'
-    implementation 'org.hibernate:hibernate-jcache:6.0.2.Final'
-    implementation 'javax.cache:cache-api:1.1.1'
+    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
 
     // aop 설정
     implementation 'org.springframework.boot:spring-boot-starter-aop'

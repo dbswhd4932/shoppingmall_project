@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberLoginAop {
 
-    private MemberLoginHistoryRepository memberLoginHistoryRepository;
+    private final MemberLoginHistoryRepository memberLoginHistoryRepository;
 
     @Pointcut("execution(* com.project.shop.member.service.MemberService.login(*)) && args(loginRequest)")
     public void loginMember(LoginRequest loginRequest){}

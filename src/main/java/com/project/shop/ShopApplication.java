@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableScheduling
-@EnableCaching
 public class ShopApplication {
 
     public static void main(String[] args) {
