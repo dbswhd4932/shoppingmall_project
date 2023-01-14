@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.shop.global.error.ErrorCode.*;
 
@@ -72,36 +73,32 @@ public class GoodsServiceImpl implements GoodsService {
         goodsRepository.save(goods);
 
         // 옵션 정보 저장
-        for (OptionCreateRequest optionCreateRequest : goodsCreateRequest.getOptionCreateRequest()) {
-            Options options = Options.toOption(optionCreateRequest, goods);
-            optionRepository.save(options);
-        }
+        List<Options> optionsList = goodsCreateRequest.getOptionCreateRequest().stream().map(
+                optionCreateRequest -> Options.toOption(optionCreateRequest, goods)).collect(Collectors.toList());
+
+        optionRepository.saveAll(optionsList);
 
         // S3 저장
         List<String> list = s3Service.upload(imgPaths);
 
         // 이미지 DB 저장
-        for (String img : list) {
-            Image image = Image.builder().fileUrl(img).goods(goods).build();
-            imageRepository.save(image);
-        }
+        List<Image> imageList = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
+        imageRepository.saveAll(imageList);
+
     }
 
     // 상품 전체 검색
     @Override
     @TimerAop
     @Transactional(readOnly = true)
-    @Cacheable(value = "goodsFind", key = "#pageable")
     public List<GoodsPageResponse> goodsFindAll(Pageable pageable) {
-        System.out.println("=============== EHcache 시작 ===============");
         Page<Goods> goods = goodsRepository.findAll(pageable);
         List<GoodsPageResponse> list = new ArrayList<>();
 
-        for (Goods good : goods) {
-            GoodsPageResponse goodsPageResponse = GoodsPageResponse.toResponse(good, goods);
-            list.add(goodsPageResponse);
-        }
-        System.out.println("=============== EHcache 종료 ===============");
+        List<GoodsPageResponse> goodsPageResponseList =
+                goods.stream().map(good -> GoodsPageResponse.toResponse(good, goods)).collect(Collectors.toList());
+
+        list.addAll(goodsPageResponseList);
         return list;
 
     }
@@ -158,13 +155,12 @@ public class GoodsServiceImpl implements GoodsService {
     public List<GoodsPageResponse> goodsFindKeyword(String keyword, Pageable pageable) {
         // keyword 로 검색 후 모든 상품 찾기
         Page<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword);
-
         List<GoodsPageResponse> list = new ArrayList<>();
+
         // 상품의 이미지 찾아서 응답에 추가 설정
-        for (Goods good : goods) {
-            GoodsPageResponse goodsPageResponse = GoodsPageResponse.toResponse(good, goods);
-            list.add(goodsPageResponse);
-        }
+        List<GoodsPageResponse> goodsPageResponseList
+                = goods.stream().map(good -> GoodsPageResponse.toResponse(good, goods)).collect(Collectors.toList());
+        list.addAll(goodsPageResponseList);
         return list;
     }
 
@@ -173,7 +169,6 @@ public class GoodsServiceImpl implements GoodsService {
     public void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest, List<MultipartFile> imgPaths) {
 
         Member member = getMember();
-
 
         // 수정할 상품이름이 이미 존재하면 예외처리
         if (goodsRepository.findByGoodsName(goodsEditRequest.getGoodsName()).isPresent())
@@ -188,23 +183,20 @@ public class GoodsServiceImpl implements GoodsService {
 
         //기존 옵션 삭제
         List<Options> options = optionRepository.findByGoodsId(goodsId);
-        for (Options option : options) {
-            optionRepository.deleteById(option.getId());
-        }
+        optionRepository.deleteAll(options);
 
         // 수정할 상품의 옵션이 비어있거나 null 이 아니면 옵션 DB 에 저장
         if (!goodsEditRequest.getOptionCreateRequest().isEmpty() && goodsEditRequest.getGoodsDescription() != null) {
-            List<OptionCreateRequest> optionCreateRequest = goodsEditRequest.getOptionCreateRequest();
-            for (OptionCreateRequest createRequest : optionCreateRequest) {
-                Options option = Options.toOption(createRequest, goods);
-                optionRepository.save(option);
-            }
+            List<OptionCreateRequest> optionCreateRequestList = goodsEditRequest.getOptionCreateRequest();
+
+            List<Options> optionsList = optionCreateRequestList.stream().map(optionCreateRequest -> Options.toOption(optionCreateRequest, goods)).collect(Collectors.toList());
+            optionRepository.saveAll(optionsList);
         }
 
         // s3 , 이미지DB 삭제
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
         for (Image image : imageList) {
-            String fileName = image.getFileUrl().substring(bucket.length() + 41);
+            String fileName = image.getFileUrl();
             s3Service.deleteFile(fileName);
             imageRepository.deleteById(image.getId());
         }
@@ -213,12 +205,9 @@ public class GoodsServiceImpl implements GoodsService {
         List<String> list = s3Service.upload(imgPaths);
 
         // 이미지 정보 저장
-        List<String> imgList = new ArrayList<>();
-        for (String img : list) {
-            Image image = Image.builder().fileUrl(img).goods(goods).build();
-            imageRepository.save(image);
-            imgList.add(image.getFileUrl());
-        }
+        List<Image> images = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
+        imageRepository.saveAll(images);
+
     }
 
     // 상품 삭제
@@ -234,11 +223,11 @@ public class GoodsServiceImpl implements GoodsService {
 
         // s3 이미지 삭제
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
+
         for (Image image : imageList) {
-            String fileName = image.getFileUrl().substring(bucket.length() + 41);
+            String fileName = image.getFileUrl();
             s3Service.deleteFile(fileName);
         }
-
         goodsRepository.deleteById(goods.getId());
     }
 

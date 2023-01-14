@@ -70,7 +70,7 @@ public class S3Service  {
             try(InputStream inputStream = file.getInputStream()) {
                 s3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgUrlList.add(s3Client.getUrl(bucket, fileName).toString());
+                imgUrlList.add(fileName);
             } catch(IOException e) {
                 throw new BusinessException(UPLOAD_ERROR_IMAGE);
             }
