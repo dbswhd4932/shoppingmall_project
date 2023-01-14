@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.shop.global.error.ErrorCode.*;
 
@@ -62,14 +63,9 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewPageResponse> reviewFindAll(Long goodsId, Pageable pageable) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
         Page<Review> reviews = reviewRepository.findAllByGoods(goods, pageable);
-        List<ReviewPageResponse> list = new ArrayList<>();
 
-        for (Review review : reviews) {
-            ReviewPageResponse reviewPageResponse = ReviewPageResponse.toResponse(review, reviews);
-            list.add(reviewPageResponse);
-        }
-
-        return list;
+        List<ReviewPageResponse> reviewPageResponseList = reviews.stream().map(review -> ReviewPageResponse.toResponse(review, reviews)).toList();
+        return  reviewPageResponseList;
     }
 
     // 리뷰 수정
