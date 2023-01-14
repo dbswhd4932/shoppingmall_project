@@ -107,7 +107,8 @@ class GoodsServiceImplTest {
 
         //then
         verify(goodsRepository).save(any());
-        verify(optionRepository).save(any());
+        verify(optionRepository).saveAll(any());
+        verify(imageRepository).saveAll(any());
     }
 
     @Test
@@ -206,7 +207,9 @@ class GoodsServiceImplTest {
         goodsService.goodsEdit(goods.getId(), goodsEditRequest, any());
 
         //then
-        verify(optionRepository).save(any());
+        verify(optionRepository).deleteAll(any());
+        verify(optionRepository).saveAll(any());
+        verify(imageRepository).saveAll(any());
     }
 
     @Test
