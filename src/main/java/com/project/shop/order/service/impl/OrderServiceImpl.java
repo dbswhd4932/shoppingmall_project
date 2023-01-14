@@ -8,11 +8,11 @@ import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.request.PayCancelRequest;
+import com.project.shop.order.controller.response.OrderPageResponse;
 import com.project.shop.order.controller.response.OrderResponse;
 import com.project.shop.order.domain.*;
-import com.project.shop.order.controller.request.OrderCreateRequest;
-import com.project.shop.order.controller.response.OrderPageResponse;
 import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayCancelRepository;
@@ -90,16 +90,11 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderPageResponse> orderFindMember(Pageable pageable) {
         Member member = getMember();
         Page<Order> orderList = orderRepository.findAll(pageable);
-        List<OrderPageResponse> list = new ArrayList<>();
 
-        for (Order order : orderList) {
-            if (order.getMemberId().equals(member.getId())) {
-                OrderPageResponse orderPageResponse = OrderPageResponse.toResponse(order, orderList);
-                list.add(orderPageResponse);
-            }
-        }
+        List<OrderPageResponse> orderPageResponseList = orderList.stream().filter(findOrder -> findOrder.getMemberId().equals(member.getId()))
+                .map(order -> OrderPageResponse.toResponse(order, orderList)).toList();
 
-        return list;
+        return orderPageResponseList;
     }
 
     // 주문 단건 조회
@@ -108,9 +103,11 @@ public class OrderServiceImpl implements OrderService {
         Member member = getMember();
         Order order = orderRepository.findByIdAndMemberId(orderId, member.getId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_ORDERS));
+
         OrderResponse orderResponse = OrderResponse.toResponse(order);
         List<OrderItem> orderItems = orderItemRepository.findAllByOrder(order);
         List<Long> list = new ArrayList<>();
+
         for (OrderItem orderItem : orderItems) {
             list.add(orderItem.getGoodsId());
         }
@@ -151,9 +148,7 @@ public class OrderServiceImpl implements OrderService {
 
         // ORDER_ITEM DB 상품 삭제
         List<OrderItem> orderItems = orderItemRepository.findAllByOrder(pay.getOrder());
-        for (OrderItem orderItem : orderItems) {
-            orderItemRepository.deleteById(orderItem.getId());
-        }
+        orderItemRepository.deleteAll(orderItems);
 
         // 결제취소 DB 저장
         payCancelRepository.save(payCancel);
