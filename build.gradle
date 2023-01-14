@@ -69,6 +69,11 @@ dependencies {
 
 }
 
+// 추가
+jar {
+    enabled = false
+}
+
 //https://mkyong.com/gradle/gradle-how-to-exclude-some-tests/
 //build 시 통합테스트는 제외
 test {

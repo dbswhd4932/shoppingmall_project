@@ -1,37 +1,39 @@
-version: '3.8'
+version: '3'
+
 services:
   database:
-    image: mysql
-    container_name: mysql
+    container_name: mysql_db
+    image: mysql/mysql-server:8.0
     restart: always
+    environment:
+      MYSQL_DATABASE: shop
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: 1234
+      TZ: 'Asia/Seoul'
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: '1234'
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_DATABASE: 'shop'
-      TZ: Asia/Seoul
     command:
-      - '--character-set-server=utf8mb4'
-      - '--collation-server=utf8mb4_unicode_ci'
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
     networks:
-      - connect-network
+      - test_network
 
-  backend:
-    build:
-      dockerfile: Dockerfile
-    container_name: shopping-mall
+  application:
+    container_name: docker-compose-test
     restart: always
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/shop
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 1234
+    build:
+      context: ./
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db:3306/shop
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "1234"
     depends_on:
       - database
     networks:
-      - connect-network
+      - test_network
 
-
-
+networks:
+  test_network:
