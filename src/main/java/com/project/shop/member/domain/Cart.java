@@ -48,15 +48,14 @@ public class Cart extends BaseTimeEntity {
         this.optionNumber = optionNumber;
     }
 
-    // 장바구니 수량, 옵션 변경
-    public void edit(Options options, CartEditRequest cartEditRequest) {
+    public void editCartIncludeOption(Options options, CartEditRequest cartEditRequest) {
         int goodsTotalPrice = options.getTotalPrice();
         this.totalAmount = cartEditRequest.getAmount();
         this.optionNumber = cartEditRequest.getOptionNumber();
         this.totalPrice = goodsTotalPrice * (cartEditRequest.getAmount());
     }
 
-    public void editNoOption(Goods goods , CartEditRequest cartEditRequest) {
+    public void editCartExcludeOption(Goods goods , CartEditRequest cartEditRequest) {
         this.totalAmount = cartEditRequest.getAmount();
         this.optionNumber = cartEditRequest.getOptionNumber();
         this.totalPrice = goods.getPrice() * (cartEditRequest.getAmount());

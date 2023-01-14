@@ -21,8 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.shop.global.error.ErrorCode.*;
 
@@ -81,14 +81,8 @@ public class CartServiceImpl implements CartService {
         Member member = getMember();
 
         Page<Cart> carts = cartRepository.findAllByMemberId(member.getId(), pageable);
-        List<CartPageResponse> list = new ArrayList<>();
-
-        for (Cart cart : carts) {
-            CartPageResponse cartPageResponse = CartPageResponse.toResponse(cart, carts);
-            list.add(cartPageResponse);
-        }
-
-        return list;
+        List<CartPageResponse> cartPageResponseList = carts.stream().map(cart -> CartPageResponse.toResponse(cart, carts)).collect(Collectors.toList());
+        return cartPageResponseList;
     }
 
     // 장바구니 수량, 옵션 변경
@@ -97,27 +91,25 @@ public class CartServiceImpl implements CartService {
 
         Member member = getMember();
 
-        Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_CART));
-
-        Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_GOODS));
+        Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
+        Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
 
         List<Options> options = optionRepository.findByGoodsId(goods.getId());
 
         // 옵션이 없는 상품
         if (options.isEmpty()) {
-            cart.editNoOption(goods, cartEditRequest);
+            if (cartEditRequest.getOptionNumber() != null) throw new BusinessException(NOT_FOUND_OPTION);
+            cart.editCartExcludeOption(goods, cartEditRequest);
             return;
         }
 
         // 옵션 있는 상품
         for (Options option : options) {
-            if (option.getId().equals(cartEditRequest.getOptionNumber())) {
-                cart.edit(option, cartEditRequest);
-                return;
-            }
+            if (!option.getId().equals(cartEditRequest.getOptionNumber())) continue;
+            cart.editCartIncludeOption(option, cartEditRequest);
+            return;
         }
+        throw new BusinessException(NOT_FOUND_OPTION);
     }
 
     // 장바구니 상품 삭제
