@@ -81,8 +81,7 @@ public class CartServiceImpl implements CartService {
         Member member = getMember();
 
         Page<Cart> carts = cartRepository.findAllByMemberId(member.getId(), pageable);
-        List<CartPageResponse> cartPageResponseList = carts.stream().map(cart -> CartPageResponse.toResponse(cart, carts)).collect(Collectors.toList());
-        return cartPageResponseList;
+        return carts.stream().map(cart -> CartPageResponse.toResponse(cart, carts)).collect(Collectors.toList());
     }
 
     // 장바구니 수량, 옵션 변경
@@ -118,8 +117,7 @@ public class CartServiceImpl implements CartService {
 
         Member member = getMember();
 
-        Cart cart = cartRepository.findByIdAndMember(cartId, member)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
+        Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
 
         cartRepository.deleteById(cart.getId());
     }
