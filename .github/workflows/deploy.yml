@@ -2,56 +2,41 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: Setup Java JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-
-      ## 환경파일 작성
-      ## src/main/resources 에 application.yml 폴더를 만든다.
-      ## GitHub-Action 에서 설정한 값을 application.yml 파일에 쓴다.
-#      - name: make application.yml
-#        run: |
-#          cd ./src/main/resources
-#          touch ./application.yml
-#          echo "${{ secrets.DATABASE }}" >> ./application.yml
-#        shell: bash
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
 
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-        shell: bash
+        run: chmod +x gradlew
 
-      ## gradle 빌드
       - name: Build with Gradle
-        run: ./gradlew bootJar
+        run: ./gradlew build
 
-
-      ## 웹 이미지 빌드 및 도커허브에 push
-      - name: web docker build and push
+      - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/shop-application .
-          docker push ${{ secrets.DOCKER_REPO }}/shop-application
+          docker build -t spring-cicd .
+          docker tag spring-cicd ${{ DOCKER_LOGIN_ID }}/shoppingmall:${GITHUB_SHA::7}
+          docker push ${{ DOCKER_LOGIN_ID }}/shoppingmall:${GITHUB_SHA::7}
 
-      ## docker compose up
-      - name: executing remote ssh commands using password
+      - name: Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}
-          key: ${{ secrets.KEY }}
+          host: 서버명[~~ap-northeast-2.compute.amazonaws.com로 시작하는 서버명을 적음]
+          username: ec2-user
+          key: ${{ secrets.PRIVATE_KEY }}
+          envs: GITHUB_SHA
           script: |
-            docker stop ${{ secrets.DOCKER_REPP }}/${{ secrets.DOCKER_REPO }}
-            docker rm ${{ secrets.DOCKER_REPO }}
-            sudo docker network rm -f shop-application-net
-            sudo docker network shop-application-net
-#            sudo docker run -p 3306:3306 --name mysql_db --network springboot-mysql-net -e MYSQL_ROOT_HOST='%' -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=shop -d dbswhd493/mysql:8.0
-            sudo docker run -p 8080:8080 --name shop ${{ secrets.DOCKER_USERNAME }}/shop-application
+            docker pull ${{ DOCKER_LOGIN_ID }}/spring-cicd:${GITHUB_SHA::7}
+            docker tag ${{ DOCKER_LOGIN_ID }}/spring-cicd:${GITHUB_SHA::7} spring-cicd
+            docker stop server
+            docker run -d --rm --name server -p 8080:8080 spring-cicd
