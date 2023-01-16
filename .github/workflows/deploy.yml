@@ -54,4 +54,4 @@ jobs:
             sudo docker network rm -f shop-application-net
             sudo docker network shop-application-net
 #            sudo docker run -p 3306:3306 --name mysql_db --network springboot-mysql-net -e MYSQL_ROOT_HOST='%' -e MYSQL_ROOT_PASSWORD=1234 -e MYSQL_DATABASE=shop -d dbswhd493/mysql:8.0
-#            sudo docker run -p 8080:8080 --name application --network springboot-mysql-net  -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=1234 -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/shop -d dbswhd493/application:latest
+            sudo docker run -p 8080:8080 --name shop ${{ secrets.DOCKER_USERNAME }}/shop-application
