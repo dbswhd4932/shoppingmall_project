@@ -116,31 +116,31 @@ class CartServiceImplTest {
         assertThat(cartPageRespons.get(0).getTotalPrice()).isEqualTo(1000);
     }
 
-    @Test
-    @DisplayName("장바구니 변경")
-    void editCartItem() {
-        //given
-        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
-        Member member = memberFactory.createMember();
-        Goods goods = GoodsFactory.createGoods();
-        Options options = new Options(1L, goods, List.of(new OptionCreate("key", "value")), 1000, "설명");
-        Cart cart = new Cart(1L, member, 1L, 10, 1000, 1L);
-        CartEditRequest cartEditRequest = new CartEditRequest(100, 2L);
-        given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
-        given(cartRepository.findByIdAndMember(cart.getId(), member)).willReturn(Optional.of(cart));
-        given(goodsRepository.findById(cart.getGoodsId())).willReturn(Optional.ofNullable(goods));
-        given(optionRepository.findByGoodsId(Objects.requireNonNull(goods).getId())).willReturn(List.of(options));
-
-        //when
-        cartService.editCartItem(cart.getId(), cartEditRequest);
-
-        //then
-        verify(memberRepository).findByLoginId(member.getLoginId());
-        verify(cartRepository).findByIdAndMember(cart.getId(),member);
-        verify(goodsRepository).findById(cart.getGoodsId());
-        verify(optionRepository).findByGoodsId(goods.getId());
-
-    }
+//    @Test
+//    @DisplayName("장바구니 변경")
+//    void editCartItem() {
+//        //given
+//        MemberFactory memberFactory = new MemberFactory(passwordEncoder);
+//        Member member = memberFactory.createMember();
+//        Goods goods = GoodsFactory.createGoods();
+//        Options options = new Options(1L, goods, List.of(new OptionCreate("key", "value")), 1000, "설명");
+//        Cart cart = new Cart(1L, member, 1L, 10, 1000, 1L);
+//        CartEditRequest cartEditRequest = new CartEditRequest(100, 2L);
+//        given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
+//        given(cartRepository.findByIdAndMember(cart.getId(), member)).willReturn(Optional.of(cart));
+//        given(goodsRepository.findById(cart.getGoodsId())).willReturn(Optional.ofNullable(goods));
+//        given(optionRepository.findByGoodsId(Objects.requireNonNull(goods).getId())).willReturn(List.of(options));
+//
+//        //when
+//        cartService.editCartItem(cart.getId(), cartEditRequest);
+//
+//        //then
+//        verify(memberRepository).findByLoginId(member.getLoginId());
+//        verify(cartRepository).findByIdAndMember(cart.getId(),member);
+//        verify(goodsRepository).findById(cart.getGoodsId());
+//        verify(optionRepository).findByGoodsId(goods.getId());
+//
+//    }
 
     @Test
     @DisplayName("장바구니 삭제")

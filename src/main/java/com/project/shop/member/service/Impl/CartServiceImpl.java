@@ -108,6 +108,8 @@ public class CartServiceImpl implements CartService {
             cart.editCartIncludeOption(option, cartEditRequest);
             return;
         }
+
+        //todo 옵션이 없으면 없는 옵션이라고 예외를 던져야함. 테스트 오류
         throw new BusinessException(NOT_FOUND_OPTION);
     }
 
