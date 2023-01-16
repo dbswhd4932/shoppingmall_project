@@ -31,21 +31,21 @@ jobs:
       - name: Build and Push Docker Image
         uses: mr-smithers-excellent/docker-build-push@v4
         with:
-          image: ${{ secrets.DOCKER_USERNAME }}/shoppingmall
+          image: ${{ secrets.DOCKER_USERNAME }}/team07-airbnb
           registry: docker.io
           dockerfile: ./Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-#      - name: Deploy
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.EC2_WAS_IP }}
-#          username: ec2-user
-#          key: ${{ secrets.PRIVATE_KEY }}
-#          envs: GITHUB_SHA
-#          script: |
-#            docker pull team07-airbnb:backend-${GITHUB_SHA::7}
-#            docker tag team07-airbnb:backend-${GITHUB_SHA::7} airbnb:backend-${GITHUB_SHA::7}
-#            docker stop server
-#            docker run -d --rm -e profile=$profile -e MYSQL_DATABASE_USERNAME=$MYSQL_DATABASE_USERNAME -e MYSQL_DATABASE_URL=$MYSQL_DATABASE_URL -e MYSQL_DATABASE_PASSWORD=$MYSQL_DATABASE_PASSWORD -e github_client_id=$github_client_id -e github_secret_key=$github_secret_key -e jwt_secret=$jwt_secret -e jwt_expire_length=$jwt_expire_length --name server -p 8080:8080 airbnb:backend-${GITHUB_SHA::7}
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_WAS_IP }}
+          username: ec2-user
+          key: ${{ secrets.PRIVATE_KEY }}
+          envs: GITHUB_SHA
+          script: |
+            docker pull team07-airbnb:backend-${GITHUB_SHA::7}
+            docker tag team07-airbnb:backend-${GITHUB_SHA::7} airbnb:backend-${GITHUB_SHA::7}
+            docker stop server
+            docker run -d --rm -e profile=$profile -e MYSQL_DATABASE_USERNAME=$MYSQL_DATABASE_USERNAME -e MYSQL_DATABASE_URL=$MYSQL_DATABASE_URL -e MYSQL_DATABASE_PASSWORD=$MYSQL_DATABASE_PASSWORD -e github_client_id=$github_client_id -e github_secret_key=$github_secret_key -e jwt_secret=$jwt_secret -e jwt_expire_length=$jwt_expire_length --name server -p 8080:8080 airbnb:backend-${GITHUB_SHA::7}
