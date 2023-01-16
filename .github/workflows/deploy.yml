@@ -19,12 +19,12 @@ jobs:
       ## 환경파일 작성
       ## src/main/resources 에 application.yml 폴더를 만든다.
       ## GitHub-Action 에서 설정한 값을 application.yml 파일에 쓴다.
-      - name: make application.yml
-        run: |
-          cd ./src/main/resources
-          touch ./application.yml
-          echo "${{ secrets.DATABASE }}" >> ./application.yml
-        shell: bash
+#      - name: make application.yml
+#        run: |
+#          cd ./src/main/resources
+#          touch ./application.yml
+#          echo "${{ secrets.DATABASE }}" >> ./application.yml
+#        shell: bash
 
       ## gradle 빌드
       - name: Build with Gradle
