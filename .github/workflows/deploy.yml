@@ -25,8 +25,8 @@ jobs:
         run: |
           docker login -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }}
           docker build -t spring-cicd .
-          docker tag spring-cicd ${{ DOCKER_LOGIN_ID }}/spring-cicd:${GITHUB_SHA::7}
-          docker push ${{ DOCKER_LOGIN_ID }}/spring-cicd:${GITHUB_SHA::7}
+          docker tag spring-cicd dbswhd493/spring-cicd:${GITHUB_SHA::7}
+          docker push dbswhd493/spring-cicd:${GITHUB_SHA::7}
 
       - name: Deploy
         uses: appleboy/ssh-action@master
@@ -36,7 +36,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            docker pull ${{ DOCKER_LOGIN_ID }}/spring-cicd:${GITHUB_SHA::7}
-            docker tag ${{ DOCKER_LOGIN_ID }}/spring-cicd:${GITHUB_SHA::7} spring-cicd
+            docker pull dbswhd493/spring-cicd:${GITHUB_SHA::7}
+            docker tag dbswhd493/spring-cicd:${GITHUB_SHA::7} spring-cicd
             docker stop server
             docker run -d --rm --name server -p 8080:8080 spring-cicd
