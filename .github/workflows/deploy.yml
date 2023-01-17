@@ -28,16 +28,22 @@ jobs:
         run: ./gradlew build
         shell: bash
 
+      # spring 어플리케이션 Docker Image 빌드
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t shoppingmall2 .
-          docker tag shoppingmall2 dbswhd493/shoppingmall2:${GITHUB_SHA::7}
-          docker push dbswhd493/shoppingmall2:${GITHUB_SHA::7}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/shoppingmall .
+          docker push ${{ secrets.DOCKER_USERNAME }}/shoppingmall
 
-      - name: Docker pull
-        run: |
-          sudo docker pull dbswhd493/shoppingmall2:${GITHUB_SHA::7}
-          docker run -d -p 8080:8080 dbswhd493/shoppingmall2:${GITHUB_SHA::7}
-        
-
+      # 서버에서 Docker 이미지 실행
+      - name: EC2 Docker Run
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_WAS_IP }}
+          username: ec2-user
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            docker rm -f $(docker ps -qa)
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/shoppingmall
+            docker pull ${{ secrets.DOCKER_USERNAME }}/shoppingmall
+            docker-compose up -d
