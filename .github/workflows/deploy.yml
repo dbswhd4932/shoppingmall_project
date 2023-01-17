@@ -44,7 +44,6 @@ jobs:
           script: |
             docker rmi $(docker images -q)
             docker pull shoppingmall:${GITHUB_SHA::7}
-            docker tag shoppingmall:${GITHUB_SHA::7} shop_project
             docker stop shop_project
             docker rm shp_project
             docker run -d --name shop_project -p 8080:8080 shop_project
