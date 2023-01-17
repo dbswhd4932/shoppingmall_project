@@ -20,10 +20,12 @@ jobs:
         with:
           java-version: 17
 
-      - uses: actions/checkout@v3
-      - run: touch ./src/main/resources/application.properties
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-      - run: cat ./src/main/resources/application.properties
+      - name: make application.properties
+        run: |
+          cd ./src/main/resources
+          touch ./application.properties
+          echo "${{ secrets.PROPERTIES }}" > ./application.properties
+        shell: bash
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -36,8 +38,9 @@ jobs:
       - name: Docker build & push to production
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }}/dotoriham-prod .
-          docker push ${{ secrets.DOCKER_REPO }}/dotoriham-prod
+          docker build -t mung-friend .
+          docker tag mung-friend souliat/mung-friend:${GITHUB_SHA::7}
+          docker push souliat/mung-friend:${GITHUB_SHA::7}
         
       - name: Deploy
         uses: appleboy/ssh-action@master
@@ -47,7 +50,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/dotoriham-prod
-            docker-compose up -d
-            docker image prune -f
+            docker pull souliat/mung-friend:${GITHUB_SHA::7}
+            docker tag souliat/mung-friend:${GITHUB_SHA::7} mung-friend
+            docker stop server
+            docker run -d --rm --name server -p 80:8080 mung-friend
