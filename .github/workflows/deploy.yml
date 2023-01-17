@@ -35,3 +35,9 @@ jobs:
           docker tag shoppingmall dbswhd493/shoppingmall:${GITHUB_SHA::7}
           docker push dbswhd493/shoppingmall:${GITHUB_SHA::7}
 
+      - name: Docker pull
+        run: |
+          sudo docker pull dbswhd493/shoppingmall
+          docker run -d -p 8080:8080 dbswhd493/shoppingmall
+        
+
