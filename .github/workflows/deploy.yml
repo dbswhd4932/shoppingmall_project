@@ -26,15 +26,22 @@ jobs:
         run: ./gradlew build
         shell: bash
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
       # spring 어플리케이션 Docker Image 빌드
-      - name: Docker build
+      - name: 도커 build & 도커 허브 push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t dbswhd493/shop .
           docker push dbswhd493/shop
 
       # 서버에서 Docker 이미지 실행
-      - name: Deploy
+      - name: 도커 허브 pull & 도커 run
         uses: appleboy/ssh-action@master
         with:
           jost: ${{ secrets.EC2_WAS_IP }}
