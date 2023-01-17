@@ -20,13 +20,6 @@ jobs:
         with:
           java-version: 17
 
-#      - name: make application.properties
-#        run: |
-#          cd ./src/main/resources
-#          touch ./application.properties
-#          echo "${{ secrets.PROPERTIES }}" > ./application.properties
-#        shell: bash
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
@@ -35,22 +28,10 @@ jobs:
         run: ./gradlew build
         shell: bash
 
-      - name: Docker build & push to production
+      - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t shoppingmall .
           docker tag shoppingmall dbswhd493/shoppingmall:${GITHUB_SHA::7}
           docker push dbswhd493/shoppingmall:${GITHUB_SHA::7}
 
-      - name: Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_WAS_IP }}
-          username: ec2-user
-          key: ${{ secrets.PRIVATE_KEY }}
-          envs: GITHUB_SHA
-          script: |
-            docker pull dbswhd493/shoppingmall:${GITHUB_SHA::7}
-            docker tag dbswhd493/shoppingmall:${GITHUB_SHA::7} shoppingmall
-            docker stop server
-            doekcr run -d --name shop-application -p 8080:8080 shoppingmall 
