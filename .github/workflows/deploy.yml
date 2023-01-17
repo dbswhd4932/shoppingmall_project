@@ -20,12 +20,9 @@ jobs:
 
       - name: application.properties 생성 및 복사
           run: |
-            echo "mkdir & touch"
             mkdir -p ./src/main/resources 
             cd ./src/main/resources
             touch ./application.properties
-            pwd
-            ls -a .
             echo "copy properties"
             echo ${{ secrets.APPLICATION }} >> ./application.properties
             cat application.properties
