@@ -32,7 +32,7 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t shoppingmall2 .
-          docker tag shoppingmall dbswhd493/shoppingmall2:${GITHUB_SHA::7}
+          docker tag shoppingmall2 dbswhd493/shoppingmall2:${GITHUB_SHA::7}
           docker push dbswhd493/shoppingmall2:${GITHUB_SHA::7}
 
       - name: Docker pull
