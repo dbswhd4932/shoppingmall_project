@@ -38,9 +38,9 @@ jobs:
       - name: Docker build & push to production
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t mung-friend .
+          docker build -t project .
           docker tag mung-friend souliat/dbswhd493:${GITHUB_SHA::7}
-          docker push souliat/dbswhd493:${GITHUB_SHA::7}
+          docker push project/dbswhd493:${GITHUB_SHA::7}
         
       - name: Deploy
         uses: appleboy/ssh-action@master
