@@ -39,7 +39,7 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t project .
-          docker tag mung-friend souliat/dbswhd493:${GITHUB_SHA::7}
+          docker tag project souliat/dbswhd493:${GITHUB_SHA::7}
           docker push project/dbswhd493:${GITHUB_SHA::7}
         
       - name: Deploy
