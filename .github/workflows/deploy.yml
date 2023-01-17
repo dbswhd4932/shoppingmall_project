@@ -50,7 +50,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            docker pull dbswhd493/dbswhd493:${GITHUB_SHA::7}
-            docker tag dbswhd493/dbswhd493:${GITHUB_SHA::7} dbswhd493
-            docker stop server
-            docker run -d --rm --name server -p 8080:8080 dbswhd493
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull dbswhd493/dbswhd493
+            docker-compose up -d
+            docker image prune -f
