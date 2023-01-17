@@ -50,7 +50,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            docker pull souliat/dbswhd493:${GITHUB_SHA::7}
-            docker tag souliat/dbswhd493:${GITHUB_SHA::7} mung-friend
+            docker pull dbswhd493/dbswhd493:${GITHUB_SHA::7}
+            docker tag dbswhd493/dbswhd493:${GITHUB_SHA::7} dbswhd493
             docker stop server
-            docker run -d --rm --name server -p 8080:8080 mung-friend
+            docker run -d --rm --name server -p 8080:8080 dbswhd493
