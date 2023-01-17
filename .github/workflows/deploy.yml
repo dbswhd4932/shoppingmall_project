@@ -4,9 +4,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,10 +12,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Java JDK 17
-        uses: actions/setup-java@v1
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
         with:
-          java-version: 17
+          java-version: '17'
+          distribution: 'adopt'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -27,6 +25,13 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       # spring 어플리케이션 Docker Image 빌드
       - name: Docker build
@@ -39,9 +44,6 @@ jobs:
       - name: EC2 Docker Run
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_WAS_IP }}
-          username: ec2-user
-          key: ${{ secrets.PRIVATE_KEY }}
           script: |
             docker rm -f $(docker ps -qa)
             docker rmi ${{ secrets.DOCKER_USERNAME }}/shoppingmall
