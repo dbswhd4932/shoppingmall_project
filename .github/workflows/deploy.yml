@@ -22,7 +22,6 @@ jobs:
 
       - name: make application.yml
         run: |
-#          cd ./src/main/resources
           touch ./src/main/resources/application.yml
           echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
           cat ./src/main/resources/application.yml
