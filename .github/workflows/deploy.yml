@@ -21,11 +21,10 @@ jobs:
           java-version: 17
 
       - name: make application.yml
-        run: |
-          touch ./src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
-          cat ./src/main/resources/application.yml
-        shell: bash
+      - uses: actions/checkout@v3
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
