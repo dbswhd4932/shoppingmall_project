@@ -9,20 +9,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: 저장소 Checkout
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
+      - name: 셋업 JDK 17
         uses: actions/setup-java@v2
         with:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Grant execute permission for gradlew
+      - name: gradlew 권한 부여
         run: chmod +x ./gradlew
         shell: bash
 
-      - name: Build with Gradle
+      - name: gradle 빌드
         run: ./gradlew build
         shell: bash
 
@@ -30,9 +30,8 @@ jobs:
       - name: Docker build
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t shop_project .
-          docker tag shop_project shoppingmall:${GITHUB_SHA::7}
-          docker push shoppingmall:${GITHUB_SHA::7}
+          docker build -t dbswhd493/shop .
+          docker push dbswhd493/shop
 
       # 서버에서 Docker 이미지 실행
       - name: Deploy
@@ -41,11 +40,9 @@ jobs:
           jost: ${{ secrets.EC2_WAS_IP }}
           username: ec2-user
           key: ${{ secrets.PRIVATE_KEY }}
-          envs: GITHUB_SHA
           script: |
-            docker rmi $(docker images -q)
-            docker pull shoppingmall:${GITHUB_SHA::7}
-            docker tag shoppingmall:${GITHUB_SHA::7} shop_project
-            docker stop shop_project
-            docker rm shp_project
-            docker run -d --name shop_project -p 8080:8080 shop_project
+            docker rmi dbswhd493/shop
+            docker pull dbswhd493/shop
+            docker stop dbswhd493/shop
+            docker rm dbswhd493/shop
+            docker run -p 8080:8080 --name shop-application -d dbswhd493/shop
