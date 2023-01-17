@@ -38,8 +38,9 @@ jobs:
       - name: Docker build & push to production
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dokerfile -t project/shoppingmall .
-          docker push project/shoppingmall
+          docker build -t dbswhd493 .
+          docker tag dbswhd493 dbswhd493/dbswhd493:${GITHUB_SHA::7}
+          docker push dbswhd493/dbswhd493:${GITHUB_SHA::7}
         
       - name: Deploy
         uses: appleboy/ssh-action@master
