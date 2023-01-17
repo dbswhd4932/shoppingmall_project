@@ -37,7 +37,7 @@ jobs:
 
       - name: Docker pull
         run: |
-          sudo docker pull dbswhd493/shoppingmall
-          docker run -d -p 8080:8080 dbswhd493/shoppingmall
+          sudo docker pull dbswhd493/shoppingmall:${GITHUB_SHA::7}
+          docker run -d -p 8080:8080 dbswhd493/shoppingmall:${GITHUB_SHA::7}
         
 
