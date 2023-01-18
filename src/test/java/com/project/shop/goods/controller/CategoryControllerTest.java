@@ -84,7 +84,6 @@ public class CategoryControllerTest extends ControllerSetting {
     }
 
     @Test
-    //todo 전체 테스트 시 401 에러 발생.
     @DisplayName("카테고리조회_성공")
     void categoryFindAll() throws Exception {
         //given

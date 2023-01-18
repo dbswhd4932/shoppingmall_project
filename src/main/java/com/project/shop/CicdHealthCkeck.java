@@ -22,6 +22,6 @@ public class CicdHealthCkeck {
 
     @GetMapping("/hello")
     public String hello() {
-        return "CI CD test update";
+        return "CI CD test update2222";
     }
 }
