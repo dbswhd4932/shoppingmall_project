@@ -6,7 +6,6 @@ spring:
     password: ${spring.datasource.password}
   main:
     allow-bean-definition-overriding: true
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,10 +21,6 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-#  security:
-#    user:
-#      name: user
-#      password: 1234
 logging:
   level:
     org:
@@ -34,7 +29,6 @@ logging:
           descriptor:
             sql: trace #JPA 파라미터 콘솔에서 확인가능
     root: info
-
 cloud:
   aws:
     credentials:
@@ -46,6 +40,5 @@ cloud:
       static: ${cloud.aws.region.static}
     stack:
       auto: false
-
 jwt:
   header: Authorization
