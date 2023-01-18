@@ -9,6 +9,6 @@ public class CicdHealthCkeck {
 
     @GetMapping("/hello")
     public String hello() {
-        return "deploy 수정 83 ";
+        return "cicd test! ";
     }
 }
