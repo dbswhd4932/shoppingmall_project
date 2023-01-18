@@ -1,0 +1,7 @@
+aws:
+  secrets-manager:
+    name: shop
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
