@@ -54,7 +54,7 @@ jobs:
       - name: 도커 허브 pull & 도커 run
         uses: appleboy/ssh-action@master
         with:
-          jost: ${{ secrets.EC2_WAS_IP }}
+          host: ${{ secrets.EC2_WAS_IP }}
           username: ec2-user
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
