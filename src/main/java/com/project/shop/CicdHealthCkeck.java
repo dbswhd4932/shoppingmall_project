@@ -9,6 +9,6 @@ public class CicdHealthCkeck {
 
     @GetMapping("/hello")
     public String hello() {
-        return "cicd test ";
+        return "cicd test! ";
     }
 }
