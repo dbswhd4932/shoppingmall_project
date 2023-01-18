@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Java CI/CD with Gradle
 on:
   push:
     branches:
@@ -59,6 +59,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           timeout: 60s
           script: |
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker stop dbswhd493/shop
             docker rm dbswhd493/shop
             docker rmi dbswhd493/shop
