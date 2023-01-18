@@ -22,6 +22,6 @@ public class CicdHealthCkeck {
 
     @GetMapping("/hello")
     public String hello() {
-        return bucket + accessKey + secretKey + region;
+        return "CI CD 테스트 변경되는지 확인";
     }
 }
