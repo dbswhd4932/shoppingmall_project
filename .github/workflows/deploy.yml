@@ -18,13 +18,22 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Copy Secret
-        env:
-          OCCUPY_SECRET: ${{ secrets.OCCUPY_SECRET }}
-          OCCUPY_SECRET_DIR: src/main/resources
-          OCCUPY_SECRET_DIR_FILE_NAME: application.yml
-        run: echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_DIR/$OCCUPY_SECRET_DIR_FILE_NAME &&
-            echo $OCCUPY_SECRET | base64 --decode > $OCCUPY_SECRET_TEST_DIR/$OCCUPY_SECRET_DIR_FILE_NAME
+      - name: gradle 패키지 캐싱
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/buildSrc/**/*.kt') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+      - name: Setting .ignore yml
+        run: |
+          echo "CLOUD_AWS_CREDENTIALS_ACCESS_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }}" >> .env
+          echo "CLOUD_AWS_CREDENTIALS_SECRET_KEY=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }}" >> .env
+          echo "CLOUD_AWS_REGION_STATIC=${{ secrets.CLOUD_AWS_REGION_STATIC }}" >> .env
+          echo "CLOUD_AWS_S3_BUCKET=${{ secrets.CLOUD_AWS_S3_BUCKET }}" >> .env
 
       - name: gradlew 권한 부여
         run: chmod +x ./gradlew
