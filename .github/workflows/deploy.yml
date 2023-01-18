@@ -48,15 +48,4 @@ jobs:
             docker rm ${{ secrets.DOCKER_REPO }}
             docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-            docker run --name ${{ secrets.DOCKER_REPO }} 
-            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} 
-            -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} 
-            -e AWS_REGION=ap-northeast-2 
-            -e cloud.aws.credentials.access-key=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }} 
-            -e cloud.aws.credentials.secret-key=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }} 
-            -e cloud.aws.s3.bucket=${{ secrets.S3_BUCKET }} -e cloud.aws.region.static=ap-northeast-2 
-            -e spring.datasource.url=${{ secrets.DATABASE_URL }}
-            -e spring.datasource.username=${{ secrets.DATABASE_USERNAME }} 
-            -e spring.datasource.password=${{ secrets.DATABASE_PASSWORD }} 
-            -p 8080:8080
-            -d ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+            docker run --name ${{ secrets.DOCKER_REPO }} -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e AWS_REGION=ap-northeast-2 -e cloud.aws.credentials.access-key=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }} -e cloud.aws.credentials.secret-key=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }} -e cloud.aws.s3.bucket=${{ secrets.S3_BUCKET }} -e cloud.aws.region.static=ap-northeast-2 -e spring.datasource.url=${{ secrets.DATABASE_URL }} -e spring.datasource.username=${{ secrets.DATABASE_USERNAME }} -e spring.datasource.password=${{ secrets.DATABASE_PASSWORD }} -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
