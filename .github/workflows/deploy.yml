@@ -61,6 +61,8 @@ jobs:
           username: ec2-user
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
+            systemctl start docker
+            systemctl enable docker
             docker stop shop
             docker rm shop
             docker rmi dbswhd493/shop
