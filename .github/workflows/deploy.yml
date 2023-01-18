@@ -58,7 +58,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.PRIVATE_KEY }}
           timeout: 60s
-          script: |
+          run: |
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker stop dbswhd493/shop
             docker rm dbswhd493/shop
