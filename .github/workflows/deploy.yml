@@ -18,10 +18,10 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - uses: actions/checkout@v3
-      - run: touch ./src/main/resources/application.properties
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-      - run: cat ./src/main/resources/application.properties
+#      - uses: actions/checkout@v3
+#      - run: touch ./src/main/resources/application.properties
+#      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+#      - run: cat ./src/main/resources/application.properties
 
       - name: gradlew 권한 부여
         run: chmod +x ./gradlew
@@ -30,6 +30,13 @@ jobs:
       - name: gradle 빌드
         run: ./gradlew build
         shell: bash
+
+      # spring 어플리케이션 Docker Image 빌드
+      - name: 도커 build & 도커 허브 push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t dbswhd493/shop .
+          docker push dbswhd493/shop
 
       # 서버에서 Docker 이미지 실행
       - name: 도커 허브 pull & 도커 run
