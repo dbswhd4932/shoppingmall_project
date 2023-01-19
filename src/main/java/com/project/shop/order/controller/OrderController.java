@@ -26,7 +26,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    // MerchantID UUID 생성 - 프론트
+    // MerchantID UUID 생성
     @GetMapping("/merchantId")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "주문번호 ID (MerchantId) UUID 생성")
@@ -43,7 +43,7 @@ public class OrderController {
         orderService.cartOrder(orderCreateRequest);
     }
 
-    // 주문 조회
+    // 주문 전체 조회
     @GetMapping("/orders")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")
@@ -52,6 +52,7 @@ public class OrderController {
         return orderService.orderFindMember(pageable);
     }
 
+    // 주문 단건 조회
     @GetMapping("/orders/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")

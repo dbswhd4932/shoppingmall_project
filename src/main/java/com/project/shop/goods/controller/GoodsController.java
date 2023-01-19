@@ -47,6 +47,7 @@ public class GoodsController {
         return goodsService.goodsFindAll(pageable);
     }
 
+    // 상품 가격 변경 확인
     @GetMapping("/goods/checkUpdateGoods")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 가격 변경 확인",

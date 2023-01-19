@@ -177,11 +177,11 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    //로그인 히스토리 테이블 매일 자정 자동 삭제
     @Override
     @Scheduled(cron = "0 0 00 * * *")
     public void schedulerLoginHistoryDeleteCron() {
         memberLoginHistoryRepository.deleteAll();
-        System.out.println("히스토리 삭제!");
     }
 
     private Member getMember() {
