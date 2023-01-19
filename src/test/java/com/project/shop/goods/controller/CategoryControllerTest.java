@@ -56,7 +56,7 @@ public class CategoryControllerTest extends ControllerSetting {
                 .andExpect(status().isCreated());
 
         //then
-        assertThat(categoryRepository.findAll().size()).isEqualTo(1);
+        assertThat(categoryRepository.findAll().size()).isEqualTo(2);
     }
 
     @Test

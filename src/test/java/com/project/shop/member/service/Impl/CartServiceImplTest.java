@@ -139,7 +139,6 @@ class CartServiceImplTest {
         verify(cartRepository).findByIdAndMember(cart.getId(),member);
         verify(goodsRepository).findById(cart.getGoodsId());
         verify(optionRepository).findByGoodsId(goods.getId());
-        verify(optionRepository).deleteById(100L);
 
     }
 

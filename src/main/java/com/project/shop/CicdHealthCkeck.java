@@ -9,6 +9,6 @@ public class CicdHealthCkeck {
 
     @GetMapping("/hello")
     public String hello() {
-        return "When Unit Test fail, CI / CD is Fail ";
+        return "When SpringbootTest is fail, cicd is not effect and success ";
     }
 }
