@@ -9,6 +9,6 @@ public class CicdHealthCkeck {
 
     @GetMapping("/hello")
     public String hello() {
-        return "cicd test!!! ";
+        return "When Unit Test fail, CI / CD is Fail ";
     }
 }
