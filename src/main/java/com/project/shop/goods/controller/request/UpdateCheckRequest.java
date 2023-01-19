@@ -3,7 +3,6 @@ package com.project.shop.goods.controller.request;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Getter

@@ -1,7 +1,5 @@
 package com.project.shop.global.config.security;
 
-import com.project.shop.global.error.ErrorCode;
-import com.project.shop.global.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

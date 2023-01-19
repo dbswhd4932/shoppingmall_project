@@ -13,7 +13,6 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.schema.AlternateTypeRules;
@@ -35,7 +34,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
     /**
      * http://localhost:8080/swagger-ui/index.html#/ 접속
      */
-
     private final TypeResolver typeResolver;
     @Bean
     public Docket api() {
