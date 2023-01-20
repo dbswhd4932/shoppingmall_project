@@ -1,6 +1,6 @@
 # **OpenMarket shoppingMall**
-- 다양한 상품을 판매 할 수 있는 오픈마켓(C2C 방식) 쇼핑몰 API 입니다.<br>
-- 인터넷 쇼핑을 할 때 주로 사용하는 스마트 스토어를 모티브하여 설계했습니다.<br>
+- 다양한 상품을 판매 할 수 있는 오픈마켓(C2C 방식) 쇼핑몰 API 입니다.
+- 인터넷 쇼핑을 할 때 주로 사용하는 스마트 스토어를 모티브하여 설계했습니다.
 - 개발 기간 : 22.10.31 ~ 23.01.19<br>
 - 참여 인원 : 1명<br>
 
@@ -185,3 +185,52 @@ JSON 문자열 형태로 저장하기 위해서 JPA Converter 를 사용했습�
 → i/o timeout 관련한 에러는 보통 방화벽 또는 외부에서 접근 불가능한 내부 IP 등으로 인해 서버에 접근하지 못할 때 발생한 에러입니다.
 ec2 의 22번 포트 접근범위를 anywhere IPv4 로 바꾸어 주어 해결했습니다.
     <img src="https://user-images.githubusercontent.com/103364805/213639607-f0453880-59f0-41a0-9dc1-2a0207176844.png"  width="650" height="650">
+    
+# 프로젝트를 진행하면서 학습한 내용과 에러 조치
+학습했던 내용과 겪었던 에러 내용을 정리하여, 이후 효율적으로 사용 및 쉽게 이해하기 위해 정리하였습니다.<br>
+이후, 현 프로젝트에 적용되어있는 설정방식과 리팩토링을 하면서 해당 프로젝트에 관련된 내용은 지속적으로 최신화 할 
+
+### 학습 내용정리
+- [Springboot docker GitHub Action 연동하여 자동 배포하기](https://josteady.tistory.com/831)
+- [spring boot 빌드 시, 특정 테스트 제외하기](https://josteady.tistory.com/833)
+- [RDS timezone Asia/Seoul 로 변경하기](https://josteady.tistory.com/832)
+- [AWS Secrets Manager 설정하고 Spring boot 연동하기](https://josteady.tistory.com/830)
+- [RDS MYSQL 연결 시 Connection time out 해결하기](https://josteady.tistory.com/829)
+- [ec2 linux + docker + spirngboot 프로젝트 + mysql 연동 후 서버 띄우기](https://josteady.tistory.com/828)
+- [도커허브 - docker requested access to the resource is denied](https://josteady.tistory.com/827)
+- [Docker-compose를 작성해서 SpringBoot + MySql DB 서버 구동](https://josteady.tistory.com/826)
+- [@Convert - T타입 + Map 사용하기](https://josteady.tistory.com/771)
+- [Centos mysql 비밀번호 재설정 방법](https://josteady.tistory.com/824)
+- [ec2 linux mysql8 설치하기](https://josteady.tistory.com/823)
+- [Multipart 는 HTTP POST 로만 사용](https://josteady.tistory.com/817)
+- [spring boot docker mysql 기본설정](https://josteady.tistory.com/819)
+- [@RequestPart MultipartFile , Json 컨트롤러 통합 테스트](https://josteady.tistory.com/814)
+- [spring 스케줄러(Scheduler) 적용하기](https://josteady.tistory.com/812)
+- [Springboot AOP 적용 + 어노테이션 기반](https://josteady.tistory.com/810)
+- [Ehcache 를 사용한 Cache 이용해보기](https://josteady.tistory.com/808)
+- [Page 테스트 코드 작성하기](https://josteady.tistory.com/799)
+- [swagger 에 jwt token 추가하기](https://josteady.tistory.com/794)
+- [H2 데이터베이스 데이터 유지하기](https://josteady.tistory.com/792)
+- [JPA 순환 참조 해결해보기](https://josteady.tistory.com/776)
+- [data.sql 적용하기 (스프링부트 버전 2.7.x 이상)](https://josteady.tistory.com/759)
+
+
+### ERROR
+- [docker push denied requested access to the resource is denied](https://josteady.tistory.com/822)
+- [Only one usage of each socket address (protocol/network address/port) is normally permitted.](https://josteady.tistory.com/818)
+- [com.amazonaws.services.s3.model.AmazonS3Exception: The AWS Access Key Id you provided does not exist in our records.](https://josteady.tistory.com/815)
+- [object references an unsaved transient instance - save the transient instance before flushing](https://josteady.tistory.com/806)
+- [@WebMvcTest 403 응답 처리](https://josteady.tistory.com/802)
+- [the input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'](https://josteady.tistory.com/796)
+- [Illegal DefaultValue null for parameter type integer](https://josteady.tistory.com/795)
+- [AWS S3 access denied Error](https://josteady.tistory.com/793)
+- [query did not return a unique result](https://josteady.tistory.com/791)
+- [javax/xml/bind/DatatypeConverter](https://josteady.tistory.com/783)
+- ['script' must not be null or empty](https://josteady.tistory.com/775)
+- [Referential integrity constraint violation](https://josteady.tistory.com/773)
+- [Error creating bean with name 'swaggerConfig' defined in file](https://josteady.tistory.com/768)
+- [JPA metamodel must not be empty!](https://josteady.tistory.com/767)
+- [attempted to assign id from null one-to-one property](https://josteady.tistory.com/765)
+- [No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer](https://josteady.tistory.com/760)
+- [No validator could be found for constraint 'javax.validation.constraints.NotBlank' validating type 'java.lang.Integer'](https://josteady.tistory.com/725)
+
