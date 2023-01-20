@@ -138,6 +138,7 @@
 
 # 시퀀스 다이어그램
 각 서비스마다 자세히 flow 를 나타내기 위해 작성했습니다.<br>
+시퀀스 다이어그램은 여기서 확인할 수 있습니다 ->
 [시퀀스 다이어그램](https://resolute-meeting-a79.notion.site/Sequence-Diagram-f743df1a9a2543ecaf90b536e0b4a81d)
 
 # 테스트 진행 여부
@@ -170,12 +171,11 @@ JSON 문자열 형태로 저장하기 위해서 JPA Converter 를 사용했습�
 → 다양한 도메인에 쉽게 접근할 수 있고 이후 MSA 환경을 고려해 JWT 방식으로 사용했습니다.
 
 - JWT 관련하여 yml에 secret 키가 노출되었을 경우, 직접 수동으로 secret 키를 변경하고 재배포 해야하는 불편함이 있다고 판단했습니다.<br>
-    → Secret key  를 알고리즘을 통해 서버가 재시작되면 자동으로 변경되도록 설정했습니다.
+    → Secret key  를 알고리즘을 통해 서버가 재시작되면 자동으로 변경되도록 설정했습니다.<br>
+우아한 형제들 코프링 github를 참고했습니다.<br>
+[https://github.com/woowacourse/service-apply/blob/master/src/main/kotlin/apply/security/JwtTokenProvider.kt](https://github.com/woowacourse/service-apply/blob/master/src/main/kotlin/apply/security/JwtTokenProvider.kt)
 
     <img src="https://user-images.githubusercontent.com/103364805/213639070-6fe6d733-4e8c-40f5-b2e9-d43451eb559e.png"  width="800" height="50">
-우아한 형제들 코프링 github를 참고했습니다.
-
-[https://github.com/woowacourse/service-apply/blob/master/src/main/kotlin/apply/security/JwtTokenProvider.kt](https://github.com/woowacourse/service-apply/blob/master/src/main/kotlin/apply/security/JwtTokenProvider.kt)
 
 - request 와 response 에 Entity 를 사용하면 해당 Entity에 있는 필드값이 응답되기 때문에 불필요한 정보가 포함될 것이라고 판단했습니다.<br>
 → 필요한 응답값만 가지고 있는 Dto 를 만들어 리팩토링하였습니다.
