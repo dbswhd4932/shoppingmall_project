@@ -195,6 +195,8 @@ ec2 의 22번 포트 접근범위를 anywhere IPv4 로 바꾸어 주어 해결�
 이후, 현 프로젝트에 적용되어있는 설정방식과 리팩토링을 하면서 해당 프로젝트에 관련된 내용은 지속적으로 최신화 할 예정입니다.
 
 ### 학습 내용정리
+- [@ResponseStatus 와 ResponseEntity 차이점](https://josteady.tistory.com/835)
+- [JAVA JDK17 을 사용하는 이유](https://josteady.tistory.com/834)
 - [Springboot docker GitHub Action 연동하여 자동 배포하기](https://josteady.tistory.com/831)
 - [spring boot 빌드 시, 특정 테스트 제외하기](https://josteady.tistory.com/833)
 - [RDS timezone Asia/Seoul 로 변경하기](https://josteady.tistory.com/832)
