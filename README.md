@@ -195,6 +195,8 @@ ec2 의 22번 포트 접근범위를 anywhere IPv4 로 바꾸어 주어 해결�
 이후, 현 프로젝트에 적용되어있는 설정방식과 리팩토링을 하면서 해당 프로젝트에 관련된 내용은 지속적으로 최신화 할 예정입니다.
 
 ### 학습 내용정리
+- [@ResponseStatus 와 ResponseEntity 차이점](https://josteady.tistory.com/835)
+- [JAVA JDK17 을 사용하는 이유](https://josteady.tistory.com/834)
 - [Springboot docker GitHub Action 연동하여 자동 배포하기](https://josteady.tistory.com/831)
 - [spring boot 빌드 시, 특정 테스트 제외하기](https://josteady.tistory.com/833)
 - [RDS timezone Asia/Seoul 로 변경하기](https://josteady.tistory.com/832)
@@ -238,3 +240,10 @@ ec2 의 22번 포트 접근범위를 anywhere IPv4 로 바꾸어 주어 해결�
 - [No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer](https://josteady.tistory.com/760)
 - [No validator could be found for constraint 'javax.validation.constraints.NotBlank' validating type 'java.lang.Integer'](https://josteady.tistory.com/725)
 
+# 프로젝트를 하면서 느낀 점
+1. 구현 전 분석, 이해, 정리가 충분히 되어야 한다고 생각합니다.
+2. “코드가 기능이 정상적으로 된다” 라는 것이 끝이 될수도, 출발점이 될 수 있다고 생각합니다.
+3. 직접 기획, 구상, 구현을 하고 집중하면 내 의견을 당당하게 말할 수 있었습니다.
+4. 다른 사람의 목소리를 들을 수록 자신과 프로젝트의 완성도를 높일 수 있다고 생각합니다.
+5. 테스트 하기 쉬운 코드가 좋은 코드라고 생각했습니다.
+6. 코드를 망가뜨리고 에러가 발생할 수록 더 많이 배우고 성장했습니다.
