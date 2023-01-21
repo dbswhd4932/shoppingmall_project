@@ -65,8 +65,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "OpenMarket shoppingMall",
-                "springboot + Jpa 를 이용한 오픈마켓 쇼핑몰 프로젝트 입니다.",
+                "OpenMarket ShoppingMall",
+                "Springboot + Jpa 를 이용한 오픈마켓 쇼핑몰 프로젝트 입니다.",
                 "1.0.0",
                 "https://github.com/dbswhd4932/shoppingmall_project.git",
                 new Contact("Jo Yoon Jong", "https://github.com/dbswhd4932/shoppingmall_project.git", "dbswhd4932@gmail.com"),
