@@ -15,22 +15,22 @@ public class GenericJsonConverter<T> implements AttributeConverter<T, String> {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Override // client -> db
+    @Override
     public String convertToDatabaseColumn(T attribute) {
-        try {
+        try { // JSON 문자열로 변환
             return objectMapper.writeValueAsString(attribute);
         } catch (JsonProcessingException e) {
-            log.error("fail to serialize as object into Json : {}", attribute, e );
+            log.error("fail to serialize as object into Json : {}", attribute, e);
             throw new RuntimeException(e);
         }
     }
 
-    @Override // db -> client
-    public T convertToEntityAttribute(String dbData) {
+    @Override // JSON 문자에서 data 로 변환
+    public T convertToEntityAttribute(String jsonStr) {
         try {
-            return objectMapper.readValue(dbData, new TypeReference<T>() {});
+            return objectMapper.readValue(jsonStr, new TypeReference<T>() {});
         } catch (IOException e) {
-            log.error("fail to deserialize as Json into Object : {}", dbData, e);
+            log.error("fail to deserialize as Json into Object : {}", jsonStr, e);
             throw new RuntimeException(e);
         }
     }
