@@ -18,9 +18,9 @@ cloud:
       access-key: ${cloud.aws.credentials.access-key}
       secret-key: ${cloud.aws.credentials.secret-key}
     s3:
-      bucket: goods-image
+      bucket: ${cloud.aws.s3.bucket}
     region:
-      static: ap-northeast-2
+      static: ${cloud.aws.region.static}
     stack:
       auto: false
 jwt:
