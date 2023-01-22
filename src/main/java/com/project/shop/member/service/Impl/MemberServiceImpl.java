@@ -168,7 +168,7 @@ public class MemberServiceImpl implements MemberService {
                 for (Goods goods : goodsList) {
                     List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
                     for (Image image : imageList) {
-                        String fileName = image.getFileUrl().substring(bucket.length() + 41);
+                        String fileName = image.getFileUrl();
                         s3Service.deleteFile(fileName);
                     }
                     goodsRepository.deleteById(goods.getId());
