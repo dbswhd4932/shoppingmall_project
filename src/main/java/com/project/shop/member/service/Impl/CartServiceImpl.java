@@ -115,9 +115,7 @@ public class CartServiceImpl implements CartService {
     public void cartDeleteGoods(Long cartId) {
 
         Member member = getMember();
-
         Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
-
         cartRepository.deleteById(cart.getId());
     }
 

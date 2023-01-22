@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +54,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     // 상품 등록 + 이미지 추가(필수) + 옵션 추가(필수X)
     @Override
-    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> imgPaths) throws IOException {
+    public void goodsCreate(GoodsCreateRequest goodsCreateRequest, List<MultipartFile> imgPaths) {
 
         Member member = getMember();
 
