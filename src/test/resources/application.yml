@@ -2,7 +2,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update # 테스트용 DB 생성(실제 운영시 동일하게 사용하면, 애플리케이션 재기동시마다 삭제됨)
+      ddl-auto: update
   main:
     allow-bean-definition-overriding: true
 
