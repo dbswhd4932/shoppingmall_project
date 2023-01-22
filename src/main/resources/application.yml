@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    database: mysql
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher #swagger
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace #JPA 파라미터 콘솔에서 확인가능
+    root: info
+cloud:
+  aws:
+    credentials:
+      access-key: ${cloud.aws.credentials.access-key}
+      secret-key: ${cloud.aws.credentials.secret-key}
+    s3:
+      bucket: ${cloud.aws.s3.bucket}
+    region:
+      static: ${cloud.aws.region.static}
+    stack:
+      auto: false
+jwt:
+  header: Authorization

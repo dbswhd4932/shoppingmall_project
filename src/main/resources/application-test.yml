@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/test;MODE=MYSQL
+    username: sa
+    password:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
+  main:
+    allow-bean-definition-overriding: true
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${cloud.aws.credentials.access-key}
+      secret-key: ${cloud.aws.credentials.secret-key}
+    s3:
+      bucket: goods-image
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+jwt:
+  header: Authorization
