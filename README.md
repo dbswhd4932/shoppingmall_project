@@ -222,6 +222,7 @@ ec2 의 22번 포트 접근범위를 anywhere IPv4 로 바꾸어 주어 해결�
 
 
 ### ERROR
+- [Failed to load ApplicationContext](https://josteady.tistory.com/836)
 - [docker push denied requested access to the resource is denied](https://josteady.tistory.com/822)
 - [Only one usage of each socket address (protocol/network address/port) is normally permitted.](https://josteady.tistory.com/818)
 - [com.amazonaws.services.s3.model.AmazonS3Exception: The AWS Access Key Id you provided does not exist in our records.](https://josteady.tistory.com/815)
