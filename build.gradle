@@ -35,8 +35,6 @@ dependencies {
     // @notnull 문제 해결 패키지
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
-    // json 변환
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
     // AWS S3 사용
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
 
@@ -62,8 +60,6 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
 
-    // JUnit 의 테스트 작성을 보다 문맥적으로 자연스럽고 우아하게 할 수 있도록 도와주는 Matcher 라이브러리
-    testImplementation 'org.hamcrest:hamcrest-library:2.2'
     testImplementation 'org.mockito:mockito-core:4.10.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:4.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
