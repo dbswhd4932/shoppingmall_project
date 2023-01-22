@@ -48,17 +48,14 @@ public class CategoryServiceImpl implements CategoryService {
     // 카테고리 수정
     @Override
     public void categoryEdit(Long categoryId, CategoryEditRequest categoryEditRequest) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_CATEGORY));
-
+        Category category = ExistCategoryCheck(categoryId);
         category.editCategory(categoryEditRequest);
     }
 
     // 카테고리 삭제
     @Override
     public void categoryDelete(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_CATEGORY));
+        Category category = ExistCategoryCheck(categoryId);
 
         // 카테고리에 속한 상품이 있을 경우 예외
         if(!goodsRepository.findAllByCategory(category).isEmpty()) {
@@ -66,5 +63,11 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         categoryRepository.delete(category);
+    }
+
+    // 카테고리가 존재하는지 확인하는 메서드
+    private Category ExistCategoryCheck(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_CATEGORY));
     }
 }

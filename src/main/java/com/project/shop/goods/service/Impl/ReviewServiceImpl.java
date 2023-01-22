@@ -62,20 +62,15 @@ public class ReviewServiceImpl implements ReviewService {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
         Page<Review> reviews = reviewRepository.findAllByGoods(goods, pageable);
 
-        List<ReviewPageResponse> reviewPageResponseList = reviews.stream().map(review -> ReviewPageResponse.toResponse(review, reviews)).toList();
-        return  reviewPageResponseList;
+        return reviews.stream().map(review -> ReviewPageResponse.toResponse(review, reviews)).toList();
     }
 
     // 리뷰 수정
     @Override
     public void reviewEdit(Long reviewId, ReviewEditRequest reviewEditRequest) {
         Member member = getMember();
-
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
-
-        // 리뷰를 작성한 사람과 로그인한 사람이 다르면 예외처리
-        if (!review.getMemberId().equals(member.getId())) throw new BusinessException(NOT_MATCH_REVIEW);
+        Review review = ExistReviewCheck(reviewId);
+        WriteReviewMemberEqualLoginMemberCheck(member, review);
         review.edit(reviewEditRequest);
     }
 
@@ -83,12 +78,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void reviewDelete(Long reviewId) {
         Member member = getMember();
-
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
-
-        // 리뷰를 작성한 사람과 로그인한 사람이 다르면 예외처리
-        if (!review.getMemberId().equals(member.getId())) throw new BusinessException(NOT_MATCH_REVIEW);
+        Review review = ExistReviewCheck(reviewId);
+        WriteReviewMemberEqualLoginMemberCheck(member, review);
         reviewRepository.delete(review);
     }
 
@@ -96,8 +87,18 @@ public class ReviewServiceImpl implements ReviewService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();
 
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_MEMBER));
-        return member;
+        return memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+    }
+
+    // 리뷰 존재여부 확인
+    private Review ExistReviewCheck(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_REVIEW));
+    }
+
+    // 리뷰작성한 회원 일치여부 확인
+    private void WriteReviewMemberEqualLoginMemberCheck(Member member, Review review) {
+        if (!review.getMemberId().equals(member.getId()))
+            throw new BusinessException(NOT_MATCH_REVIEW);
     }
 }

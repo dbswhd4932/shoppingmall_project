@@ -91,10 +91,8 @@ public class OrderServiceImpl implements OrderService {
         Member member = getMember();
         Page<Order> orderList = orderRepository.findAll(pageable);
 
-        List<OrderPageResponse> orderPageResponseList = orderList.stream().filter(findOrder -> findOrder.getMemberId().equals(member.getId()))
+        return orderList.stream().filter(findOrder -> findOrder.getMemberId().equals(member.getId()))
                 .map(order -> OrderPageResponse.toResponse(order, orderList)).toList();
-
-        return orderPageResponseList;
     }
 
     // 주문 단건 조회
@@ -162,7 +160,6 @@ public class OrderServiceImpl implements OrderService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();
 
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
-        return member;
+        return memberRepository.findByLoginId(loginId).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
     }
 }

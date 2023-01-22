@@ -57,9 +57,7 @@ public class MemberServiceImpl implements MemberService {
     // 회원생성
     @Override
     public void memberSignup(MemberSignupRequest memberSignupRequest) {
-        // 로그인 ID 가 중복이면 예외처리
-        if (memberRepository.findByLoginId(memberSignupRequest.getLoginId()).isPresent())
-            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+        DuplicatedLoginIdCheck(memberRepository.findByLoginId(memberSignupRequest.getLoginId()).isPresent(), ErrorCode.DUPLICATED_LOGIN_ID);
 
         Member member = Member.create(memberSignupRequest, passwordEncoder);
         memberRepository.save(member);
@@ -77,9 +75,7 @@ public class MemberServiceImpl implements MemberService {
     // 회원가입 중복체크
     @Override
     public void loginIdDuplicateCheck(String loginId) {
-        // 로그인 ID 가 중복이면 예외처리
-        if (memberRepository.findByLoginId(loginId).isPresent())
-            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+        DuplicatedLoginIdCheck(memberRepository.findByLoginId(loginId).isPresent(), ErrorCode.DUPLICATED_LOGIN_ID);
     }
 
     // 로그인
@@ -92,13 +88,10 @@ public class MemberServiceImpl implements MemberService {
 
             // 동일한 Email , LoginID 일 경우 토큰만 발급 후 리턴
             if (memberRepository.findByEmailAndLoginId(loginRequest.getEmail(), loginRequest.getLoginId()).isPresent()) {
-                JwtTokenDto tokenDto = tokenProvider.generateToken(loginRequest);
-                return tokenDto;
+                return tokenProvider.generateToken(loginRequest);
             }
 
-            // 중복 LoginID (닉네임) + 다른 이메일(다른사용자) 이면 예외처리
-            if (memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent())
-                throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+            DuplicatedLoginIdCheck(memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent(), ErrorCode.DUPLICATED_LOGIN_ID);
 
             Role role = Role.builder()
                     .member(member)
@@ -111,17 +104,15 @@ public class MemberServiceImpl implements MemberService {
             // 동일한 Email , 다른 LoginID 일 경우 토큰발급 + Member DB 추가 저장
             memberRepository.save(member);
 
-            JwtTokenDto tokenDto = tokenProvider.generateToken(loginRequest);
-            return tokenDto;
+            return tokenProvider.generateToken(loginRequest);
         }
 
         // 로그인한 회원의 타입이 NO_SOCIAL 이 아니라면 예외 (로그인타입 KAKAO 는 조건문으로 확인완료)
         Member member = memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_MEMBER));
-        if (!member.getLoginType().equals(LoginType.NO_SOCIAL)) throw new BusinessException(OTHER_LOGIN_TYPE);
+        DuplicatedLoginIdCheck(!member.getLoginType().equals(LoginType.NO_SOCIAL), OTHER_LOGIN_TYPE);
 
-        JwtTokenDto tokenDto = tokenProvider.generateToken(loginRequest);
-        return tokenDto;
+        return tokenProvider.generateToken(loginRequest);
     }
 
     // 내 정보 조회
@@ -131,10 +122,10 @@ public class MemberServiceImpl implements MemberService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
 
-        MemberResponse memberResponse = new MemberResponse().toResponse(member);
+        MemberResponse memberResponse = MemberResponse.toResponse(member);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        List<String> list = authorities.stream().map(grantedAuthority -> grantedAuthority.getAuthority()).toList();
+        List<String> list = authorities.stream().map(GrantedAuthority::getAuthority).toList();
         memberResponse.setRoles(list);
 
         return memberResponse;
@@ -188,8 +179,12 @@ public class MemberServiceImpl implements MemberService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();
 
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(
+        return memberRepository.findByLoginId(loginId).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_MEMBER));
-        return member;
+    }
+
+    // 로그인 아이디 중복 체크
+    private void DuplicatedLoginIdCheck(boolean memberRepository, ErrorCode errorCode) {
+        if (memberRepository) throw new BusinessException(errorCode);
     }
 }

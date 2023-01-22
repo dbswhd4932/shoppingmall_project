@@ -39,11 +39,8 @@ public class CartServiceImpl implements CartService {
     // 장바구니 담기
     @Override
     public void cartAddGoods(CartCreateRequest cartCreateRequest) {
-
         Member member = getMember();
-
-        Goods goods = goodsRepository.findById(cartCreateRequest.getGoodsId()).orElseThrow(
-                () -> new BusinessException(NOT_FOUND_GOODS));
+        Goods goods = ExistGoodsListCheck(cartCreateRequest.getGoodsId());
 
         // 옵션이 있는 상품일 경우 optionRepository 에서 찾아서 초기화 해줍니다.
         Options options = null;
@@ -77,7 +74,6 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional(readOnly = true)
     public List<CartPageResponse> cartFindMember(Pageable pageable) {
-
         Member member = getMember();
 
         Page<Cart> carts = cartRepository.findAllByMemberId(member.getId(), pageable);
@@ -87,11 +83,9 @@ public class CartServiceImpl implements CartService {
     // 장바구니 수량, 옵션 변경
     @Override
     public void editCartItem(Long cartId, CartEditRequest cartEditRequest) {
-
         Member member = getMember();
-
-        Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
-        Goods goods = goodsRepository.findById(cart.getGoodsId()).orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
+        Cart cart = ExistMemberCartCheck(cartId, member);
+        Goods goods = ExistGoodsListCheck(cart.getGoodsId());
 
         List<Options> options = optionRepository.findByGoodsId(goods.getId());
 
@@ -113,16 +107,25 @@ public class CartServiceImpl implements CartService {
     // 장바구니 상품 삭제
     @Override
     public void cartDeleteGoods(Long cartId) {
-
         Member member = getMember();
-        Cart cart = cartRepository.findByIdAndMember(cartId, member).orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
+        Cart cart = ExistMemberCartCheck(cartId, member);
         cartRepository.deleteById(cart.getId());
     }
 
     private Member getMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
-        return member;
+        return memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+    }
+
+    // 상품 존재여부 확인
+    private Goods ExistGoodsListCheck(Long goodsId) {
+        return goodsRepository.findById(goodsId).orElseThrow(
+                () -> new BusinessException(NOT_FOUND_GOODS));
+    }
+
+    // 회원 장바구니 존재여부 확인
+    private Cart ExistMemberCartCheck(Long cartId, Member member) {
+        return cartRepository.findByIdAndMember(cartId, member).orElseThrow(() -> new BusinessException(NOT_FOUND_CART));
     }
 
 }

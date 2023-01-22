@@ -60,17 +60,14 @@ public class ReplyServiceImpl implements ReplyService {
         if (replyList.isEmpty()) throw new BusinessException(NOT_FOUND_REPLY);
 
         return replyList.stream()
-                .map(reply -> ReplyResponse.toResponse(reply)).collect(toList());
+                .map(ReplyResponse::toResponse).collect(toList());
     }
 
     // 대댓글 수정
     @Override
     public void replyEdit(Long replyId, ReplyEditRequest ReplyEditRequest) {
         Member member = getMember();
-
-        Reply reply = replyRepository.findByIdAndMemberId(replyId, member.getId())
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
-
+        Reply reply = ExistMemberWriteReplyCheck(replyId, member);
         reply.edit(ReplyEditRequest.getComment());
     }
 
@@ -78,16 +75,18 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     public void replyDelete(Long replyId) {
         Member member = getMember();
-
-        Reply reply = replyRepository.findByIdAndMemberId(replyId, member.getId())
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
-
+        Reply reply = ExistMemberWriteReplyCheck(replyId, member);
         replyRepository.delete(reply);
     }
 
     private Member getMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
-        return member;
+        return memberRepository.findByLoginId(authentication.getName()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+    }
+
+    //회원이 작성한 대댓글이 존재여부 확인
+    private Reply ExistMemberWriteReplyCheck(Long replyId, Member member) {
+        return replyRepository.findByIdAndMemberId(replyId, member.getId())
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_REPLY));
     }
 }
