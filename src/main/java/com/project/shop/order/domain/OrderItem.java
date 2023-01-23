@@ -7,7 +7,6 @@ import lombok.*;
 import javax.persistence.*;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "order_item")
 @Entity
