@@ -37,8 +37,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
             log.info("authentication.getAuthorities() = " + authentication.getAuthorities());
             log.info("authentication.getPrincipal() = " + authentication.getPrincipal());
-            log.info("authentication.getDetails() = " + authentication.getDetails());
-            log.info("authentication.getCredentials() = " + authentication.getCredentials());
             log.info("Security Context 에 ' {} ' 인증 정보를 저장했습니다. uri : {} 로 요청이 들어옴", authentication.getName(), request.getRequestURI());
         }
         filterChain.doFilter(request, response);
