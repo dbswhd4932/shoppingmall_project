@@ -11,6 +11,9 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   main:
     allow-bean-definition-overriding: true
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
 
 cloud:
   aws:

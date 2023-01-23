@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableCaching
 @EnableJpaAuditing
 @EnableScheduling
 public class ShopApplication {

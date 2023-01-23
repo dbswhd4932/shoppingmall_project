@@ -48,6 +48,11 @@ dependencies {
     // aop 설정
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
+    // ehcache 캐시 설정
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.ehcache:ehcache:3.8.0'
+    implementation 'javax.cache:cache-api:1.0.0' // expiry 기능을 위해 필요
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'

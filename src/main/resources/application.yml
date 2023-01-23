@@ -21,6 +21,9 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
 logging:
   level:
     org:
