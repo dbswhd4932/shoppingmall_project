@@ -51,7 +51,7 @@ public class TokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(loginRequest.getLoginId())              //"sub":"소셜닉네임"
                 .claim(MEMBER_ID_CLAIM_KEY, member.getId())         //"memberId":"1"
-                .claim(AUTHORITIES_KEY, data)                       //"auth":"[ROLE_USER]"
+                .claim(AUTHORITIES_KEY, data)                       //  "auth": "[\"ROLE_USER\",\"ROLE_SELLER\"]",
                 .claim("LOGIN_TYPE", member.getLoginType()) // "LOGIN_TYPE":"KAKAO"
                 .setExpiration(accessTokenExpiresIn)                //"exp":"12345678"
                 .signWith(key)
