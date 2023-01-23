@@ -3,7 +3,6 @@ package com.project.shop.member.service.Impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.shop.global.config.security.JwtTokenDto;
 import com.project.shop.global.config.security.TokenProvider;
-import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Image;
@@ -33,8 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
+import static com.project.shop.global.error.ErrorCode.DUPLICATED_LOGIN_ID;
 import static com.project.shop.global.error.ErrorCode.NOT_FOUND_MEMBER;
-import static com.project.shop.global.error.ErrorCode.OTHER_LOGIN_TYPE;
 
 
 @Service
@@ -57,7 +56,7 @@ public class MemberServiceImpl implements MemberService {
     // 회원생성
     @Override
     public void memberSignup(MemberSignupRequest memberSignupRequest) {
-        DuplicatedLoginIdCheck(memberRepository.findByLoginId(memberSignupRequest.getLoginId()).isPresent(), ErrorCode.DUPLICATED_LOGIN_ID);
+        DuplicatedLoginIdCheck(memberRepository.findByLoginId(memberSignupRequest.getLoginId()).isPresent());
 
         Member member = Member.create(memberSignupRequest, passwordEncoder);
         memberRepository.save(member);
@@ -75,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
     // 회원가입 중복체크
     @Override
     public void loginIdDuplicateCheck(String loginId) {
-        DuplicatedLoginIdCheck(memberRepository.findByLoginId(loginId).isPresent(), ErrorCode.DUPLICATED_LOGIN_ID);
+        DuplicatedLoginIdCheck(memberRepository.findByLoginId(loginId).isPresent());
     }
 
     // 로그인
@@ -91,7 +90,7 @@ public class MemberServiceImpl implements MemberService {
                 return tokenProvider.generateToken(loginRequest);
             }
 
-            DuplicatedLoginIdCheck(memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent(), ErrorCode.DUPLICATED_LOGIN_ID);
+            DuplicatedLoginIdCheck(memberRepository.findByLoginId(loginRequest.getLoginId()).isPresent());
 
             Role role = Role.builder()
                     .member(member)
@@ -110,7 +109,7 @@ public class MemberServiceImpl implements MemberService {
         // 로그인한 회원의 타입이 NO_SOCIAL 이 아니라면 예외 (로그인타입 KAKAO 는 조건문으로 확인완료)
         Member member = memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_MEMBER));
-        DuplicatedLoginIdCheck(!member.getLoginType().equals(LoginType.NO_SOCIAL), OTHER_LOGIN_TYPE);
+        DuplicatedLoginIdCheck(!member.getLoginType().equals(LoginType.NO_SOCIAL));
 
         return tokenProvider.generateToken(loginRequest);
     }
@@ -184,7 +183,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     // 로그인 아이디 중복 체크
-    private void DuplicatedLoginIdCheck(boolean memberRepository, ErrorCode errorCode) {
-        if (memberRepository) throw new BusinessException(errorCode);
+    private void DuplicatedLoginIdCheck(boolean duplicatedCheck) {
+        if (duplicatedCheck) throw new BusinessException(DUPLICATED_LOGIN_ID);
     }
 }
