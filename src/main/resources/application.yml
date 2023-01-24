@@ -13,6 +13,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+        default_batch_fetch_size: 100
     database: mysql
   mvc:
     path match:
@@ -30,7 +31,7 @@ logging:
       hibernate:
         type:
           descriptor:
-            sql: trace #JPA 파라미터 콘솔에서 확인가능
+            sql: debug #JPA 파라미터 콘솔에서 확인가능
     root: info
 cloud:
   aws:
