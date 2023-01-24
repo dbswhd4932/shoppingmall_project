@@ -23,32 +23,30 @@ public class Goods extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "goods_id")
-    private Long id;   //상품번호(PK)
+    private Long id;                    //상품번호(PK)
 
     @Column(nullable = false)
-    private Long memberId;
+    private Long memberId;              //회원ID
 
     @Column(nullable = false, unique = true)
-    private String goodsName;    //상품이름
+    private String goodsName;           //상품이름
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    // 저장할때만 사용
+    // object references an unsaved transient instance - save the transient instance before flushing
+   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
-    private Category category;  //카테고리(다대일)
+    private Category category;          //카테고리(다대일)
 
     @Column(nullable = false)
-    private int price;      //상품가격
+    private int price;                  //상품가격
 
     @Column
-    private String goodsDescription; //상품설명
+    private String goodsDescription;    //상품설명
 
     // 상품 삭제 시 이미지 DB 도 같이 삭제 , cascade 옵션
-    // null 처리된 자식을 delete -> orphanRemoval 옵션
-    // JPA 순환참조 관련 @JsonManagedReference
-    @JsonManagedReference
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)
     private List<Options> options = new ArrayList<>();
 
