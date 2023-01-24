@@ -195,6 +195,7 @@ ec2 의 22번 포트 접근범위를 anywhere IPv4 로 바꾸어 주어 해결�
 이후, 현 프로젝트에 적용되어있는 설정방식과 리팩토링을 하면서 해당 프로젝트에 관련된 내용은 지속적으로 최신화 할 예정입니다.
 
 ### 학습 내용정리
+- [JPA N+1 문제 알아보기](https://josteady.tistory.com/839)
 - [Ehcache 2 -> Ehcache 3 마이그레이션](https://josteady.tistory.com/811)
 - [Spring Security + JWT 로그인 구현하기 (Access Token)](https://josteady.tistory.com/838)
 - [@ResponseStatus 와 ResponseEntity 차이점](https://josteady.tistory.com/835)
