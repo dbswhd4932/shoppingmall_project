@@ -58,6 +58,4 @@ public class Review extends BaseTimeEntity {
     public void edit(ReviewEditRequest reviewEditRequest) {
         this.comment = reviewEditRequest.getComment();
     }
-
-    // 해당 회원이 작성한 리뷰인지 확인
 }
