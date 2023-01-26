@@ -15,6 +15,7 @@ spring:
         show_sql: true
         default_batch_fetch_size: 100
     database: mysql
+    open-in-view: false
   mvc:
     path match:
       matching-strategy: ant_path_matcher #swagger
