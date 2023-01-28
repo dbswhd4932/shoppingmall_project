@@ -4,6 +4,7 @@ import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewPageResponse;
+import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.repository.GoodsRepository;
@@ -58,11 +59,10 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 전체
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewPageResponse> reviewFindAll(Long goodsId, Pageable pageable) {
+    public Page<ReviewResponse> reviewFindAll(Long goodsId, Pageable pageable) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
         Page<Review> reviews = reviewRepository.findAllByGoods(goods, pageable);
-
-        return reviews.stream().map(review -> ReviewPageResponse.toResponse(review, reviews)).toList();
+        return reviews.map(ReviewResponse::new);
     }
 
     // 리뷰 수정

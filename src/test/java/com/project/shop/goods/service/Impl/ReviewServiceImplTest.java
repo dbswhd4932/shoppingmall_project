@@ -5,6 +5,7 @@ import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewPageResponse;
+import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.repository.GoodsRepository;
@@ -21,10 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -111,10 +109,10 @@ class ReviewServiceImplTest {
         given(reviewRepository.findAllByGoods(goods, pageable)).willReturn(reviews);
 
         //when
-        List<ReviewPageResponse> reviewResponses = reviewService.reviewFindAll(goods.getId(), pageable);
+        Page<ReviewResponse> responses = reviewService.reviewFindAll(goods.getId(), pageable);
 
         //then
-        assertThat(reviewResponses.get(0).getComment()).isEqualTo("comment");
+        assertThat(responses.getContent().get(0).getComment()).isEqualTo("comment");
 
     }
 

@@ -2,10 +2,11 @@ package com.project.shop.goods.controller;
 
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
-import com.project.shop.goods.controller.response.ReviewPageResponse;
+import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.service.ReviewService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -14,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class ReviewController {
     @GetMapping("/goods/reviews")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "리뷰 조회")
-    public List<ReviewPageResponse> reviewFindAll(Long goodsId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Page<ReviewResponse> reviewFindAll(Long goodsId, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return reviewService.reviewFindAll(goodsId, pageable);
     }
 

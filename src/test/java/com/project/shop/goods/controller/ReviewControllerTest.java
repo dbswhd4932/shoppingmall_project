@@ -7,6 +7,7 @@ import com.project.shop.factory.OrderFactory;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
 import com.project.shop.goods.controller.response.ReviewPageResponse;
+import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
 import com.project.shop.goods.repository.GoodsRepository;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -122,7 +124,7 @@ class ReviewControllerTest extends ControllerSetting {
         Review review = Review.builder().goods(goods).memberId(member.getId()).comment("comment").build();
         reviewRepository.save(review);
 
-        List<ReviewPageResponse> reviewResponses = reviewService.reviewFindAll(goods.getId(), pageable);
+        Page<ReviewResponse> responses = reviewService.reviewFindAll(goods.getId(), pageable);
 
         //when
         mockMvc.perform(get("/api/goods/reviews")
@@ -130,7 +132,7 @@ class ReviewControllerTest extends ControllerSetting {
                 .andExpect(status().isOk());
 
         //then
-        assertThat(reviewResponses.size()).isEqualTo(1);
+        assertThat(responses.getTotalElements()).isEqualTo(1);
 
     }
 
