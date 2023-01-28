@@ -7,7 +7,6 @@ import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
-import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Category;
@@ -91,15 +90,11 @@ public class GoodsServiceImpl implements GoodsService {
     @TimerAop
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "goods", key = "#pageable")
-    public List<GoodsPageResponse> goodsFindAll(Pageable pageable) {
+    public Page<GoodsResponse> goodsFindAll(Pageable pageable) {
         Page<Goods> goods = goodsRepository.findAll(pageable);
-        List<GoodsPageResponse> list = new ArrayList<>();
 
-        List<GoodsPageResponse> goodsPageResponseList =
-                goods.stream().map(good -> GoodsPageResponse.toResponse(good, goods)).collect(Collectors.toList());
-
-        list.addAll(goodsPageResponseList);
-        return list;
+        Page<GoodsResponse> responses = goods.map(good -> new GoodsResponse(good));
+        return responses;
 
     }
 
@@ -157,8 +152,7 @@ public class GoodsServiceImpl implements GoodsService {
     public Page<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable) {
         // keyword 로 검색 후 모든 상품 찾기
         Page<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword);
-        Page<GoodsResponse> responses = goods.map(GoodsResponse::new);
-        return responses;
+        return goods.map(GoodsResponse::new);
     }
 
     // 상품 수정

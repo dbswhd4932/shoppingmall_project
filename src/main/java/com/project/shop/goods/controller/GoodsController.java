@@ -3,7 +3,6 @@ package com.project.shop.goods.controller;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
-import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.service.GoodsService;
@@ -44,7 +43,7 @@ public class GoodsController {
     @GetMapping("/goods")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 전체 조회")
-    public List<GoodsPageResponse> goodsFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Page<GoodsResponse> goodsFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindAll(pageable);
     }
 

@@ -6,7 +6,6 @@ import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
-import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.*;
@@ -121,10 +120,10 @@ class GoodsServiceImplTest {
         given(goodsRepository.findAll(pageable)).willReturn(goodsPage);
 
         //when
-        List<GoodsPageResponse> goodsResponses = goodsService.goodsFindAll(pageable);
+        Page<GoodsResponse> goodsResponses = goodsService.goodsFindAll(pageable);
 
         //then
-        assertThat(goodsResponses.size()).isEqualTo(1);
+        assertThat(goodsResponses.getTotalElements()).isEqualTo(1);
     }
 
     @Test
@@ -158,7 +157,7 @@ class GoodsServiceImplTest {
     }
 
     @Test
-    @DisplayName("상품 검색")
+    @DisplayName("상품 키워드 검색")
     void goodsFindKeyword() {
         //given
         String keyword = "테스트";
