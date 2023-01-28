@@ -23,10 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -173,10 +170,10 @@ class GoodsServiceImplTest {
 
         given(goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword)).willReturn(page);
         //when
-        List<GoodsPageResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
+        Page<GoodsResponse> responses = goodsService.goodsFindKeyword(keyword, pageable);
 
         //then
-        assertThat(goodsResponses.get(0).getGoodsName()).isEqualTo("테스트상품");
+        assertThat(responses.getContent().get(0).getGoodsName()).isEqualTo("테스트상품");
     }
 
     @Test

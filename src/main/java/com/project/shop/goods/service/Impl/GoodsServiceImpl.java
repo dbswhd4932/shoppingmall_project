@@ -23,7 +23,6 @@ import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +30,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StopWatch;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -148,23 +146,19 @@ public class GoodsServiceImpl implements GoodsService {
     public GoodsResponse goodsDetailFind(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
-        return GoodsResponse.toResponse(goods);
+
+        return new GoodsResponse(goods);
     }
 
     // 상품 검색 ( 키워드 )
     @Override
     @TimerAop
     @Transactional(readOnly = true)
-    public List<GoodsPageResponse> goodsFindKeyword(String keyword, Pageable pageable) {
+    public Page<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable) {
         // keyword 로 검색 후 모든 상품 찾기
         Page<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword);
-        List<GoodsPageResponse> list = new ArrayList<>();
-
-        // 상품의 이미지 찾아서 응답에 추가 설정
-        List<GoodsPageResponse> goodsPageResponseList
-                = goods.stream().map(good -> GoodsPageResponse.toResponse(good, goods)).collect(Collectors.toList());
-        list.addAll(goodsPageResponseList);
-        return list;
+        Page<GoodsResponse> responses = goods.map(GoodsResponse::new);
+        return responses;
     }
 
     // 상품 수정

@@ -9,6 +9,7 @@ import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.service.GoodsService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -68,7 +69,7 @@ public class GoodsController {
     @GetMapping("/goods/keyword")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 검색")
-    public List<GoodsPageResponse> goodsFindKeyword(@RequestParam String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Page<GoodsResponse> goodsFindKeyword(@RequestParam String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindKeyword(keyword, pageable);
     }
 

@@ -6,7 +6,6 @@ import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.OptionCreateRequest;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
-import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Category;
@@ -22,10 +21,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -208,7 +207,7 @@ class GoodsControllerTest extends ControllerSetting {
         //given
         String keyword = "테스트";
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
-        List<GoodsPageResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
+        Page<GoodsResponse> goodsResponses = goodsService.goodsFindKeyword(keyword, pageable);
 
         //when
         mockMvc.perform(get("/api/goods/keyword")
@@ -216,7 +215,7 @@ class GoodsControllerTest extends ControllerSetting {
                 .andExpect(status().isOk());
 
         //then
-        assertThat(goodsResponses.get(0).getGoodsName()).isEqualTo("테스트상품");
+        assertThat(goodsResponses.getContent().get(0).getGoodsName()).isEqualTo("테스트상품");
 
 
     }

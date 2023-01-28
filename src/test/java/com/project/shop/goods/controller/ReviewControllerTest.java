@@ -6,7 +6,6 @@ import com.project.shop.factory.MemberFactory;
 import com.project.shop.factory.OrderFactory;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
-import com.project.shop.goods.controller.response.ReviewPageResponse;
 import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
@@ -33,8 +32,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;

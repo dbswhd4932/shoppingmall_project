@@ -22,16 +22,14 @@ public class GoodsResponse implements Serializable {
     private List<ImageResponse> imageList;
     private List<OptionResponse> options;
 
-    public static GoodsResponse toResponse(Goods goods) {
-        return GoodsResponse.builder()
-                .memberId(goods.getMemberId())
-                .goodsId(goods.getId())
-                .goodsName(goods.getGoodsName())
-                .categoryName(goods.getCategory().getCategory())
-                .price(goods.getPrice())
-                .description(goods.getGoodsDescription())
-                .imageList(ImageResponse.toResponse(goods))
-                .options(OptionResponse.toResponse(goods))
-                .build();
+    public GoodsResponse(Goods goods) {
+        this.memberId = goods.getMemberId();
+        this.goodsId = goods.getId();
+        this.goodsName = goods.getGoodsName();
+        this.categoryName = goods.getCategory().getCategory();
+        this.price = goods.getPrice();
+        this.imageList = ImageResponse.toResponse(goods);
+        this.options = OptionResponse.toResponse(goods);
+
     }
 }

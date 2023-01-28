@@ -3,7 +3,6 @@ package com.project.shop.goods.service.Impl;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
-import com.project.shop.goods.controller.response.ReviewPageResponse;
 import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
@@ -21,8 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.project.shop.global.error.ErrorCode.*;
 

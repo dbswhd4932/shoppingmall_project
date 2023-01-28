@@ -6,6 +6,7 @@ import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsPageResponse;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +28,7 @@ public interface GoodsService {
     GoodsResponse goodsDetailFind(Long goodsId);
 
     // 상품 검색 기능
-    List<GoodsPageResponse> goodsFindKeyword(String keyword, Pageable pageable);
+    Page<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable);
 
     // 상품 수정
     void goodsEdit(Long goodsId, GoodsEditRequest goodsEditRequest, List<MultipartFile> imgPaths);

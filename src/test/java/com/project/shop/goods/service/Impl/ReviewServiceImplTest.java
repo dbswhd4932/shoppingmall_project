@@ -4,7 +4,6 @@ import com.project.shop.factory.GoodsFactory;
 import com.project.shop.factory.MemberFactory;
 import com.project.shop.goods.controller.request.ReviewCreateRequest;
 import com.project.shop.goods.controller.request.ReviewEditRequest;
-import com.project.shop.goods.controller.response.ReviewPageResponse;
 import com.project.shop.goods.controller.response.ReviewResponse;
 import com.project.shop.goods.domain.Goods;
 import com.project.shop.goods.domain.Review;
