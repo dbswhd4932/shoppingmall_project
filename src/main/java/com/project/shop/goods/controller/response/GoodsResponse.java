@@ -3,7 +3,6 @@ package com.project.shop.goods.controller.response;
 import com.project.shop.goods.domain.Goods;
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -11,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GoodsResponse implements Serializable {
+public class GoodsResponse {
 
     private Long memberId;
     private Long goodsId;

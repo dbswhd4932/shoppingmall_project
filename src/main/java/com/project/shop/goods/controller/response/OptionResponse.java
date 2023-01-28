@@ -1,11 +1,10 @@
 package com.project.shop.goods.controller.response;
 
 import com.project.shop.goods.domain.Goods;
-import com.project.shop.goods.domain.Options;
 import com.project.shop.goods.domain.OptionCreate;
+import com.project.shop.goods.domain.Options;
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OptionResponse implements Serializable {
+public class OptionResponse {
 
     private List<OptionCreate> optionValue;
     private int totalPrice;
