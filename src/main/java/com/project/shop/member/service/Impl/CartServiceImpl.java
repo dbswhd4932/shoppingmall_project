@@ -7,7 +7,7 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
-import com.project.shop.member.controller.response.CartPageResponse;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.project.shop.global.error.ErrorCode.*;
 
@@ -73,11 +72,13 @@ public class CartServiceImpl implements CartService {
     // 장바구니 조회
     @Override
     @Transactional(readOnly = true)
-    public List<CartPageResponse> cartFindMember(Pageable pageable) {
+    public Page<CartResponse> cartFindMember(Pageable pageable) {
         Member member = getMember();
 
         Page<Cart> carts = cartRepository.findAllByMemberId(member.getId(), pageable);
-        return carts.stream().map(cart -> CartPageResponse.toResponse(cart, carts)).collect(Collectors.toList());
+        return carts.map(CartResponse::new);
+
+
     }
 
     // 장바구니 수량, 옵션 변경

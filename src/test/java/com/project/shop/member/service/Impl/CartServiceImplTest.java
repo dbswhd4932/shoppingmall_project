@@ -10,7 +10,7 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
-import com.project.shop.member.controller.response.CartPageResponse;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
@@ -22,10 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -109,11 +106,12 @@ class CartServiceImplTest {
         given(cartRepository.findAllByMemberId(member.getId(),pageable)).willReturn(carts);
 
         //when
-        List<CartPageResponse> cartPageRespons = cartService.cartFindMember(pageable);
+        Page<CartResponse> cartResponses = cartService.cartFindMember(pageable);
 
         //then
-        assertThat(cartPageRespons.size()).isEqualTo(1);
-        assertThat(cartPageRespons.get(0).getTotalPrice()).isEqualTo(1000);
+        assertThat(cartResponses.getTotalElements()).isEqualTo(1);
+
+
     }
 
     @Test

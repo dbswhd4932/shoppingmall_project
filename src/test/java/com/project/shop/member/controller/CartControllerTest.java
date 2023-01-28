@@ -10,7 +10,7 @@ import com.project.shop.goods.repository.GoodsRepository;
 import com.project.shop.goods.repository.OptionRepository;
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
-import com.project.shop.member.controller.response.CartPageResponse;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
@@ -21,13 +21,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -115,11 +111,8 @@ class CartControllerTest extends ControllerSetting {
                 .optionNumber(1L)
                 .build();
         cartRepository.save(cart);
-        List<Cart> list = new ArrayList<>();
-        list.add(cart);
-        PageImpl<Cart> carts = new PageImpl<>(list);
 
-        CartPageResponse cartPageResponse = CartPageResponse.toResponse(cart,carts);
+        CartResponse cartResponse = new CartResponse(cart);
 
         //when
         mockMvc.perform(get("/api/carts")
@@ -127,7 +120,7 @@ class CartControllerTest extends ControllerSetting {
                 .andExpect(status().isOk());
 
         //then
-        assertThat(cartPageResponse.getTotalAmount()).isEqualTo(10);
+        assertThat(cartResponse.getTotalAmount()).isEqualTo(10);
     }
 
     @Test

@@ -2,10 +2,11 @@ package com.project.shop.member.controller;
 
 import com.project.shop.member.controller.request.CartCreateRequest;
 import com.project.shop.member.controller.request.CartEditRequest;
-import com.project.shop.member.controller.response.CartPageResponse;
+import com.project.shop.member.controller.response.CartResponse;
 import com.project.shop.member.service.CartService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -14,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class CartController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER')")
     @ApiOperation(value = "장바구니 조회")
-    public List<CartPageResponse> cartFind(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Page<CartResponse> cartFind(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return cartService.cartFindMember(pageable);
     }
 
