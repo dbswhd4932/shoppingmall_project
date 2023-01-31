@@ -126,6 +126,7 @@ class MemberServiceImplTest {
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         given(memberRepository.findByLoginId(loginRequest.getLoginId())).willReturn(Optional.ofNullable(member));
+        given(passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())).willReturn(true);
         given(tokenProvider.generateToken(loginRequest)).willReturn(tokenDto);
         //when
         JwtTokenDto jwtTokenDto = memberService.login(loginRequest);
