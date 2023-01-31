@@ -18,7 +18,7 @@
 
 
 # 아키텍처
-<img src="https://user-images.githubusercontent.com/103364805/213636580-3d250d2a-df37-4613-850f-e3caa0a0a6a6.png"  width="650" height="330">
+<img src="https://user-images.githubusercontent.com/103364805/215643040-1af1f2a0-d74b-440d-a93a-4de727060bb1.png"  width="650" height="330">
 
 # 프로젝트 구조
 <img src="https://user-images.githubusercontent.com/103364805/213636905-b65f085a-060d-4cab-a289-14d7b3529d79.png"  width="260" height="530">
