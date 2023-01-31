@@ -32,8 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-import static com.project.shop.global.error.ErrorCode.DUPLICATED_LOGIN_ID;
-import static com.project.shop.global.error.ErrorCode.NOT_FOUND_MEMBER;
+import static com.project.shop.global.error.ErrorCode.*;
 
 
 @Service
@@ -109,8 +108,11 @@ public class MemberServiceImpl implements MemberService {
         // 로그인한 회원의 타입이 NO_SOCIAL 이 아니라면 예외 (로그인타입 KAKAO 는 조건문으로 확인완료)
         Member member = memberRepository.findByLoginId(loginRequest.getLoginId()).orElseThrow(
                 () -> new BusinessException(NOT_FOUND_MEMBER));
-        DuplicatedLoginIdCheck(!member.getLoginType().equals(LoginType.NO_SOCIAL));
 
+        // 비밀번호 일치 여부 비교 ( 로그인 요청한 PW == DB 암호화 비밀번호 )
+        if(!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
+            throw new BusinessException(NOT_EQUAL_PASSWORD);
+        }
         return tokenProvider.generateToken(loginRequest);
     }
 
