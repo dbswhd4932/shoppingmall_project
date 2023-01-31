@@ -113,31 +113,6 @@ class ReplyControllerTest extends ControllerSetting {
     }
 
     @Test
-    @DisplayName("대댓글 조회")
-    void replyFind() throws Exception {
-        //given
-        Member member = memberRepository.findByLoginId("loginId").get();
-        Goods goods = goodsRepository.findByGoodsName("테스트상품").get();
-        Review review = Review.builder().goods(goods).memberId(member.getId()).comment("comment").build();
-        reviewRepository.save(review);
-        Reply reply = Reply.builder()
-                .review(review)
-                .memberId(member.getId())
-                .comment("comment")
-                .build();
-        replyRepository.save(reply);
-        List<ReplyResponse> replyResponses = replyService.replyFind(review.getId());
-
-        //when
-        mockMvc.perform(get("/api/reviews/reply")
-                        .queryParam("reviewId", String.valueOf(review.getId())))
-                .andExpect(status().isOk());
-
-        //then
-        assertThat(replyResponses.get(0).getComment()).isEqualTo("comment");
-    }
-
-    @Test
     @DisplayName("대댓글 수정")
     @WithMockUser(roles = "SELLER")
     void replyEdit() throws Exception {

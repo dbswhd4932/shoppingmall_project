@@ -80,22 +80,6 @@ class ReplyServiceImplTest {
     }
 
     @Test
-    @DisplayName("대댓글 조회")
-    void replyFind() {
-        //given
-        Goods goods = GoodsFactory.createGoods();
-        Review review = new Review(1L, goods, "comment");
-        Reply reply = new Reply(1L, review, "replyComment");
-        given(replyRepository.findByReviewId(1L)).willReturn(List.of(reply));
-
-        //when
-        List<ReplyResponse> replyResponses = replyService.replyFind(1L);
-
-        //then
-        assertThat(replyResponses.get(0).getComment()).isEqualTo("replyComment");
-    }
-
-    @Test
     @DisplayName("대댓글 수정")
     void replyEdit() {
         //given

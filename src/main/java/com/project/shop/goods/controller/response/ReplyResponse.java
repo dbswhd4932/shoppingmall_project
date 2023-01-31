@@ -14,9 +14,7 @@ public class ReplyResponse {
 
     private String comment;
 
-    public static ReplyResponse toResponse(Reply reply) {
-        return ReplyResponse.builder()
-                .comment(reply.getComment())
-                .build();
+    public ReplyResponse(Reply reply) {
+        this.comment = reply.getComment();
     }
 }

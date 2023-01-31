@@ -29,14 +29,6 @@ public class ReplyController {
         replyService.replyCreate(reviewId, request);
     }
 
-    // 대댓글 조회
-    @GetMapping("/reviews/reply")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "대댓글 조회")
-    public List<ReplyResponse> replyFind(Long reviewId) {
-        return replyService.replyFind(reviewId);
-    }
-
     // 대댓글 수정
     @PutMapping("/replies/{replyId}")
     @ResponseStatus(HttpStatus.OK)

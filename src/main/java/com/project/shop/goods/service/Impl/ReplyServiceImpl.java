@@ -50,19 +50,6 @@ public class ReplyServiceImpl implements ReplyService {
         replyRepository.save(reply);
     }
 
-    // 대댓글 조회
-    @Override
-    @Transactional(readOnly = true)
-    public List<ReplyResponse> replyFind(Long reviewId) {
-        List<Reply> replyList = replyRepository.findByReviewId(reviewId);
-
-        // 대댓글이 없으면 예외처리
-        if (replyList.isEmpty()) throw new BusinessException(NOT_FOUND_REPLY);
-
-        return replyList.stream()
-                .map(ReplyResponse::toResponse).collect(toList());
-    }
-
     // 대댓글 수정
     @Override
     public void replyEdit(Long replyId, ReplyEditRequest ReplyEditRequest) {
