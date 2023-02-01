@@ -21,23 +21,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> BusinessExceptionHandler(BusinessException e) {
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
-
-        for (ObjectError c : e.getBindingResult().getAllErrors()) {
-            errors.put(((FieldError) c).getField(), c.getDefaultMessage());
-        }
-        return ResponseEntity.badRequest().body(errors);
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, String>> httpMessageNotReadableException(HttpMessageNotReadableException e) {
-        Map<String, String> error = new HashMap<>();
-        error.put("message", "값을 입력해주세요");
-
-        return ResponseEntity.badRequest().body(error);
-    }
-
 }
