@@ -13,13 +13,13 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "repliy")
+@Table(name = "reply")
 @Entity
 public class Reply extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "repliy_id")
+    @Column(name = "reply_id")
     private Long id;         //상품리뷰댓글번호(PK)
 
     @Column(nullable = false)
