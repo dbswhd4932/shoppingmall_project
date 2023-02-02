@@ -45,6 +45,12 @@ public class Review extends BaseTimeEntity {
         this.comment = comment;
     }
 
+    // 연관관계 편의 메서드 (양방향 매핑)
+    public void setGoods(Goods goods) {
+        this.goods = goods;
+        goods.getReviews().add(this);
+    }
+
     // 리뷰 생성
     public static Review createReview(Member member, Goods goods, ReviewCreateRequest reviewCreateRequest) {
         return Review.builder()

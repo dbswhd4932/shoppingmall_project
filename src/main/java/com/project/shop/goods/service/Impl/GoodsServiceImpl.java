@@ -74,6 +74,10 @@ public class GoodsServiceImpl implements GoodsService {
         List<Options> optionsList = goodsCreateRequest.getOptionCreateRequest().stream().map(
                 optionCreateRequest -> Options.toOption(optionCreateRequest, goods)).collect(Collectors.toList());
 
+        for (Options options : optionsList) {
+            options.setGoods(goods);
+        }
+
         optionRepository.saveAll(optionsList);
 
         // S3 저장
@@ -81,6 +85,9 @@ public class GoodsServiceImpl implements GoodsService {
 
         // 이미지 DB 저장
         List<Image> imageList = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
+        for (Image image : imageList) {
+            image.setGoods(goods);
+        }
         imageRepository.saveAll(imageList);
 
     }
@@ -181,6 +188,9 @@ public class GoodsServiceImpl implements GoodsService {
             List<OptionCreateRequest> optionCreateRequestList = goodsEditRequest.getOptionCreateRequest();
 
             List<Options> optionsList = optionCreateRequestList.stream().map(optionCreateRequest -> Options.toOption(optionCreateRequest, goods)).collect(Collectors.toList());
+            for (Options option : optionsList) {
+                option.setGoods(goods);
+            }
             optionRepository.saveAll(optionsList);
         }
 
@@ -197,6 +207,9 @@ public class GoodsServiceImpl implements GoodsService {
 
         // 이미지 정보 저장
         List<Image> images = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
+        for (Image image : images) {
+            image.setGoods(goods);
+        }
         imageRepository.saveAll(images);
 
     }

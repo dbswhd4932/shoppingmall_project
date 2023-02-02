@@ -46,6 +46,12 @@ public class Options extends BaseTimeEntity {
         this.optionDescription = description;
     }
 
+    // 연관관계 편의 메서드 (양방향 매핑)
+    public void setGoods(Goods goods) {
+        this.goods = goods;
+        goods.getOptions().add(this);
+    }
+
     public static Options toOption(OptionCreateRequest optionCreateRequest, Goods goods) {
         return Options.builder()
                 .goods(goods)

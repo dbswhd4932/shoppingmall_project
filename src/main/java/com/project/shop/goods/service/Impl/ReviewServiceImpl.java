@@ -50,6 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
                 () -> new BusinessException(NOT_BUY_GOODS));
 
         Review review = Review.createReview(member, goods, reviewCreateRequest);
+        review.setGoods(goods);
         reviewRepository.save(review);
     }
 

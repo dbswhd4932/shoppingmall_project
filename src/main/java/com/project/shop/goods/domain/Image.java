@@ -26,11 +26,16 @@ public class Image extends BaseTimeEntity {
     @JoinColumn(name = "goods_id")
     private Goods goods;
 
-
     @Builder
     public Image(String fileUrl, Goods goods) {
         this.fileUrl = fileUrl;
         this.goods = goods;
+    }
+
+    // 연관관계 편의 메서드 (양방향 매핑)
+    public void setGoods(Goods goods) {
+        this.goods = goods;
+        goods.getImages().add(this);
     }
 }
 
