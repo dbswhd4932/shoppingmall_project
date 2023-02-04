@@ -2,6 +2,7 @@ package com.project.shop.goods.controller;
 
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.request.GoodsSearchCondition;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
@@ -68,7 +69,8 @@ public class GoodsController {
     @GetMapping("/goods/keyword")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 검색")
-    public Page<GoodsResponse> goodsFindKeyword(@RequestParam String keyword, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Page<GoodsResponse> goodsFindKeyword(@RequestParam String keyword,
+                                                @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return goodsService.goodsFindKeyword(keyword, pageable);
     }
 
@@ -91,5 +93,14 @@ public class GoodsController {
     @ApiOperation(value = "상품 삭제")
     public void goodsDelete(@PathVariable("goodsId") Long goodsId) {
         goodsService.goodsDelete(goodsId);
+    }
+
+    //상품 ~원 이상 ~원 이하 값 찾기
+    @GetMapping("/goods/search")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 가격으로 검색 (0원 이상 0원 이하)")
+    public Page<GoodsResponse> search(@ModelAttribute GoodsSearchCondition condition, Pageable pageable) {
+
+        return goodsService.searchBetweenPrice(condition, pageable);
     }
 }

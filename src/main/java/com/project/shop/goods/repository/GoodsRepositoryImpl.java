@@ -3,55 +3,54 @@ package com.project.shop.goods.repository;
 import com.project.shop.goods.controller.request.GoodsSearchCondition;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.QGoodsResponse;
-import com.project.shop.goods.domain.Category;
-import com.project.shop.goods.domain.Goods;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.*;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.project.shop.goods.domain.QGoods.goods;
-import static org.springframework.util.StringUtils.hasText;
 
 public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-    private final GoodsRepository goodsRepository;
 
-    public GoodsRepositoryImpl(EntityManager em, GoodsRepository goodsRepository) {
+    public GoodsRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
-        this.goodsRepository = goodsRepository;
     }
 
     @Override
-    public List<GoodsResponse> searchCategoryAndBetweenPrice(GoodsSearchCondition condition) {
-        return queryFactory
+    public Page<GoodsResponse> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable) {
+        List<GoodsResponse> content = queryFactory
                 .select(new QGoodsResponse(goods))
                 .from(goods)
-                .where(categoryEq(condition.getCategoryName()),
-                        betweenPrice(condition.getPriceMin(), condition.getPriceMax()))
+                .where(betweenPrice(condition.getPriceMin(), condition.getPriceMax()))
+                .orderBy(goods.price.desc()) // 상품 가격 내림차순
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-    }
+        int total = content.size();
+        return new PageImpl<>(content, pageable, total);
 
-    private BooleanExpression categoryEq(String categoryName) {
-        return hasText(categoryName) ? goods.category.eq(new Category(categoryName)) : null;
     }
 
     private BooleanExpression betweenPrice(Integer priceMin, Integer priceMax) {
-        List<Goods> goodsList = goodsRepository.findAll();
-        Long maxPrice = 0L;
-        for (Goods good : goodsList) {
-            long max = Math.max(maxPrice, good.getPrice());
-            maxPrice = max;
-        }
+        // 상품의 최대값을 어떻게 구하지??
+        int maxPrice = 999999999;
 
+            // null 원 이상 000원 이하
         if (priceMin == null && priceMax != null) {
             return priceLoe(priceMax).and(priceGoe(0));
+            // 000원 이상 null 원 이하
         } else if (priceMin != null && priceMax == null) {
-            return priceLoe(Math.toIntExact(maxPrice)).and(priceGoe(priceMin));
+            return priceLoe(maxPrice).and(priceGoe(priceMin));
+            // null 원 이상 null 원 이하
+        } else if (priceMin == null && priceMax == null) {
+            return priceLoe(maxPrice).and(priceGoe(0));
         } else {
+            // 000원 이상 000원 이하
             return priceLoe(priceMax).and(priceGoe(priceMin));
         }
     }

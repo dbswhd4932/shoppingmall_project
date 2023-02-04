@@ -7,12 +7,10 @@ import lombok.Setter;
 @Setter
 public class GoodsSearchCondition {
 
-    private String categoryName;
     private Integer priceMin;
     private Integer priceMax;
 
-    public GoodsSearchCondition(String categoryName, Integer priceMin, Integer priceMax) {
-        this.categoryName = categoryName;
+    public GoodsSearchCondition(Integer priceMin, Integer priceMax) {
         this.priceMin = priceMin;
         this.priceMax = priceMax;
     }
