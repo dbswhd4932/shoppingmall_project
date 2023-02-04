@@ -3,10 +3,7 @@ package com.project.shop.goods.service.Impl;
 import com.project.shop.global.aspect.TimerAop;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
-import com.project.shop.goods.controller.request.GoodsCreateRequest;
-import com.project.shop.goods.controller.request.GoodsEditRequest;
-import com.project.shop.goods.controller.request.OptionCreateRequest;
-import com.project.shop.goods.controller.request.UpdateCheckRequest;
+import com.project.shop.goods.controller.request.*;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
 import com.project.shop.goods.domain.Category;
@@ -233,6 +230,16 @@ public class GoodsServiceImpl implements GoodsService {
             s3Service.deleteFile(fileName);
         }
         goodsRepository.deleteById(goods.getId());
+    }
+
+    // 상품 가격으로 조회 (000원 이상 0000 이하)
+    @Override
+    public Page<GoodsResponse> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable) {
+        GoodsSearchCondition result =
+                new GoodsSearchCondition(condition.getPriceMin(), condition.getPriceMax());
+
+        return goodsRepository.searchBetweenPrice(result, pageable);
+
     }
 
     private Member getMember() {

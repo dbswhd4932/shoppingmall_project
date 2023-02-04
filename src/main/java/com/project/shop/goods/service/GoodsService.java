@@ -2,6 +2,7 @@ package com.project.shop.goods.service;
 
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
+import com.project.shop.goods.controller.request.GoodsSearchCondition;
 import com.project.shop.goods.controller.request.UpdateCheckRequest;
 import com.project.shop.goods.controller.response.GoodsResponse;
 import com.project.shop.goods.controller.response.UpdateGoodsResponse;
@@ -34,5 +35,7 @@ public interface GoodsService {
 
     // 상품 삭제
     void goodsDelete(Long goodsId);
+
+    Page<GoodsResponse> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable);
 
 }

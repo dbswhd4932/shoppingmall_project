@@ -59,8 +59,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
         @ApiModelProperty(value = "페이지 크기", example = "0")
         private Integer size;
 
-        @ApiModelProperty(value = "상품 ID 내림차순")
-        private List<String> sort;
     }
 
     private ApiInfo apiInfo() {
