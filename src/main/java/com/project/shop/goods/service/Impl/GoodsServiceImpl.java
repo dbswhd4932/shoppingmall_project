@@ -236,7 +236,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Page<GoodsResponse> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable) {
         GoodsSearchCondition result =
-                new GoodsSearchCondition(condition.getPriceMin(), condition.getPriceMax());
+                new GoodsSearchCondition(condition.getPriceMin(), condition.getPriceMax(), condition.getCategory());
 
         return goodsRepository.searchBetweenPrice(result, pageable);
 
