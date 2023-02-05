@@ -197,6 +197,7 @@ ec2 의 22번 포트 접근범위를 anywhere IPv4 로 바꾸어 주어 해결�
 이후, 현 프로젝트에 적용되어있는 설정방식과 리팩토링을 하면서 해당 프로젝트에 관련된 내용은 지속적으로 최신화 할 예정입니다.
 
 ### 학습 내용정리
+- [querydsl 다중 조건 검색 만들기](https://josteady.tistory.com/850)
 - [List 타입을 Page 타입으로 리팩토링](https://josteady.tistory.com/842)
 - [OSIV ( Open Session In View ) 에 대해 알아보자.](https://josteady.tistory.com/840)
 - [JPA N+1 문제 알아보기](https://josteady.tistory.com/839)
