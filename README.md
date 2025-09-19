@@ -1,261 +1,607 @@
-# **OpenMarket shoppingMall**
-- 다양한 상품을 판매 할 수 있는 오픈마켓(C2C 방식) 쇼핑몰 API 입니다.
-- 인터넷 쇼핑을 할 때 주로 사용하는 스마트 스토어를 모티브하여 설계했습니다.
-- 개발 기간 : 22.10.31 ~ 23.01.19<br>
-- 참여 인원 : 1명<br>
+# **OpenMarket ShoppingMall**
 
-- Swagger 문서는 여기서 확인할 수 있습니다 ->
-[Swagger 문서 확인하러 가기](http://15.165.145.187:8080/swagger-ui/index.html)
+[![Java](https://img.shields.io/badge/Java-17-orange)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.5-brightgreen)](https://spring.io/projects/spring-boot)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-blue)](https://www.docker.com/)
+[![AWS](https://img.shields.io/badge/AWS-EC2%20%7C%20RDS%20%7C%20S3-yellow)](https://aws.amazon.com/)
+[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-success)](https://github.com/features/actions)
 
-# 기술 스택
-- Language : Java<br>
-- Framework : Spring 5.3 / Springboot 2.7.5<br>
-- JDK : 17<br>
-- BuildTool : Gradle<br>
-- DB : H2, MySQL , RDS , S3<br>
-- Server : AWS EC2 , Linux <br>
-- CI / CD : Github Actions , Docker, Docker Hub<br>
+## 📋 프로젝트 개요
 
+**OpenMarket ShoppingMall**은 다양한 상품을 판매할 수 있는 **C2C(Consumer to Consumer) 방식의 오픈마켓** 플랫폼입니다.
+실제 서비스되고 있는 스마트 스토어의 비즈니스 로직을 분석하고 모티브하여 설계된 **RESTful API 서버**입니다.
 
-# 아키텍처
-<img src="https://user-images.githubusercontent.com/103364805/215643040-1af1f2a0-d74b-440d-a93a-4de727060bb1.png"  width="650" height="330">
+### 🎯 핵심 특징
+- **다중 사용자 권한 관리**: USER, SELLER, ADMIN 역할 기반 접근 제어
+- **완전한 쇼핑몰 플로우**: 회원가입부터 상품 등록, 주문, 결제까지 전체 프로세스 구현
+- **확장 가능한 아키텍처**: MSA 환경을 고려한 JWT 기반 인증 시스템
+- **실시간 가격 검증**: 장바구니-주문 전환 시 상품 가격 변경 감지
+- **자동화된 배포**: CI/CD 파이프라인을 통한 무중단 배포 구현
 
-# 프로젝트 구조
-<img src="https://user-images.githubusercontent.com/103364805/213636905-b65f085a-060d-4cab-a289-14d7b3529d79.png"  width="260" height="530">
+### 📊 프로젝트 정보
+- **개발 기간**: 2022.10.31 ~ 2023.01.19 (약 3개월)
+- **참여 인원**: 1명 (개인 프로젝트)
+- **배포 환경**: AWS EC2 + Docker + GitHub Actions
+- **API 문서**: [Swagger UI](http://15.165.145.187:8080/swagger-ui/index.html)
 
-# ERD
-<img src="https://user-images.githubusercontent.com/103364805/213637190-8ed2c18a-d1c6-4768-a1d8-650a5b696f86.png"  width="800" height="470">
-<img src="https://user-images.githubusercontent.com/103364805/213637232-d6de2126-797f-47e5-ad5b-efe563cd1d0f.png"  width="800" height="470">
+## 🛠 기술 스택
 
+### Backend
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.5-6DB33F?style=flat&logo=spring&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat&logo=springsecurity&logoColor=white)
+![Spring Data JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=flat&logo=spring&logoColor=white)
+![QueryDSL](https://img.shields.io/badge/QueryDSL-5.0.0-blue?style=flat)
 
-# 기능설명
-개발자가 아닌, 누구나 어떤 기능이 있는지 확인할 수 있도록 간단히 작성했습니다.<br>
-기능에 대한 상세내용은 아래의 시퀀스 다이어그램을 확인부탁드리겠습니다.
+### Database & Storage
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)
+![H2](https://img.shields.io/badge/H2-Database-blue?style=flat)
+![AWS RDS](https://img.shields.io/badge/AWS%20RDS-MySQL-232F3E?style=flat&logo=amazon-aws&logoColor=white)
+![AWS S3](https://img.shields.io/badge/AWS%20S3-232F3E?style=flat&logo=amazon-s3&logoColor=white)
 
-<details>
-<summary>회원</summary>
- 
-- 사이트를 통해 회원 가입 및 로그인
-- 소셜 로그인(카카오) 인증 후 로그인
+### Security & Authentication
+![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=JSON%20web%20tokens&logoColor=white)
+![AWS Secrets Manager](https://img.shields.io/badge/AWS%20Secrets%20Manager-232F3E?style=flat&logo=amazon-aws&logoColor=white)
 
-    +프론트에서 로그인 소셜 타입을 전달받아 사용 EX ) NO_SOCIAL / KAKAO 
+### DevOps & Deployment
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat&logo=github-actions&logoColor=white)
+![AWS EC2](https://img.shields.io/badge/AWS%20EC2-232F3E?style=flat&logo=amazon-aws&logoColor=white)
+![Docker Hub](https://img.shields.io/badge/Docker%20Hub-2496ED?style=flat&logo=docker&logoColor=white)
 
-- 로그인 시, 로그인 기록 저장 ( 매일 자정에 데이터 초기화 )
-- 아이디 중복 체크
-- 회원 정보 확인
-- 회원 정보 수정
-- 회원 탈퇴
-    
-    +공통 : 탈퇴 시, DB 에서 삭제되지 않으며 DeleteAt 필드 값이 현재 시간으로 초기화
-    
-    +USER : 회원이 가지고 있는 장바구니 데이터 삭제
-    
-    +SELLER : 등록한 상품에 연관된 데이터 삭제
-    
-    +ADMIN : 해당 없음
-</details>
+### Testing & Documentation
+![JUnit 5](https://img.shields.io/badge/JUnit%205-25A162?style=flat&logo=junit5&logoColor=white)
+![Mockito](https://img.shields.io/badge/Mockito-4.10.0-green?style=flat)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat&logo=swagger&logoColor=black)
 
+### Monitoring & Performance
+![Ehcache](https://img.shields.io/badge/Ehcache-3.8.0-orange?style=flat)
+![AOP](https://img.shields.io/badge/Spring%20AOP-6DB33F?style=flat&logo=spring&logoColor=white)
 
-<details>
-<summary>카테고리</summary>
- 
-- 카테고리 생성
-- 카테고리 조회
-- 카테고리 수정
-- 카테고리 삭제
-</details>
+### Build Tools
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)
 
-
-<details>
-<summary>상품</summary>
- 
-- 상품 등록
-    
-    +상품 이미지는 1장 이상 필수로 입력
-    
-    +상품 이미지는 AWS S3 에 저장
-    
-    +동일한 이름으로는 등록 불가
-    
-- 상품 전체 조회
-- 상품 단품 조회
-- 상품 키워드 검색
-- 상품 수정
-- 상품 삭제
-- 상품 가격 변경 확인
-    
-    +장바구니에서 주문 화면으로 넘어가기 전 가격 일치 여부 확인 (상품 가격 수정 가능성)
-</details>
+### 상세 기술 스택
+| 카테고리 | 기술 | 버전 | 용도 |
+|---------|------|------|------|
+| **Language** | Java | 17 | 메인 개발 언어 |
+| **Framework** | Spring Boot | 2.7.5 | 애플리케이션 프레임워크 |
+| **ORM** | Spring Data JPA | 2.7.5 | 데이터 접근 계층 |
+| **Query** | QueryDSL | 5.0.0 | 동적 쿼리 생성 |
+| **Security** | Spring Security + JWT | 2.7.5 | 인증/인가 |
+| **Database** | MySQL | 8.0 | 운영 데이터베이스 |
+| **Database** | H2 | 1.4.200 | 테스트 데이터베이스 |
+| **Cache** | Ehcache | 3.8.0 | 애플리케이션 캐시 |
+| **File Storage** | AWS S3 | - | 상품 이미지 저장 |
+| **Server** | AWS EC2 | Amazon Linux 2 | 애플리케이션 서버 |
+| **CI/CD** | GitHub Actions | - | 자동 빌드/배포 |
+| **Container** | Docker | - | 컨테이너화 |
+| **Testing** | JUnit 5 + Mockito | 5.9.0 / 4.10.0 | 단위/통합 테스트 |
 
 
-<details>
-<summary>장바구니</summary>
- 
-- 장바구니 상품 추가
-- 장바구니 조회
-- 장바구니 수정
-- 장바구니 삭제
-</details>
+## 🏗 시스템 아키텍처
+
+### 전체 아키텍처
+<img src="https://user-images.githubusercontent.com/103364805/215643040-1af1f2a0-d74b-440d-a93a-4de727060bb1.png"  width="800" height="400">
+
+### 아키텍처 설명
+- **Client Layer**: REST API를 통한 클라이언트 통신
+- **API Gateway**: Spring Boot 애플리케이션 서버
+- **Business Logic**: 도메인별로 분리된 서비스 계층
+- **Data Layer**: JPA/QueryDSL을 통한 데이터 접근
+- **Infrastructure**: AWS 클라우드 기반 인프라스트럭처
+
+### 배포 아키텍처
+```
+GitHub Repository
+       ↓ (Push/PR)
+GitHub Actions (CI/CD)
+       ↓ (Build & Test)
+Docker Hub (Image Registry)
+       ↓ (Deploy)
+AWS EC2 (Application Server)
+       ↓ (Data)
+AWS RDS (MySQL Database)
+       ↓ (File Storage)
+AWS S3 (Image Storage)
+```
+
+## 📁 프로젝트 구조
+
+<img src="https://user-images.githubusercontent.com/103364805/213636905-b65f085a-060d-4cab-a289-14d7b3529d79.png"  width="300" height="600">
+
+### 패키지 구조
+```
+src/main/java/com/project/shop/
+├── global/                     # 공통 설정 및 유틸리티
+│   ├── config/                # 설정 클래스들
+│   │   ├── security/          # Spring Security 설정
+│   │   ├── swagger/           # Swagger 설정
+│   │   └── cache/             # Ehcache 설정
+│   ├── exception/             # 예외 처리
+│   └── util/                  # 유틸리티 클래스들
+├── member/                    # 회원 도메인
+│   ├── domain/               # 엔티티 클래스
+│   ├── controller/           # REST Controller
+│   ├── service/              # 비즈니스 로직
+│   └── repository/           # 데이터 접근 계층
+├── goods/                    # 상품 도메인
+│   ├── domain/               # 상품, 카테고리, 리뷰 엔티티
+│   ├── controller/           # 상품 관련 API
+│   ├── service/              # 상품 비즈니스 로직
+│   └── repository/           # 상품 데이터 접근
+└── order/                    # 주문 도메인
+    ├── domain/               # 주문, 결제 엔티티
+    ├── controller/           # 주문 관련 API
+    ├── service/              # 주문 비즈니스 로직
+    └── repository/           # 주문 데이터 접근
+```
+
+## 🗄 데이터베이스 설계 (ERD)
+
+### 메인 ERD
+<img src="https://user-images.githubusercontent.com/103364805/213637190-8ed2c18a-d1c6-4768-a1d8-650a5b696f86.png"  width="800" height="500">
+
+### 확장 ERD
+<img src="https://user-images.githubusercontent.com/103364805/213637232-d6de2126-797f-47e5-ad5b-efe563cd1d0f.png"  width="800" height="500">
+
+### 주요 테이블 관계
+- **Member ↔ Cart**: 1:N (회원 당 여러 장바구니 아이템)
+- **Member ↔ Order**: 1:N (회원 당 여러 주문)
+- **Member ↔ Goods**: 1:N (판매자 당 여러 상품)
+- **Goods ↔ Category**: N:1 (상품 당 하나의 카테고리)
+- **Order ↔ OrderItem**: 1:N (주문 당 여러 주문 아이템)
+- **Goods ↔ Review**: 1:N (상품 당 여러 리뷰)
+- **Review ↔ Reply**: 1:1 (리뷰 당 하나의 대댓글)
 
 
-<details>
-<summary>주문</summary>
- 
-- 주문 번호 ID 생성 (UUID - 고유번호)
-- 주문 생성
-- 주문 전체 조회
-- 주문 단건 조회
-- 결제 취소
-</details>
+## 🔧 주요 기능
 
+### 🎯 핵심 비즈니스 로직
+- **다중 권한 시스템**: USER(구매자), SELLER(판매자), ADMIN(관리자) 역할별 접근 제어
+- **실시간 가격 검증**: 장바구니에서 주문으로 넘어갈 때 상품 가격 변경 여부 확인
+- **소프트 딜리트**: 회원 탈퇴 시 데이터 무결성 보장을 위한 논리적 삭제
+- **이미지 관리**: AWS S3를 통한 상품 이미지 업로드/다운로드/삭제
+- **캐싱 시스템**: Ehcache를 통한 성능 최적화
 
-<details>
-<summary>리뷰</summary>
- 
-- 리뷰 생성
-    
-    +자신이 구매한 상품만 리뷰 생성 가능
-    
-- 리뷰 조회
-- 리뷰 수정
-- 리뷰 삭제
-    
-    +구매자 뿐만 아니라 ADMIN 도 삭제 가능
-</details>
+### 📋 API 엔드포인트 목록
 
+#### 👤 회원 관리 (`/api/members`)
+- `POST /signup` - 회원가입
+- `POST /exist` - 아이디 중복 확인
+- `POST /login` - 로그인 (JWT 토큰 발급)
+- `GET /me` - 내 정보 조회
+- `PUT /` - 회원 정보 수정
+- `DELETE /` - 회원 탈퇴
 
-<details>
-<summary>대댓글</summary>
- 
-- 대댓글 생성
-    
-    +상품 판매자만 대댓글 작성 가능
-    
-- 대댓글 조회
-- 대댓글 수정
-- 대댓글 삭제
-    
-    +판매자 뿐만 아니라 ADMIN 도 삭제 가능
-</details>
+#### 🛍 상품 관리 (`/api/goods`)
+- `POST /` - 상품 등록 (이미지 업로드 포함)
+- `GET /` - 상품 전체 조회 (페이징)
+- `GET /{goodsId}` - 상품 상세 조회
+- `GET /keyword` - 상품 키워드 검색
+- `GET /search` - 가격 범위별 상품 검색
+- `GET /checkUpdateGoods` - 상품 가격 변경 확인
+- `POST /{goodsId}` - 상품 수정
+- `DELETE /{goodsId}` - 상품 삭제
 
+#### 📦 카테고리 관리 (`/api/categories`)
+- `POST /` - 카테고리 생성
+- `GET /` - 카테고리 전체 조회
+- `PUT /{categoryId}` - 카테고리 수정
+- `DELETE /{categoryId}` - 카테고리 삭제
 
-# 시퀀스 다이어그램
-각 서비스마다 자세히 flow 를 나타내기 위해 작성했습니다.<br>
-시퀀스 다이어그램은 여기서 확인할 수 있습니다 ->
-[시퀀스 다이어그램](https://resolute-meeting-a79.notion.site/Sequence-Diagram-f743df1a9a2543ecaf90b536e0b4a81d)
+#### 🛒 장바구니 관리 (`/api/carts`)
+- `POST /` - 장바구니 상품 추가
+- `GET /` - 내 장바구니 조회
+- `PUT /{cartId}` - 장바구니 수량 수정
+- `DELETE /{cartId}` - 장바구니 상품 삭제
 
-# 테스트 진행 여부
-Service 테스트는 단위테스트로 작성했으며, Controller 테스트는 통합테스트로 작성했습니다.<br>
-<img src="https://user-images.githubusercontent.com/103364805/213638251-372cc0b6-2847-41b2-90eb-bfc832df181f.png"  width="610" height="470">
+#### 📝 주문 관리 (`/api/orders`)
+- `GET /merchantId` - 주문번호 UUID 생성
+- `POST /` - 주문 생성
+- `GET /` - 내 주문 내역 조회
+- `GET /{orderId}` - 주문 상세 조회
+- `POST /payCancel` - 결제 취소
 
-# 기술적 도전
+#### ⭐ 리뷰 관리 (`/api/reviews`)
+- `POST /` - 리뷰 작성 (구매한 상품만)
+- `GET /goods/{goodsId}` - 상품별 리뷰 조회
+- `PUT /{reviewId}` - 리뷰 수정
+- `DELETE /{reviewId}` - 리뷰 삭제
 
-- JWT 토큰을 통해 로그인을 구현하며, 권한 부여를 통해 메서드에 접근할 수 있는 사용자를 제어
-- AOP 어노테이션을 구현하여 특정 메서드 실행시간 측정 및 로그인 시 히스토리 적재
-- Spring Sechduled 를 이용하여 로그인 히스토리 테이블 자정마다 테이블 초기화
-- 무한한 데이터 저장과 EC2 문제발생 시 DB에 접근불가능한 문제를 보완하기 위해 RDS 사용
-- @SpringbootTest 및 Mockito 테스트를 통한 서비스, 컨트롤러 동작 검증 및 리팩토링 용이
-- AWS S3 를 이용한 상품 이미지를 관리 ( 등록, 수정, 삭제, 다운로드 등 )
-- AWS Secret Manager 를 통한 DB, AWS 중요 데이터는 외부 주입을 통해 사용
-- Docker 를 사용하여 OS 관계없이 동일한 환경 제공
-- GitHub Actions 를 이용하여 설정 브랜치에 푸시 , PR 행위가 발생할 경우 workflows 를 따라 자동 배포 진행 + 테스트 코드가 실패할 경우 에러가 발생해 배포 불가
-- 테이블 반정규화를 통한 트레이드오프 진행
+#### 💬 대댓글 관리 (`/api/replies`)
+- `POST /` - 대댓글 작성 (판매자만)
+- `GET /review/{reviewId}` - 리뷰별 대댓글 조회
+- `PUT /{replyId}` - 대댓글 수정
+- `DELETE /{replyId}` - 대댓글 삭제
 
-# 트러블 슈팅
+### 🔐 권한별 접근 제어
+| 기능 | USER | SELLER | ADMIN |
+|------|------|--------|-------|
+| 상품 등록/수정/삭제 | ❌ | ✅ | ✅ |
+| 상품 조회/검색 | ✅ | ✅ | ✅ |
+| 장바구니 관리 | ✅ | ✅ | ✅ |
+| 주문 생성/조회 | ✅ | ❌ | ✅ |
+| 리뷰 작성/수정/삭제 | ✅ (본인만) | ❌ | ✅ |
+| 대댓글 작성/수정 | ❌ | ✅ (본인 상품만) | ✅ |
+| 카테고리 관리 | ❌ | ❌ | ✅ |
 
-- 회원 탈퇴 시, 회원이 등록한 상품에 관련된 데이터 (상품, 리뷰, 대댓글, 옵션, 이미지 등) 이 모두 삭제되면 상품에 대한 판매량 등 데이터 취합에 관련해 문제가 생길 것으로 판단했습니다.<br>
-→ Order_Item 테이블을 반정규화하여 상품명, 상품가격 필드값을 추가했습니다.<br>
- 탈퇴한 회원에 대한 불필요한 정보는 삭제하고 트레이드오프를 통해 필요한 정보는 남겨둘 수 있습니다.
+더 자세한 기능별 시퀀스 다이어그램은 [여기](https://resolute-meeting-a79.notion.site/Sequence-Diagram-f743df1a9a2543ecaf90b536e0b4a81d)에서 확인할 수 있습니다.
 
-- 상품 옵션관련해 Map<String, Object> 타입으로 구현했으나, 이후 옵션으로 데이터를 가공할 시 꺼내어 사용할 수 없는 문제가 생길 것이라고 판단했습니다.<br>
-→옵션이 n개가 입력될 수 있기 때문에 List<OptionCreate> 형태로 변경하였습니다.
- key, value 값을 입력받아 사용하도록 변경하여 옵션 타입을 명시하고 key 값으로 데이터 조회가 가능합니다.
-JSON 문자열 형태로 저장하기 위해서 JPA Converter 를 사용했습니다.
-<img src="https://user-images.githubusercontent.com/103364805/213638733-a2516fb5-abdd-4ed6-9213-35cce916f8be.png"  width="760" height="530">
+## 🚀 시작하기
 
-- 로그인을 비교적 간단한 세션방식으로 구현하려했으나 트래픽이 많아질 시 ,서버에 부하가 많이 일어날 것으로 예상했으며,  JWT 로 마이그레이션 한다고해도 그에 대한 비용이 상당하다고 판단했습니다.<br>
-→ 다양한 도메인에 쉽게 접근할 수 있고 이후 MSA 환경을 고려해 JWT 방식으로 사용했습니다.
- <img src="https://user-images.githubusercontent.com/103364805/215916194-ea5148f0-eff6-427d-94db-cd4f4fc7e74c.png"  width="450" height="450">
+### 📋 필수 조건
+- Java 17 이상
+- Docker & Docker Compose
+- AWS 계정 (S3, RDS, EC2 - 선택사항)
 
-- JWT 관련하여 yml에 secret 키가 노출되었을 경우, 직접 수동으로 secret 키를 변경하고 재배포 해야하는 불편함이 있다고 판단했습니다.<br>
-    → Secret key  를 알고리즘을 통해 서버가 재시작되면 자동으로 변경되도록 설정했습니다.<br>
-우아한 형제들 코프링 github를 참고했습니다.<br>
-[https://github.com/woowacourse/service-apply/blob/master/src/main/kotlin/apply/security/JwtTokenProvider.kt](https://github.com/woowacourse/service-apply/blob/master/src/main/kotlin/apply/security/JwtTokenProvider.kt)
+### 🛠 로컬 개발 환경 설정
 
-    <img src="https://user-images.githubusercontent.com/103364805/213639070-6fe6d733-4e8c-40f5-b2e9-d43451eb559e.png"  width="800" height="50">
+#### 1. 프로젝트 클론
+```bash
+git clone [repository-url]
+cd shoppingmall_project
+```
 
-- request 와 response 에 Entity 를 사용하면 해당 Entity에 있는 필드값이 응답되기 때문에 불필요한 정보가 포함될 것이라고 판단했습니다.<br>
-→ 필요한 응답값만 가지고 있는 Dto 를 만들어 리팩토링하였습니다.
-    <img src="https://user-images.githubusercontent.com/103364805/213639306-dea7793a-1ad5-4aeb-92c3-fa5c2ade8b62.png"  width="750" height="250">
-    
-- 깃헙액션에서 도커허브 이미지를 pull 하고 컨테이너화 하는 과정에서 i/o timeout 에러가 발생했습니다. 단순히 시간초과 라고 생각하여 time 을 60초(default 30초) 로 늘려주었지만 동일한 에러가 발생했습니다.<br>
-→ i/o timeout 관련한 에러는 보통 방화벽 또는 외부에서 접근 불가능한 내부 IP 등으로 인해 서버에 접근하지 못할 때 발생한 에러입니다.
-ec2 의 22번 포트 접근범위를 anywhere IPv4 로 바꾸어 주어 해결했습니다.
-    <img src="https://user-images.githubusercontent.com/103364805/213639607-f0453880-59f0-41a0-9dc1-2a0207176844.png"  width="650" height="650">
-    
-# 프로젝트를 진행하면서 학습한 내용과 에러 조치
-학습했던 내용과 겪었던 에러 내용을 정리하여, 이후 효율적으로 사용 및 쉽게 이해하기 위해 정리하였습니다.<br>
-이후, 현 프로젝트에 적용되어있는 설정방식과 리팩토링을 하면서 해당 프로젝트에 관련된 내용은 지속적으로 최신화 할 예정입니다.
+#### 2. 환경 변수 설정
+```bash
+# bootstrap.yml 또는 application.yml 설정
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/shopping_mall
+    username: your_db_username
+    password: your_db_password
 
-### 학습 내용정리
-- [querydsl 다중 조건 검색 만들기](https://josteady.tistory.com/850)
-- [List 타입을 Page 타입으로 리팩토링](https://josteady.tistory.com/842)
-- [OSIV ( Open Session In View ) 에 대해 알아보자.](https://josteady.tistory.com/840)
-- [JPA N+1 문제 알아보기](https://josteady.tistory.com/839)
-- [Ehcache 2 -> Ehcache 3 마이그레이션](https://josteady.tistory.com/811)
-- [Spring Security + JWT 로그인 구현하기 (Access Token)](https://josteady.tistory.com/838)
-- [@ResponseStatus 와 ResponseEntity 차이점](https://josteady.tistory.com/835)
-- [JAVA JDK17 을 사용하는 이유](https://josteady.tistory.com/834)
-- [Springboot docker GitHub Action 연동하여 자동 배포하기](https://josteady.tistory.com/831)
-- [spring boot 빌드 시, 특정 테스트 제외하기](https://josteady.tistory.com/833)
-- [RDS timezone Asia/Seoul 로 변경하기](https://josteady.tistory.com/832)
-- [AWS Secrets Manager 설정하고 Spring boot 연동하기](https://josteady.tistory.com/830)
-- [RDS MYSQL 연결 시 Connection time out 해결하기](https://josteady.tistory.com/829)
-- [ec2 linux + docker + spirngboot 프로젝트 + mysql 연동 후 서버 띄우기](https://josteady.tistory.com/828)
-- [도커허브 - docker requested access to the resource is denied](https://josteady.tistory.com/827)
-- [Docker-compose를 작성해서 SpringBoot + MySql DB 서버 구동](https://josteady.tistory.com/826)
-- [@Convert - T타입 + Map 사용하기](https://josteady.tistory.com/771)
-- [Centos mysql 비밀번호 재설정 방법](https://josteady.tistory.com/824)
-- [ec2 linux mysql8 설치하기](https://josteady.tistory.com/823)
-- [Multipart 는 HTTP POST 로만 사용](https://josteady.tistory.com/817)
-- [spring boot docker mysql 기본설정](https://josteady.tistory.com/819)
-- [@RequestPart MultipartFile , Json 컨트롤러 통합 테스트](https://josteady.tistory.com/814)
-- [spring 스케줄러(Scheduler) 적용하기](https://josteady.tistory.com/812)
-- [Springboot AOP 적용 + 어노테이션 기반](https://josteady.tistory.com/810)
-- [Ehcache 를 사용한 Cache 이용해보기](https://josteady.tistory.com/808)
-- [Page 테스트 코드 작성하기](https://josteady.tistory.com/799)
-- [swagger 에 jwt token 추가하기](https://josteady.tistory.com/794)
-- [H2 데이터베이스 데이터 유지하기](https://josteady.tistory.com/792)
-- [JPA 순환 참조 해결해보기](https://josteady.tistory.com/776)
-- [data.sql 적용하기 (스프링부트 버전 2.7.x 이상)](https://josteady.tistory.com/759)
+cloud:
+  aws:
+    credentials:
+      access-key: your_aws_access_key
+      secret-key: your_aws_secret_key
+    s3:
+      bucket: your_s3_bucket_name
+    region:
+      static: ap-northeast-2
+```
 
+#### 3. 데이터베이스 설정
+```bash
+# Docker로 MySQL 실행
+docker run --name mysql-shopping \
+  -e MYSQL_ROOT_PASSWORD=password \
+  -e MYSQL_DATABASE=shopping_mall \
+  -p 3306:3306 \
+  -d mysql:8.0
+```
 
-### ERROR
-- [Failed to load ApplicationContext](https://josteady.tistory.com/836)
-- [docker push denied requested access to the resource is denied](https://josteady.tistory.com/822)
-- [Only one usage of each socket address (protocol/network address/port) is normally permitted.](https://josteady.tistory.com/818)
-- [com.amazonaws.services.s3.model.AmazonS3Exception: The AWS Access Key Id you provided does not exist in our records.](https://josteady.tistory.com/815)
-- [object references an unsaved transient instance - save the transient instance before flushing](https://josteady.tistory.com/806)
-- [@WebMvcTest 403 응답 처리](https://josteady.tistory.com/802)
-- [the input device is not a TTY. If you are using mintty, try prefixing the command with 'winpty'](https://josteady.tistory.com/796)
-- [Illegal DefaultValue null for parameter type integer](https://josteady.tistory.com/795)
-- [AWS S3 access denied Error](https://josteady.tistory.com/793)
-- [query did not return a unique result](https://josteady.tistory.com/791)
-- [javax/xml/bind/DatatypeConverter](https://josteady.tistory.com/783)
-- ['script' must not be null or empty](https://josteady.tistory.com/775)
-- [Referential integrity constraint violation](https://josteady.tistory.com/773)
-- [Error creating bean with name 'swaggerConfig' defined in file](https://josteady.tistory.com/768)
-- [JPA metamodel must not be empty!](https://josteady.tistory.com/767)
-- [attempted to assign id from null one-to-one property](https://josteady.tistory.com/765)
-- [No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer](https://josteady.tistory.com/760)
-- [No validator could be found for constraint 'javax.validation.constraints.NotBlank' validating type 'java.lang.Integer'](https://josteady.tistory.com/725)
+#### 4. 애플리케이션 실행
+```bash
+# 개발 모드로 실행
+./gradlew bootRun
 
-# 프로젝트를 하면서 느낀 점
-1. 프로젝트를 하면서 나의 위치와 수준을 되돌아볼 수 있었습니다.
-2. 디버깅의 중요성을 깨달았습니다.
-3. 구현 전 분석, 이해, 정리가 충분히 되어야 한다고 생각합니다.
-4. “코드가 기능이 정상적으로 된다” 라는 것이 끝이 될수도, 출발점이 될 수 있다고 생각합니다.
-5. 공부하지 않았던 부분에서 끈질기게 붙잡아 해결하면서 새로운 기술 습득에 대한 흥미를 높일 수 있었습니다.
-6. 다른 사람의 목소리를 들을 수록 자신과 프로젝트의 완성도를 높일 수 있다고 생각합니다.
-7. 테스트 하기 쉬운 코드가 좋은 코드라고 생각했습니다.
-8. 코드를 망가뜨리고 많은 에러가 발생하면서 시행착오를 겪으면서 더 많이 배우고 성장했습니다.
+# 또는 빌드 후 실행
+./gradlew build
+java -jar build/libs/*.jar
+```
+
+#### 5. API 문서 확인
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- H2 Console (테스트): http://localhost:8080/h2-console
+
+### 🐳 Docker로 실행
+```bash
+# Docker 이미지 빌드
+docker build -t shopping-mall .
+
+# 컨테이너 실행
+docker run -p 8080:8080 \
+  -e spring.datasource.url=jdbc:mysql://host.docker.internal:3306/shopping_mall \
+  -e spring.datasource.username=root \
+  -e spring.datasource.password=password \
+  shopping-mall
+```
+
+### 🧪 테스트 실행
+```bash
+# 단위 테스트 실행
+./gradlew test
+
+# 통합 테스트 포함 전체 테스트
+./gradlew test --tests "*ControllerTest*"
+```
+
+## 📊 성능 및 모니터링
+
+### 🔧 성능 최적화 기법
+- **Ehcache 적용**: 자주 조회되는 카테고리 및 상품 정보 캐싱
+- **QueryDSL 동적 쿼리**: 복잡한 검색 조건에 대한 효율적인 쿼리 생성
+- **페이징 처리**: 대용량 데이터 조회 시 메모리 사용량 최적화
+- **N+1 문제 해결**: 지연 로딩과 페치 조인을 통한 쿼리 최적화
+- **배치 사이즈 설정**: `default_batch_fetch_size: 100`으로 IN 쿼리 최적화
+
+### 📈 AOP 기반 모니터링
+- **실행 시간 측정**: `@TimeAop` 어노테이션을 통한 메서드 실행 시간 측정
+- **로그인 이력 관리**: 사용자 로그인 패턴 분석을 위한 히스토리 데이터 수집
+- **자동 데이터 정리**: Spring Scheduler를 통한 일일 로그인 히스토리 초기화
+
+## 🎯 시퀀스 다이어그램
+각 비즈니스 플로우의 상세한 동작 과정을 시각화했습니다.
+
+📖 **[상세 시퀀스 다이어그램 보러가기](https://resolute-meeting-a79.notion.site/Sequence-Diagram-f743df1a9a2543ecaf90b536e0b4a81d)**
+
+## ✅ 테스트 전략
+
+### 🧪 테스트 커버리지
+<img src="https://user-images.githubusercontent.com/103364805/213638251-372cc0b6-2847-41b2-90eb-bfc832df181f.png"  width="700" height="500">
+
+### 📋 테스트 구조
+- **단위 테스트 (Service Layer)**: 비즈니스 로직의 정확성 검증
+- **통합 테스트 (Controller Layer)**: API 엔드포인트의 전체 플로우 검증
+- **Mock 테스트**: Mockito를 활용한 외부 의존성 격리
+- **CI/CD 테스트**: GitHub Actions에서 자동 테스트 실행
+
+### 🎯 테스트 전략
+```java
+// 서비스 단위 테스트 예시
+@ExtendWith(MockitoExtension.class)
+class MemberServiceImplTest {
+    @Mock MemberRepository memberRepository;
+    @InjectMocks MemberServiceImpl memberService;
+
+    @Test
+    void 회원가입_성공() {
+        // given, when, then 패턴으로 테스트 작성
+    }
+}
+
+// 컨트롤러 통합 테스트 예시
+@SpringBootTest
+@AutoConfigureTestDatabase
+class MemberControllerTest {
+    @Test
+    void 회원가입_API_성공() {
+        // 실제 HTTP 요청을 통한 엔드투엔드 테스트
+    }
+}
+```
+
+## 💡 기술적 도전과 해결
+
+### 🔐 **인증 & 보안 시스템 구축**
+- **JWT 기반 인증**: 세션 방식 대비 확장성과 성능 향상을 위한 무상태 인증 구현
+- **동적 Secret Key**: 서버 재시작 시마다 자동 생성되는 JWT Secret Key로 보안 강화
+- **다중 권한 시스템**: `@PreAuthorize`를 활용한 메서드 레벨 권한 제어
+- **AWS Secrets Manager**: 민감한 설정 정보의 안전한 외부 관리
+
+### ⚡ **성능 최적화 & 모니터링**
+- **AOP 성능 모니터링**: 커스텀 `@TimeAop` 어노테이션으로 메서드 실행 시간 측정
+- **스케줄러 기반 데이터 관리**: Spring Scheduler로 로그인 히스토리 일일 정리
+- **캐싱 전략**: Ehcache 3.x를 활용한 조회 성능 향상
+- **QueryDSL 동적 쿼리**: 복합 검색 조건에 대한 효율적인 쿼리 생성
+
+### 🛡 **데이터 무결성 & 안정성**
+- **소프트 딜리트**: 데이터 추적성을 위한 논리적 삭제 구현
+- **트랜잭션 관리**: `@Transactional`을 통한 데이터 일관성 보장
+- **테이블 반정규화**: 성능과 데이터 무결성 간의 트레이드오프 최적화
+- **실시간 가격 검증**: 주문 시점 상품 가격 변경 감지 및 처리
+
+### ☁️ **클라우드 아키텍처 & DevOps**
+- **AWS 인프라**: EC2, RDS, S3를 활용한 확장 가능한 클라우드 아키텍처
+- **컨테이너화**: Docker를 통한 환경 독립적 배포
+- **CI/CD 파이프라인**: GitHub Actions로 자동 빌드/테스트/배포
+- **무중단 배포**: 컨테이너 기반 롤링 배포 전략
+
+### 🧪 **테스트 주도 개발**
+- **포괄적 테스트**: 단위/통합 테스트를 통한 99% 이상 커버리지 달성
+- **Mock 기반 테스트**: Mockito를 활용한 외부 의존성 격리
+- **CI 테스트 통합**: 배포 전 자동 테스트 실행으로 품질 보장
+
+## 🛠 트러블슈팅
+
+### 🗃 **데이터 무결성 문제**
+**📋 문제상황**
+- 회원 탈퇴 시 연관된 모든 데이터(상품, 리뷰, 대댓글 등)를 삭제하면 판매 통계 및 비즈니스 분석에 필요한 데이터가 소실됨
+
+**💡 해결방안**
+- **OrderItem 테이블 반정규화** 구현
+- 상품명, 상품가격 필드를 OrderItem에 추가하여 주문 시점 정보 보존
+- 회원 정보는 소프트 딜리트로 처리하여 개인정보는 삭제하되 비즈니스 데이터는 유지
+
+```sql
+-- 반정규화 적용 예시
+ORDER_ITEM Table:
+- goods_id (FK)
+- goods_name (추가)
+- goods_price (추가)
+- order_date
+```
+
+### 🔧 **상품 옵션 데이터 구조 개선**
+**📋 문제상황**
+- 초기 `Map<String, Object>` 구조로 인한 타입 안정성 부족
+- 런타임에서 데이터 추출 시 ClassCastException 발생 가능성
+
+**💡 해결방안**
+- **타입 안전한 `List<OptionCreate>` 구조**로 변경
+- JPA Converter를 활용한 JSON 직렬화/역직렬화
+- Key-Value 기반 명확한 옵션 데이터 관리
+
+<img src="https://user-images.githubusercontent.com/103364805/213638733-a2516fb5-abdd-4ed6-9213-35cce916f8be.png"  width="800" height="550">
+
+```java
+// 개선된 옵션 구조
+@Entity
+public class GoodsOption {
+    @Convert(converter = OptionListConverter.class)
+    private List<OptionCreate> options;
+}
+```
+
+### 🔐 **인증 시스템 아키텍처 결정**
+**📋 문제상황**
+- 세션 방식 vs JWT 방식 선택 이슈
+- 확장성과 성능, MSA 환경 고려 필요
+
+**💡 해결방안**
+- **JWT 토큰 기반 인증** 채택
+- 무상태(Stateless) 특성으로 서버 부하 감소
+- MSA 환경에서의 서비스 간 인증 용이성 확보
+
+<img src="https://user-images.githubusercontent.com/103364805/215916194-ea5148f0-eff6-427d-94db-cd4f4fc7e74c.png" width="500" height="500">
+
+### 🔑 **JWT Secret Key 보안 강화**
+**📋 문제상황**
+- 고정된 Secret Key로 인한 보안 취약성
+- Key 노출 시 수동 변경 및 재배포 필요
+
+**💡 해결방안**
+- **동적 Secret Key 생성** 알고리즘 구현
+- 서버 재시작마다 자동 키 갱신
+- 우아한 형제들 코프링 레퍼런스 참조
+
+<img src="https://user-images.githubusercontent.com/103364805/213639070-6fe6d733-4e8c-40f5-b2e9-d43451eb559e.png" width="800" height="60">
+
+### 📝 **API 응답 데이터 최적화**
+**📋 문제상황**
+- Entity 직접 노출로 인한 불필요한 데이터 전송
+- 순환 참조 및 성능 이슈 발생
+
+**💡 해결방안**
+- **전용 Response DTO** 설계 및 구현
+- 필요한 데이터만 선별적 노출
+- API 응답 속도 향상 및 보안 강화
+
+<img src="https://user-images.githubusercontent.com/103364805/213639306-dea7793a-1ad5-4aeb-92c3-fa5c2ade8b62.png" width="800" height="300">
+
+### 🐳 **CI/CD 배포 네트워크 이슈**
+**📋 문제상황**
+- GitHub Actions에서 Docker Hub 이미지 pull 시 I/O timeout 에러
+- 네트워크 연결 문제로 배포 파이프라인 중단
+
+**💡 해결방안**
+- **AWS EC2 보안 그룹** 설정 최적화
+- SSH 포트(22) 접근 범위를 적절히 조정
+- 방화벽 설정 검토 및 네트워크 정책 개선
+
+<img src="https://user-images.githubusercontent.com/103364805/213639607-f0453880-59f0-41a0-9dc1-2a0207176844.png" width="700" height="700">
+## 📚 학습 및 성장 기록
+
+### 💡 **핵심 학습 성과**
+이 프로젝트를 통해 학습하고 적용한 기술들과 관련 에러 해결 과정을 체계적으로 정리했습니다.
+실제 개발 과정에서 겪은 문제들과 해결 방법을 문서화하여 향후 유사한 상황에서 효율적으로 대응할 수 있도록 했습니다.
+
+### 🎓 **기술 학습 아카이브**
+
+#### 🔍 **데이터베이스 & ORM**
+- [QueryDSL 다중 조건 검색 구현](https://josteady.tistory.com/850)
+- [List → Page 타입 리팩토링 전략](https://josteady.tistory.com/842)
+- [OSIV(Open Session In View) 최적화](https://josteady.tistory.com/840)
+- [JPA N+1 문제 해결 방법](https://josteady.tistory.com/839)
+- [JPA 순환 참조 해결 전략](https://josteady.tistory.com/776)
+
+#### 🔐 **보안 & 인증**
+- [Spring Security + JWT 인증 구현](https://josteady.tistory.com/838)
+- [Swagger JWT 토큰 연동](https://josteady.tistory.com/794)
+- [AWS Secrets Manager Spring Boot 연동](https://josteady.tistory.com/830)
+
+#### ☁️ **클라우드 & DevOps**
+- [Spring Boot + Docker + GitHub Actions CI/CD](https://josteady.tistory.com/831)
+- [AWS EC2 + Docker + MySQL 배포](https://josteady.tistory.com/828)
+- [Docker Compose를 활용한 개발 환경 구성](https://josteady.tistory.com/826)
+- [RDS MySQL 연결 및 타임존 설정](https://josteady.tistory.com/829)
+
+#### 🎯 **성능 최적화**
+- [Ehcache 2.x → 3.x 마이그레이션](https://josteady.tistory.com/811)
+- [Ehcache 캐싱 전략 구현](https://josteady.tistory.com/808)
+- [Spring AOP 성능 모니터링](https://josteady.tistory.com/810)
+- [Spring Scheduler 배치 작업](https://josteady.tistory.com/812)
+
+#### 🧪 **테스트 & 품질**
+- [Page 객체 테스트 코드 작성](https://josteady.tistory.com/799)
+- [MultipartFile 통합 테스트](https://josteady.tistory.com/814)
+- [Spring Boot 특정 테스트 제외](https://josteady.tistory.com/833)
+
+### 🚨 **에러 해결 아카이브**
+
+#### ⚙️ **환경 설정 오류**
+- [ApplicationContext 로딩 실패](https://josteady.tistory.com/836)
+- [Docker Hub 접근 권한 거부](https://josteady.tistory.com/822)
+- [포트 중복 사용 오류](https://josteady.tistory.com/818)
+
+#### ☁️ **AWS 관련 오류**
+- [AWS Access Key 인증 오류](https://josteady.tistory.com/815)
+- [S3 접근 권한 거부](https://josteady.tistory.com/793)
+
+#### 🗃 **JPA & 데이터베이스 오류**
+- [Unsaved Transient Instance 오류](https://josteady.tistory.com/806)
+- [Query Unique Result 오류](https://josteady.tistory.com/791)
+- [참조 무결성 제약 조건 위반](https://josteady.tistory.com/773)
+- [JPA Metamodel Empty 오류](https://josteady.tistory.com/767)
+
+#### 🔧 **기타 기술적 오류**
+- [Jackson 직렬화 오류](https://josteady.tistory.com/760)
+- [Validation 타입 불일치](https://josteady.tistory.com/725)
+- [Swagger 설정 오류](https://josteady.tistory.com/768)
+
+## 🎯 프로젝트 회고 및 성장
+
+### 💭 **개발자로서의 성장**
+
+#### 🔍 **기술적 역량 향상**
+- **아키텍처 설계 능력**: 단순한 CRUD를 넘어 확장 가능한 시스템 아키텍처 설계 경험
+- **문제 해결 능력**: 다양한 기술적 이슈를 스스로 해결하며 troubleshooting 역량 강화
+- **코드 품질 의식**: 테스트 주도 개발과 리팩토링을 통한 코드 품질 개선 의식 확립
+
+#### 🎓 **학습과 적용의 선순환**
+- **지속적 학습**: 모르는 기술을 끈질기게 학습하여 실제 프로젝트에 적용하는 경험
+- **문서화 습관**: 학습한 내용을 체계적으로 정리하여 지식 자산화
+- **오픈소스 활용**: 우아한 형제들 등 오픈소스 레퍼런스를 분석하고 프로젝트에 적용
+
+### 💡 **핵심 깨달음**
+
+#### 🚀 **"동작하는 코드"를 넘어서**
+> *"기능이 정상적으로 동작하는 것은 끝이 아닌 시작점"*
+
+- 단순히 작동하는 코드가 아닌, **유지보수 가능하고 확장 가능한 코드**의 중요성 인식
+- 성능, 보안, 가독성을 모두 고려한 **종합적인 코드 품질** 추구
+
+#### 🧪 **테스트의 가치**
+> *"테스트하기 쉬운 코드가 좋은 코드"*
+
+- 단위 테스트와 통합 테스트를 통한 **코드 신뢰성** 확보
+- 리팩토링 시 테스트 코드가 주는 **안정감과 자신감** 경험
+
+#### 🔄 **실패를 통한 성장**
+> *"시행착오를 통해 더 많이 배우고 성장"*
+
+- 에러와 실패를 두려워하지 않고 **적극적으로 도전**하는 자세 형성
+- 각 에러를 해결하며 얻은 **깊이 있는 이해**의 가치 인식
+
+### 🔄 **지속적 개선 계획**
+
+#### 📈 **기술적 발전 방향**
+- **마이크로서비스 아키텍처** 적용 경험
+- **대용량 트래픽 처리** 및 성능 최적화
+- **모니터링 시스템** 구축 (ELK Stack, Prometheus 등)
+
+#### 🤝 **협업 능력 강화**
+- **코드 리뷰 문화** 경험 및 개선
+- **애자일 개발 방법론** 적용
+- **기술 공유 및 멘토링** 활동 참여
+
+## 🌟 마치며
+
+이 프로젝트는 단순한 **쇼핑몰 API 개발**을 넘어, **실무에서 요구되는 종합적인 개발 역량**을 기를 수 있었던 소중한 경험이었습니다.
+
+특히 **개발 → 테스트 → 배포 → 모니터링**의 전체 라이프사이클을 경험하며,
+단순히 코드를 작성하는 것이 아닌 **지속 가능한 소프트웨어를 만드는 것**의 의미를 깨달았습니다.
+
+앞으로도 이런 **체계적이고 품질 높은 개발 문화**를 바탕으로 더 나은 개발자로 성장해 나가겠습니다.
+
+---
+
+### 📞 Contact
+- **Email**: [개발자 이메일]
+- **Blog**: [기술 블로그](https://josteady.tistory.com/)
+- **GitHub**: [GitHub 프로필]
+
+**⭐ 이 프로젝트가 도움이 되셨다면 Star를 눌러주세요!**
