@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>상품 목록</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4">상품 목록</h2>
+
+        <!-- 검색 및 필터 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="searchKeyword" class="form-label">검색</label>
+                        <input type="text" class="form-control" id="searchKeyword"
+                               placeholder="상품명으로 검색">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="minPrice" class="form-label">최저가</label>
+                        <input type="number" class="form-control" id="minPrice" placeholder="0">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="maxPrice" class="form-label">최고가</label>
+                        <input type="number" class="form-control" id="maxPrice" placeholder="1000000">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">&nbsp;</label>
+                        <button class="btn btn-primary w-100" onclick="searchGoods()">검색</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 카테고리 필터 -->
+        <div class="mb-3">
+            <button class="btn btn-sm btn-outline-secondary" onclick="loadGoods()">전체</button>
+            <span id="categoryButtons"></span>
+        </div>
+
+        <!-- 상품 목록 -->
+        <div id="goodsList" class="row">
+            <div class="col-12 text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul id="pagination" class="pagination justify-content-center">
+            </ul>
+        </nav>
+    </div>
+
+    <script layout:fragment="script">
+        let currentPage = 0;
+        let currentCategory = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategories();
+            loadGoods();
+
+            // Enter 키로 검색
+            document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchGoods();
+                }
+            });
+        });
+
+        // 카테고리 로드
+        async function loadCategories() {
+            try {
+                const response = await axios.get('/api/categories');
+                const categories = response.data;
+                const container = document.getElementById('categoryButtons');
+
+                container.innerHTML = categories.map(category => `
+                    <button class="btn btn-sm btn-outline-secondary"
+                            onclick="filterByCategory(${category.id})">
+                        ${category.category}
+                    </button>
+                `).join(' ');
+            } catch (error) {
+                console.error('카테고리 로드 실패:', error);
+            }
+        }
+
+        // 상품 목록 조회
+        async function loadGoods(page = 0) {
+            currentPage = page;
+            try {
+                const response = await axios.get('/api/goods', {
+                    params: { page: page, size: 12 }
+                });
+
+                displayGoods(response.data);
+            } catch (error) {
+                console.error('상품 조회 실패:', error);
+                document.getElementById('goodsList').innerHTML =
+                    '<div class="col-12 text-center"><p class="text-danger">상품을 불러오는데 실패했습니다.</p></div>';
+            }
+        }
+
+        // 키워드 검색
+        async function searchGoods() {
+            const keyword = document.getElementById('searchKeyword').value;
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+
+            try {
+                let response;
+                if (minPrice && maxPrice) {
+                    // 가격 범위 검색
+                    response = await axios.get('/api/goods/search', {
+                        params: {
+                            minPrice: minPrice,
+                            maxPrice: maxPrice,
+                            page: 0,
+                            size: 12
+                        }
+                    });
+                } else if (keyword) {
+                    // 키워드 검색
+                    response = await axios.get('/api/goods/keyword', {
+                        params: {
+                            keyword: keyword,
+                            page: 0,
+                            size: 12
+                        }
+                    });
+                } else {
+                    loadGoods();
+                    return;
+                }
+
+                displayGoods(response.data);
+            } catch (error) {
+                console.error('검색 실패:', error);
+                alert('검색에 실패했습니다.');
+            }
+        }
+
+        // 카테고리 필터
+        function filterByCategory(categoryId) {
+            currentCategory = categoryId;
+            // 카테고리별 검색은 API에 따라 구현
+            loadGoods();
+        }
+
+        // 상품 목록 표시
+        function displayGoods(data) {
+            const products = data.content;
+            const container = document.getElementById('goodsList');
+
+            if (products.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center"><p>등록된 상품이 없습니다.</p></div>';
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100">
+                        <img src="${product.imageUrl || 'https://via.placeholder.com/300'}"
+                             class="card-img-top" alt="${product.goodsName}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">${product.goodsName}</h5>
+                            <p class="card-text text-primary fw-bold">${product.price.toLocaleString()}원</p>
+                            <a href="/goods/${product.id}" class="btn btn-sm btn-primary w-100">상세보기</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // 페이지네이션
+            displayPagination(data);
+        }
+
+        // 페이지네이션 표시
+        function displayPagination(data) {
+            const pagination = document.getElementById('pagination');
+            const totalPages = data.totalPages;
+            const currentPage = data.number;
+
+            let html = '';
+
+            // 이전 버튼
+            if (currentPage > 0) {
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadGoods(${currentPage - 1}); return false;">이전</a></li>`;
+            }
+
+            // 페이지 번호
+            for (let i = 0; i < totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<li class="page-item active"><span class="page-link">${i + 1}</span></li>`;
+                } else {
+                    html += `<li class="page-item"><a class="page-link" href="#" onclick="loadGoods(${i}); return false;">${i + 1}</a></li>`;
+                }
+            }
+
+            // 다음 버튼
+            if (currentPage < totalPages - 1) {
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadGoods(${currentPage + 1}); return false;">다음</a></li>`;
+            }
+
+            pagination.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

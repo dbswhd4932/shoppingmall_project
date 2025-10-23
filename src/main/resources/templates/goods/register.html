@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>상품 등록</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 class="mb-4">상품 등록</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <form id="goodsForm">
+                            <div class="mb-3">
+                                <label for="goodsName" class="form-label">상품명 *</label>
+                                <input type="text" class="form-control" id="goodsName" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="categoryId" class="form-label">카테고리 *</label>
+                                <select class="form-select" id="categoryId" required>
+                                    <option value="">카테고리 선택</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="price" class="form-label">가격 *</label>
+                                <input type="number" class="form-control" id="price" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="goodsDescription" class="form-label">상품 설명</label>
+                                <textarea class="form-control" id="goodsDescription" rows="5"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="images" class="form-label">상품 이미지</label>
+                                <input type="file" class="form-control" id="images" multiple accept="image/*">
+                                <small class="form-text text-muted">여러 이미지를 선택할 수 있습니다.</small>
+                            </div>
+
+                            <!-- 옵션 추가 -->
+                            <div class="mb-3">
+                                <label class="form-label">옵션</label>
+                                <div id="optionsContainer"></div>
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="addOption()">
+                                    <i class="fas fa-plus"></i> 옵션 추가
+                                </button>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">등록하기</button>
+                                <a href="/goods" class="btn btn-outline-secondary">취소</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="script">
+        let optionCount = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadCategories();
+        });
+
+        // 카테고리 로드
+        async function loadCategories() {
+            try {
+                const response = await axios.get('/api/categories');
+                const categories = response.data;
+                const select = document.getElementById('categoryId');
+
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.category;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('카테고리 로드 실패:', error);
+            }
+        }
+
+        // 옵션 추가
+        function addOption() {
+            optionCount++;
+            const container = document.getElementById('optionsContainer');
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'card mb-2';
+            optionDiv.id = `option-${optionCount}`;
+            optionDiv.innerHTML = `
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" placeholder="옵션명 (예: 색상)"
+                                   id="optionName-${optionCount}">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" placeholder="옵션값 (예: 빨강)"
+                                   id="optionValue-${optionCount}">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger w-100"
+                                    onclick="removeOption(${optionCount})">삭제</button>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <input type="number" class="form-control" placeholder="추가 가격"
+                                   id="optionPrice-${optionCount}">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" placeholder="옵션 설명"
+                                   id="optionDesc-${optionCount}">
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(optionDiv);
+        }
+
+        // 옵션 제거
+        function removeOption(id) {
+            const optionDiv = document.getElementById(`option-${id}`);
+            optionDiv.remove();
+        }
+
+        // 폼 제출
+        document.getElementById('goodsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+
+            // 상품 정보
+            const goodsData = {
+                goodsName: document.getElementById('goodsName').value,
+                categoryId: document.getElementById('categoryId').value,
+                price: parseInt(document.getElementById('price').value),
+                goodsDescription: document.getElementById('goodsDescription').value
+            };
+
+            // 옵션 정보 수집
+            const options = [];
+            for (let i = 1; i <= optionCount; i++) {
+                const nameInput = document.getElementById(`optionName-${i}`);
+                if (nameInput) {
+                    const option = {
+                        optionValue: [{
+                            name: nameInput.value,
+                            value: document.getElementById(`optionValue-${i}`).value
+                        }],
+                        totalPrice: parseInt(document.getElementById(`optionPrice-${i}`).value || 0),
+                        optionDescription: document.getElementById(`optionDesc-${i}`).value
+                    };
+                    options.push(option);
+                }
+            }
+
+            if (options.length > 0) {
+                goodsData.options = options;
+            }
+
+            // JSON 데이터를 Blob으로 추가
+            formData.append('goodsCreateRequestDto', new Blob([JSON.stringify(goodsData)], {
+                type: 'application/json'
+            }));
+
+            // 이미지 파일 추가
+            const files = document.getElementById('images').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+
+            try {
+                await axios.post('/api/goods', formData, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                alert('상품이 등록되었습니다.');
+                window.location.href = '/goods';
+            } catch (error) {
+                console.error('상품 등록 실패:', error);
+                if (error.response) {
+                    alert(error.response.data.message || '상품 등록에 실패했습니다.');
+                } else {
+                    alert('상품 등록에 실패했습니다.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

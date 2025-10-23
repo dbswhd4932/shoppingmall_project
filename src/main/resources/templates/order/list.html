@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>주문 내역</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4">주문 내역</h2>
+
+        <div id="orderList">
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul id="pagination" class="pagination justify-content-center"></ul>
+        </nav>
+    </div>
+
+    <script layout:fragment="script">
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadOrders(0);
+        });
+
+        // 주문 내역 조회
+        async function loadOrders(page = 0) {
+            try {
+                const response = await axios.get('/api/orders', {
+                    params: { page: page, size: 10 },
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                displayOrders(response.data.content);
+                displayPagination(response.data);
+            } catch (error) {
+                console.error('주문 내역 조회 실패:', error);
+                document.getElementById('orderList').innerHTML =
+                    '<div class="alert alert-danger">주문 내역을 불러오는데 실패했습니다.</div>';
+            }
+        }
+
+        // 주문 내역 표시
+        function displayOrders(orders) {
+            const container = document.getElementById('orderList');
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-box fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">주문 내역이 없습니다.</p>
+                        <a href="/goods" class="btn btn-primary">쇼핑하러 가기</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="mb-0">주문번호: ${order.merchantId || order.id}</h6>
+                                <small class="text-muted">${new Date(order.createdAt).toLocaleString()}</small>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <span class="badge ${order.orderStatus === 'COMPLETE' ? 'bg-success' : 'bg-danger'}">
+                                    ${order.orderStatus === 'COMPLETE' ? '주문완료' : '주문취소'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p class="mb-1"><strong>받는 사람:</strong> ${order.name}</p>
+                                <p class="mb-1"><strong>전화번호:</strong> ${order.phone}</p>
+                                <p class="mb-1"><strong>배송지:</strong> ${order.detailAddress} (${order.zipcode})</p>
+                                ${order.requirement ? `<p class="mb-1"><strong>요청사항:</strong> ${order.requirement}</p>` : ''}
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <h5 class="text-primary">${(order.totalPrice || 0).toLocaleString()}원</h5>
+                                <a href="/orders/${order.id}" class="btn btn-sm btn-outline-primary">상세보기</a>
+                                ${order.orderStatus === 'COMPLETE' ? `
+                                    <button class="btn btn-sm btn-outline-danger" onclick="cancelOrder(${order.id})">
+                                        주문취소
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 주문 취소
+        async function cancelOrder(orderId) {
+            if (!confirm('주문을 취소하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                await axios.post('/api/payCancel', { orderId: orderId }, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                alert('주문이 취소되었습니다.');
+                loadOrders();
+            } catch (error) {
+                console.error('주문 취소 실패:', error);
+                alert('주문 취소에 실패했습니다.');
+            }
+        }
+
+        // 페이지네이션
+        function displayPagination(data) {
+            const pagination = document.getElementById('pagination');
+            const totalPages = data.totalPages;
+            const currentPage = data.number;
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            if (currentPage > 0) {
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadOrders(${currentPage - 1}); return false;">이전</a></li>`;
+            }
+
+            for (let i = 0; i < totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<li class="page-item active"><span class="page-link">${i + 1}</span></li>`;
+                } else {
+                    html += `<li class="page-item"><a class="page-link" href="#" onclick="loadOrders(${i}); return false;">${i + 1}</a></li>`;
+                }
+            }
+
+            if (currentPage < totalPages - 1) {
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadOrders(${currentPage + 1}); return false;">다음</a></li>`;
+            }
+
+            pagination.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

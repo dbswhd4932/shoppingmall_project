@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>홈</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Hero Section -->
+        <section class="bg-light py-5 mb-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="display-4 fw-bold">Shopping Mall에 오신 것을 환영합니다</h1>
+                        <p class="lead">최고의 상품을 최저가로 만나보세요</p>
+                        <a th:href="@{/goods}" class="btn btn-primary btn-lg">상품 둘러보기</a>
+                    </div>
+                    <div class="col-lg-6">
+                        <img src="https://via.placeholder.com/600x400" alt="Hero" class="img-fluid rounded">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section>
+            <div class="container">
+                <h2 class="mb-4">인기 상품</h2>
+                <div id="featuredProducts" class="row">
+                    <!-- 상품 목록이 여기에 동적으로 로드됩니다 -->
+                    <div class="col-12 text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a th:href="@{/goods}" class="btn btn-outline-primary">더 많은 상품 보기</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="mt-5">
+            <div class="container">
+                <h2 class="mb-4">카테고리</h2>
+                <div id="categories" class="row">
+                    <!-- 카테고리가 여기에 동적으로 로드됩니다 -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script layout:fragment="script">
+        // 페이지 로드 시 인기 상품 조회
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFeaturedProducts();
+            loadCategories();
+        });
+
+        // 인기 상품 로드
+        async function loadFeaturedProducts() {
+            try {
+                const response = await axios.get('/api/goods', {
+                    params: { page: 0, size: 8 }
+                });
+
+                const products = response.data.content;
+                const container = document.getElementById('featuredProducts');
+
+                if (products.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center"><p>등록된 상품이 없습니다.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = products.map(product => `
+                    <div class="col-md-3 mb-4">
+                        <div class="card h-100">
+                            <img src="${product.imageUrl || 'https://via.placeholder.com/300'}"
+                                 class="card-img-top" alt="${product.goodsName}">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.goodsName}</h5>
+                                <p class="card-text text-primary fw-bold">${product.price.toLocaleString()}원</p>
+                                <a href="/goods/${product.id}" class="btn btn-sm btn-outline-primary">상세보기</a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('상품 로드 실패:', error);
+                document.getElementById('featuredProducts').innerHTML =
+                    '<div class="col-12 text-center"><p class="text-danger">상품을 불러오는데 실패했습니다.</p></div>';
+            }
+        }
+
+        // 카테고리 로드
+        async function loadCategories() {
+            try {
+                const response = await axios.get('/api/categories');
+                const categories = response.data;
+                const container = document.getElementById('categories');
+
+                container.innerHTML = categories.map(category => `
+                    <div class="col-md-3 mb-3">
+                        <a href="/goods?category=${category.id}" class="text-decoration-none">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title">${category.category}</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('카테고리 로드 실패:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>주문 상세</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4">주문 상세</h2>
+
+        <div id="orderDetail">
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/orders" class="btn btn-outline-secondary">주문 내역으로</a>
+        </div>
+    </div>
+
+    <script layout:fragment="script" th:inline="javascript">
+        const orderId = /*[[${orderId}]]*/ 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadOrderDetail();
+        });
+
+        // 주문 상세 조회
+        async function loadOrderDetail() {
+            try {
+                const response = await axios.get(`/api/orders/${orderId}`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                const order = response.data;
+                displayOrderDetail(order);
+            } catch (error) {
+                console.error('주문 조회 실패:', error);
+                document.getElementById('orderDetail').innerHTML =
+                    '<div class="alert alert-danger">주문 정보를 불러오는데 실패했습니다.</div>';
+            }
+        }
+
+        // 주문 상세 표시
+        function displayOrderDetail(order) {
+            document.getElementById('orderDetail').innerHTML = `
+                <!-- 주문 정보 -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="mb-0">주문 정보</h5>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <span class="badge ${order.orderStatus === 'COMPLETE' ? 'bg-success' : 'bg-danger'} fs-6">
+                                    ${order.orderStatus === 'COMPLETE' ? '주문완료' : '주문취소'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th width="30%">주문번호</th>
+                                    <td>${order.merchantId || order.id}</td>
+                                </tr>
+                                <tr>
+                                    <th>주문일시</th>
+                                    <td>${new Date(order.createdAt).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <th>총 결제금액</th>
+                                    <td class="h5 text-primary">${(order.totalPrice || 0).toLocaleString()}원</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 배송 정보 -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">배송 정보</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th width="30%">받는 사람</th>
+                                    <td>${order.name}</td>
+                                </tr>
+                                <tr>
+                                    <th>전화번호</th>
+                                    <td>${order.phone}</td>
+                                </tr>
+                                <tr>
+                                    <th>우편번호</th>
+                                    <td>${order.zipcode}</td>
+                                </tr>
+                                <tr>
+                                    <th>주소</th>
+                                    <td>${order.detailAddress}</td>
+                                </tr>
+                                ${order.requirement ? `
+                                <tr>
+                                    <th>배송 요청사항</th>
+                                    <td>${order.requirement}</td>
+                                </tr>
+                                ` : ''}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 주문 상품 -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">주문 상품</h5>
+                    </div>
+                    <div class="card-body">
+                        ${order.orderItems && order.orderItems.length > 0 ?
+                            order.orderItems.map(item => `
+                                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                    <img src="${item.imageUrl || 'https://via.placeholder.com/100'}"
+                                         class="rounded me-3" style="width: 100px; height: 100px; object-fit: cover;">
+                                    <div class="flex-grow-1">
+                                        <h6>${item.goodsName}</h6>
+                                        <p class="text-muted mb-0">${item.amount}개 × ${(item.price || 0).toLocaleString()}원</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="fw-bold mb-0">${(item.orderPrice || 0).toLocaleString()}원</p>
+                                    </div>
+                                </div>
+                            `).join('') :
+                            '<p class="text-muted">주문 상품 정보가 없습니다.</p>'
+                        }
+                    </div>
+                </div>
+
+                ${order.orderStatus === 'COMPLETE' ? `
+                    <div class="text-center">
+                        <button class="btn btn-danger btn-lg" onclick="cancelOrder()">주문 취소</button>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // 주문 취소
+        async function cancelOrder() {
+            if (!confirm('주문을 취소하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                await axios.post('/api/payCancel', { orderId: orderId }, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                alert('주문이 취소되었습니다.');
+                loadOrderDetail();
+            } catch (error) {
+                console.error('주문 취소 실패:', error);
+                alert('주문 취소에 실패했습니다.');
+            }
+        }
+    </script>
+</body>
+</html>

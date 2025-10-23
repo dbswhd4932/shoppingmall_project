@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>장바구니</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4">장바구니</h2>
+
+        <div id="cartList">
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 총 금액 및 주문 -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4>총 주문 금액: <span id="totalAmount" class="text-primary">0</span>원</h4>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-success btn-lg" onclick="proceedToOrder()">
+                            <i class="fas fa-credit-card"></i> 주문하기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul id="pagination" class="pagination justify-content-center"></ul>
+        </nav>
+    </div>
+
+    <script layout:fragment="script">
+        let cartItems = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadCart(0);
+        });
+
+        // 장바구니 조회
+        async function loadCart(page = 0) {
+            try {
+                const response = await axios.get('/api/carts', {
+                    params: { page: page, size: 10 },
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                cartItems = response.data.content;
+                displayCart(cartItems);
+                displayPagination(response.data);
+                calculateTotal();
+            } catch (error) {
+                console.error('장바구니 조회 실패:', error);
+                document.getElementById('cartList').innerHTML =
+                    '<div class="alert alert-danger">장바구니를 불러오는데 실패했습니다.</div>';
+            }
+        }
+
+        // 장바구니 표시
+        function displayCart(items) {
+            const container = document.getElementById('cartList');
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">장바구니가 비어있습니다.</p>
+                        <a href="/goods" class="btn btn-primary">쇼핑 계속하기</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = items.map((item, index) => `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="${item.imageUrl || 'https://via.placeholder.com/150'}"
+                                     class="img-fluid rounded" alt="Product">
+                            </div>
+                            <div class="col-md-4">
+                                <h5>${item.goodsName}</h5>
+                                <p class="text-muted mb-0">${item.optionDescription || '옵션 없음'}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-0">단가: ${item.price ? item.price.toLocaleString() : '0'}원</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="input-group input-group-sm">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                            onclick="updateQuantity(${item.id}, ${item.totalAmount - 1})">-</button>
+                                    <input type="text" class="form-control text-center"
+                                           value="${item.totalAmount}" readonly>
+                                    <button class="btn btn-outline-secondary" type="button"
+                                            onclick="updateQuantity(${item.id}, ${item.totalAmount + 1})">+</button>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <p class="fw-bold mb-0">${item.totalPrice ? item.totalPrice.toLocaleString() : '0'}원</p>
+                            </div>
+                            <div class="col-md-1 text-end">
+                                <button class="btn btn-sm btn-danger" onclick="removeFromCart(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 수량 업데이트
+        async function updateQuantity(cartId, newQuantity) {
+            if (newQuantity < 1) return;
+
+            try {
+                await axios.put(`/api/carts/${cartId}`, {
+                    totalAmount: newQuantity
+                }, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                loadCart();
+            } catch (error) {
+                console.error('수량 업데이트 실패:', error);
+                alert('수량 업데이트에 실패했습니다.');
+            }
+        }
+
+        // 장바구니에서 제거
+        async function removeFromCart(cartId) {
+            if (!confirm('이 상품을 장바구니에서 삭제하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                await axios.delete(`/api/carts/${cartId}`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                loadCart();
+                alert('삭제되었습니다.');
+            } catch (error) {
+                console.error('삭제 실패:', error);
+                alert('삭제에 실패했습니다.');
+            }
+        }
+
+        // 총 금액 계산
+        function calculateTotal() {
+            const total = cartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+            document.getElementById('totalAmount').textContent = total.toLocaleString();
+        }
+
+        // 주문하기
+        function proceedToOrder() {
+            if (cartItems.length === 0) {
+                alert('장바구니에 상품이 없습니다.');
+                return;
+            }
+            window.location.href = '/order';
+        }
+
+        // 페이지네이션
+        function displayPagination(data) {
+            const pagination = document.getElementById('pagination');
+            const totalPages = data.totalPages;
+            const currentPage = data.number;
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            if (currentPage > 0) {
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadCart(${currentPage - 1}); return false;">이전</a></li>`;
+            }
+
+            for (let i = 0; i < totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<li class="page-item active"><span class="page-link">${i + 1}</span></li>`;
+                } else {
+                    html += `<li class="page-item"><a class="page-link" href="#" onclick="loadCart(${i}); return false;">${i + 1}</a></li>`;
+                }
+            }
+
+            if (currentPage < totalPages - 1) {
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadCart(${currentPage + 1}); return false;">다음</a></li>`;
+            }
+
+            pagination.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

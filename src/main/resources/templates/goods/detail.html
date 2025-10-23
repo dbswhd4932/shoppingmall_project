@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>상품 상세</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div id="goodsDetail">
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 리뷰 섹션 -->
+        <div class="mt-5">
+            <h3 class="mb-4">상품 리뷰</h3>
+            <div id="reviewList"></div>
+
+            <!-- 리뷰 페이지네이션 -->
+            <nav aria-label="Review pagination" class="mt-4">
+                <ul id="reviewPagination" class="pagination justify-content-center"></ul>
+            </nav>
+        </div>
+    </div>
+
+    <script layout:fragment="script" th:inline="javascript">
+        const goodsId = /*[[${goodsId}]]*/ 0;
+        let selectedOption = null;
+        let quantity = 1;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGoodsDetail();
+            loadReviews(0);
+        });
+
+        // 상품 상세 조회
+        async function loadGoodsDetail() {
+            try {
+                const response = await axios.get(`/api/goods/${goodsId}`);
+                const goods = response.data;
+
+                document.getElementById('goodsDetail').innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="carouselImages" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    ${goods.images && goods.images.length > 0 ?
+                                        goods.images.map((img, index) => `
+                                            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                                <img src="${img.fileUrl}" class="d-block w-100" alt="Product image">
+                                            </div>
+                                        `).join('') :
+                                        '<div class="carousel-item active"><img src="https://via.placeholder.com/600" class="d-block w-100"></div>'
+                                    }
+                                </div>
+                                ${goods.images && goods.images.length > 1 ? `
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon"></span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselImages" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon"></span>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h2>${goods.goodsName}</h2>
+                            <p class="text-muted">카테고리: ${goods.categoryName || '-'}</p>
+                            <h3 class="text-primary">${goods.price.toLocaleString()}원</h3>
+                            <hr>
+                            <p>${goods.goodsDescription || ''}</p>
+                            <hr>
+
+                            ${goods.options && goods.options.length > 0 ? `
+                                <div class="mb-3">
+                                    <label class="form-label">옵션 선택</label>
+                                    <select class="form-select" id="optionSelect" onchange="selectOption()">
+                                        <option value="">옵션을 선택하세요</option>
+                                        ${goods.options.map(opt => `
+                                            <option value="${opt.id}" data-price="${opt.totalPrice}">
+                                                ${opt.optionDescription} (+${opt.totalPrice.toLocaleString()}원)
+                                            </option>
+                                        `).join('')}
+                                    </select>
+                                </div>
+                            ` : ''}
+
+                            <div class="mb-3">
+                                <label class="form-label">수량</label>
+                                <div class="input-group" style="width: 150px;">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(-1)">-</button>
+                                    <input type="text" class="form-control text-center" id="quantity" value="1" readonly>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(1)">+</button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <h4>총 금액: <span id="totalPrice">${goods.price.toLocaleString()}</span>원</h4>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary btn-lg" onclick="addToCart()">
+                                    <i class="fas fa-shopping-cart"></i> 장바구니
+                                </button>
+                                <button class="btn btn-success btn-lg" onclick="buyNow()">
+                                    <i class="fas fa-bolt"></i> 바로 구매
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                window.goodsPrice = goods.price;
+            } catch (error) {
+                console.error('상품 조회 실패:', error);
+                document.getElementById('goodsDetail').innerHTML =
+                    '<div class="alert alert-danger">상품을 불러오는데 실패했습니다.</div>';
+            }
+        }
+
+        // 옵션 선택
+        function selectOption() {
+            const select = document.getElementById('optionSelect');
+            if (select) {
+                const option = select.options[select.selectedIndex];
+                selectedOption = option.value ? {
+                    id: option.value,
+                    price: parseInt(option.dataset.price)
+                } : null;
+                updateTotalPrice();
+            }
+        }
+
+        // 수량 변경
+        function changeQuantity(delta) {
+            quantity = Math.max(1, quantity + delta);
+            document.getElementById('quantity').value = quantity;
+            updateTotalPrice();
+        }
+
+        // 총 금액 계산
+        function updateTotalPrice() {
+            const basePrice = window.goodsPrice;
+            const optionPrice = selectedOption ? selectedOption.price : 0;
+            const total = (basePrice + optionPrice) * quantity;
+            document.getElementById('totalPrice').textContent = total.toLocaleString();
+        }
+
+        // 장바구니 추가
+        async function addToCart() {
+            if (!checkAuth(false)) {
+                alert('로그인이 필요합니다.');
+                window.location.href = '/login';
+                return;
+            }
+
+            const data = {
+                goodsId: goodsId,
+                totalAmount: quantity,
+                optionNumber: selectedOption ? selectedOption.id : null
+            };
+
+            try {
+                await axios.post('/api/carts', data, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+                alert('장바구니에 추가되었습니다.');
+            } catch (error) {
+                console.error('장바구니 추가 실패:', error);
+                alert('장바구니 추가에 실패했습니다.');
+            }
+        }
+
+        // 바로 구매
+        function buyNow() {
+            if (!checkAuth(false)) {
+                alert('로그인이 필요합니다.');
+                window.location.href = '/login';
+                return;
+            }
+            alert('주문 페이지로 이동합니다.');
+            window.location.href = '/order';
+        }
+
+        // 리뷰 목록 조회
+        async function loadReviews(page = 0) {
+            try {
+                const response = await axios.get('/api/goods/reviews', {
+                    params: {
+                        goodsId: goodsId,
+                        page: page,
+                        size: 5
+                    }
+                });
+
+                const reviews = response.data.content;
+                const container = document.getElementById('reviewList');
+
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p class="text-muted">등록된 리뷰가 없습니다.</p>';
+                    return;
+                }
+
+                container.innerHTML = reviews.map(review => `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h6>${review.memberName || '회원'}</h6>
+                                <small class="text-muted">${new Date(review.createdAt).toLocaleDateString()}</small>
+                            </div>
+                            <p class="mt-2">${review.comment}</p>
+                            ${review.replies && review.replies.length > 0 ? `
+                                <div class="ms-4 mt-2 border-start ps-3">
+                                    ${review.replies.map(reply => `
+                                        <div class="mb-2">
+                                            <strong>판매자 답변:</strong>
+                                            <p class="mb-0">${reply.comment}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                // 리뷰 페이지네이션
+                displayReviewPagination(response.data);
+            } catch (error) {
+                console.error('리뷰 조회 실패:', error);
+            }
+        }
+
+        // 리뷰 페이지네이션
+        function displayReviewPagination(data) {
+            const pagination = document.getElementById('reviewPagination');
+            const totalPages = data.totalPages;
+            const currentPage = data.number;
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            if (currentPage > 0) {
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadReviews(${currentPage - 1}); return false;">이전</a></li>`;
+            }
+
+            for (let i = 0; i < totalPages; i++) {
+                if (i === currentPage) {
+                    html += `<li class="page-item active"><span class="page-link">${i + 1}</span></li>`;
+                } else {
+                    html += `<li class="page-item"><a class="page-link" href="#" onclick="loadReviews(${i}); return false;">${i + 1}</a></li>`;
+                }
+            }
+
+            if (currentPage < totalPages - 1) {
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="loadReviews(${currentPage + 1}); return false;">다음</a></li>`;
+            }
+
+            pagination.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

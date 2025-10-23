@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>회원가입</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">회원가입</h2>
+                        <form id="signupForm">
+                            <div class="mb-3">
+                                <label for="loginId" class="form-label">아이디 *</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="loginId" name="loginId" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="checkDuplicate()">
+                                        중복확인
+                                    </button>
+                                </div>
+                                <small id="loginIdHelp" class="form-text"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">비밀번호 *</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">비밀번호 확인 *</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">이름 *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">이메일 *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">전화번호 *</label>
+                                <input type="tel" class="form-control" id="phone" name="phone"
+                                       placeholder="010-1234-5678" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="zipcode" class="form-label">우편번호</label>
+                                <input type="text" class="form-control" id="zipcode" name="zipcode">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="detailAddress" class="form-label">상세주소</label>
+                                <input type="text" class="form-control" id="detailAddress" name="detailAddress">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">회원 유형 *</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="roleType"
+                                               id="roleUser" value="ROLE_USER" checked>
+                                        <label class="form-check-label" for="roleUser">구매자</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="roleType"
+                                               id="roleSeller" value="ROLE_SELLER">
+                                        <label class="form-check-label" for="roleSeller">판매자</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">가입하기</button>
+                            </div>
+                        </form>
+                        <div class="mt-3 text-center">
+                            <p>이미 계정이 있으신가요? <a th:href="@{/login}">로그인</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="script">
+        let isLoginIdChecked = false;
+
+        // 아이디 중복 확인
+        async function checkDuplicate() {
+            const loginId = document.getElementById('loginId').value;
+            if (!loginId) {
+                alert('아이디를 입력해주세요.');
+                return;
+            }
+
+            try {
+                const response = await axios.post('/api/members/exist', { loginId });
+                const helpText = document.getElementById('loginIdHelp');
+
+                // 성공 응답 = 중복되지 않음
+                helpText.textContent = '사용 가능한 아이디입니다.';
+                helpText.className = 'form-text text-success';
+                isLoginIdChecked = true;
+            } catch (error) {
+                const helpText = document.getElementById('loginIdHelp');
+                console.error('중복 확인:', error);
+
+                // 중복 에러인 경우
+                if (error.response && error.response.data && error.response.data.code === 'DUPLICATED_LOGIN_ID') {
+                    helpText.textContent = '이미 사용 중인 아이디입니다.';
+                    helpText.className = 'form-text text-danger';
+                    isLoginIdChecked = false;
+                } else {
+                    // 기타 에러
+                    alert('중복 확인에 실패했습니다.');
+                }
+            }
+        }
+
+        // 회원가입 폼 제출
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!isLoginIdChecked) {
+                alert('아이디 중복 확인을 해주세요.');
+                return;
+            }
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            const formData = {
+                loginId: document.getElementById('loginId').value,
+                password: password,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                zipcode: document.getElementById('zipcode').value,
+                detailAddress: document.getElementById('detailAddress').value,
+                roleType: document.querySelector('input[name="roleType"]:checked').value
+            };
+
+            try {
+                await axios.post('/api/members/signup', formData);
+                alert('회원가입이 완료되었습니다!');
+                window.location.href = '/login';
+            } catch (error) {
+                console.error('회원가입 실패:', error);
+                if (error.response) {
+                    alert(error.response.data.message || '회원가입에 실패했습니다.');
+                } else {
+                    alert('회원가입에 실패했습니다.');
+                }
+            }
+        });
+
+        // 아이디 입력 시 중복 확인 초기화
+        document.getElementById('loginId').addEventListener('input', function() {
+            isLoginIdChecked = false;
+            document.getElementById('loginIdHelp').textContent = '';
+        });
+    </script>
+</body>
+</html>

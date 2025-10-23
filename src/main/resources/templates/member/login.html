@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>로그인</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">로그인</h2>
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="loginId" class="form-label">아이디</label>
+                                <input type="text" class="form-control" id="loginId" name="loginId" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">비밀번호</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">로그인</button>
+                            </div>
+                        </form>
+                        <div class="mt-3 text-center">
+                            <p>계정이 없으신가요? <a th:href="@{/signup}">회원가입</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="script">
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                loginId: document.getElementById('loginId').value,
+                password: document.getElementById('password').value,
+                loginType: 'NO_SOCIAL'
+            };
+
+            try {
+                const response = await axios.post('/api/members/login', formData);
+
+                // JWT 토큰 저장
+                const { accessToken, refreshToken } = response.data;
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('refreshToken', refreshToken);
+
+                alert('로그인 성공!');
+                window.location.href = '/';
+            } catch (error) {
+                console.error('로그인 실패:', error);
+                if (error.response) {
+                    alert(error.response.data.message || '로그인에 실패했습니다.');
+                } else {
+                    alert('로그인에 실패했습니다.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

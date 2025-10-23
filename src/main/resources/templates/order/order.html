@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>주문하기</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4">주문하기</h2>
+
+        <div class="row">
+            <!-- 주문 상품 정보 -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">주문 상품</h5>
+                    </div>
+                    <div class="card-body" id="orderItems">
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 배송 정보 -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">배송 정보</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="deliveryForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">받는 사람 *</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">전화번호 *</label>
+                                <input type="tel" class="form-control" id="phone" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="zipcode" class="form-label">우편번호 *</label>
+                                <input type="text" class="form-control" id="zipcode" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="detailAddress" class="form-label">상세주소 *</label>
+                                <input type="text" class="form-control" id="detailAddress" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="requirement" class="form-label">배송 요청사항</label>
+                                <textarea class="form-control" id="requirement" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 결제 정보 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">결제 정보</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th>상품 금액</th>
+                                    <td class="text-end" id="productTotal">0원</td>
+                                </tr>
+                                <tr>
+                                    <th>배송비</th>
+                                    <td class="text-end">무료</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <th class="h5">총 결제 금액</th>
+                                    <td class="text-end h5 text-primary" id="totalPrice">0원</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg" onclick="createOrder()">
+                                <i class="fas fa-credit-card"></i> 결제하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="script">
+        let cartItems = [];
+        let memberInfo = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadMemberInfo();
+            loadCartItems();
+        });
+
+        // 회원 정보 조회
+        async function loadMemberInfo() {
+            try {
+                const response = await axios.get('/api/members/me', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                memberInfo = response.data;
+
+                // 배송 정보에 회원 정보 자동 입력
+                document.getElementById('name').value = memberInfo.name;
+                document.getElementById('phone').value = memberInfo.phone;
+                document.getElementById('zipcode').value = memberInfo.zipcode || '';
+                document.getElementById('detailAddress').value = memberInfo.detailAddress || '';
+            } catch (error) {
+                console.error('회원 정보 조회 실패:', error);
+            }
+        }
+
+        // 장바구니 상품 조회
+        async function loadCartItems() {
+            try {
+                const response = await axios.get('/api/carts', {
+                    params: { page: 0, size: 100 },
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                cartItems = response.data.content;
+                displayOrderItems();
+                calculateTotal();
+            } catch (error) {
+                console.error('장바구니 조회 실패:', error);
+                document.getElementById('orderItems').innerHTML =
+                    '<p class="text-danger">장바구니를 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        // 주문 상품 표시
+        function displayOrderItems() {
+            const container = document.getElementById('orderItems');
+
+            if (cartItems.length === 0) {
+                container.innerHTML = '<p>주문할 상품이 없습니다.</p>';
+                return;
+            }
+
+            container.innerHTML = cartItems.map(item => `
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                    <img src="${item.imageUrl || 'https://via.placeholder.com/80'}"
+                         class="rounded me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${item.goodsName}</h6>
+                        <p class="text-muted mb-0">${item.optionDescription || ''}</p>
+                        <p class="mb-0">${item.totalAmount}개 × ${(item.price || 0).toLocaleString()}원</p>
+                    </div>
+                    <div class="text-end">
+                        <p class="fw-bold mb-0">${(item.totalPrice || 0).toLocaleString()}원</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 총 금액 계산
+        function calculateTotal() {
+            const total = cartItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+            document.getElementById('productTotal').textContent = total.toLocaleString() + '원';
+            document.getElementById('totalPrice').textContent = total.toLocaleString() + '원';
+        }
+
+        // 주문 생성
+        async function createOrder() {
+            if (cartItems.length === 0) {
+                alert('주문할 상품이 없습니다.');
+                return;
+            }
+
+            // 배송 정보 유효성 검사
+            const form = document.getElementById('deliveryForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            try {
+                // MerchantId 생성
+                const merchantResponse = await axios.get('/api/merchantId');
+                const merchantId = merchantResponse.data;
+
+                const orderData = {
+                    name: document.getElementById('name').value,
+                    phone: document.getElementById('phone').value,
+                    zipcode: document.getElementById('zipcode').value,
+                    detailAddress: document.getElementById('detailAddress').value,
+                    requirement: document.getElementById('requirement').value,
+                    merchantId: merchantId,
+                    cartIds: cartItems.map(item => item.id)
+                };
+
+                const response = await axios.post('/api/orders', orderData, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    }
+                });
+
+                alert('주문이 완료되었습니다!');
+                window.location.href = `/orders/${response.data.id}`;
+            } catch (error) {
+                console.error('주문 생성 실패:', error);
+                if (error.response) {
+                    alert(error.response.data.message || '주문에 실패했습니다.');
+                } else {
+                    alert('주문에 실패했습니다.');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
