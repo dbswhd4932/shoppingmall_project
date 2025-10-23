@@ -1,29 +1,42 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/test;MODE=MYSQL
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/shoppingmall?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: shopuser
+    password: shop1234
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
-    database-platform: org.hibernate.dialect.H2Dialect
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
   main:
     allow-bean-definition-overriding: true
   cache:
     jcache:
       config: classpath:ehcache.xml
+  cloud:
+    aws:
+      secretsmanager:
+        enabled: false
+      stack:
+        auto: false
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.aws.autoconfigure.secretsmanager.AwsSecretsManagerBootstrapConfiguration
 
 cloud:
   aws:
     credentials:
-      access-key: ${cloud.aws.credentials.access-key}
-      secret-key: ${cloud.aws.credentials.secret-key}
+      access-key: test
+      secret-key: test
     s3:
-      bucket: ${cloud.aws.s3.bucket}
+      bucket: test-bucket
     region:
-      static: ${cloud.aws.region.static}
+      static: ap-northeast-2
     stack:
       auto: false
 jwt:

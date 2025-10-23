@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -38,7 +37,7 @@ public class MemberSignupRequest {
     private String phone;           //핸드폰번호
 
     @NotNull(message = "권한을 입력하세요.")
-    private List<RoleType> roles;    // 권한타입
+    private RoleType roleType;    // 권한타입
 
 }
 

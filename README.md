@@ -24,6 +24,11 @@
 - **배포 환경**: AWS EC2 + Docker + GitHub Actions
 - **API 문서**: [Swagger UI](http://15.165.145.187:8080/swagger-ui/index.html)
 
+### 📝 변경 이력
+- **2025.10.23**: 회원가입 권한 선택 - List에서 단일 선택으로 변경 (RoleType)
+- **2025.10.23**: H2 Database에서 MySQL Docker로 전환 (데이터 영구 저장)
+- **2025.10.23**: Map 사용 제거 및 DTO 패턴 적용 (LoginIdCheckRequest)
+
 ## 🛠 기술 스택
 
 ### Backend

@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 //@EnableWebSecurity(debug = true) // 시큐리티 동작 확인
+@org.springframework.context.annotation.Configuration
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true) // preAuthorize 어노테이션 추가하기 위해
 public class SecurityConfig {
@@ -40,6 +41,11 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests() // 설정시작
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/", "/login", "/signup", "/goods", "/goods/**").permitAll()
+                .antMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .antMatchers("/api/members/signup", "/api/members/exist", "/api/members/login").permitAll()
+                .antMatchers(PERMIT_URL_ARRAY).permitAll()
+                .anyRequest().authenticated()
                 .and()
                 // 권한이나 인증이 필요한 곳에서 불리는 검증 필터
                 .apply(new JwtSecurityConfig(tokenProvider));

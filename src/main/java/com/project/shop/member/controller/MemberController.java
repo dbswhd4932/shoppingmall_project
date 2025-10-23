@@ -1,6 +1,7 @@
 package com.project.shop.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.shop.member.controller.request.LoginIdCheckRequest;
 import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
@@ -33,10 +34,10 @@ public class MemberController {
 
     //로그인 아이디 중복 체크
     @PostMapping("/members/exist")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "로그인아이디 중복 체크")
-    public void memberLoginIdDuplicateCheck(String loginId) {
-        memberService.loginIdDuplicateCheck(loginId);
+    public void memberLoginIdDuplicateCheck(@RequestBody @Valid LoginIdCheckRequest request) {
+        memberService.loginIdDuplicateCheck(request.getLoginId());
     }
 
     //일반 로그인

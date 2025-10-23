@@ -60,14 +60,12 @@ public class MemberServiceImpl implements MemberService {
         Member member = Member.create(memberSignupRequest, passwordEncoder);
         memberRepository.save(member);
 
-        for (RoleType role : memberSignupRequest.getRoles()) {
-            Role saveRole = Role.builder()
-                    .roleType(role)
-                    .member(member)
-                    .build();
+        Role saveRole = Role.builder()
+                .roleType(memberSignupRequest.getRoleType())
+                .member(member)
+                .build();
 
-            roleRepository.save(saveRole);
-        }
+        roleRepository.save(saveRole);
     }
 
     // 회원가입 중복체크
