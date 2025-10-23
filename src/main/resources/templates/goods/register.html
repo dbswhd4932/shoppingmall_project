@@ -152,7 +152,7 @@
                 if (nameInput) {
                     const option = {
                         optionValue: [{
-                            name: nameInput.value,
+                            key: nameInput.value,
                             value: document.getElementById(`optionValue-${i}`).value
                         }],
                         totalPrice: parseInt(document.getElementById(`optionPrice-${i}`).value || 0),
@@ -163,18 +163,18 @@
             }
 
             if (options.length > 0) {
-                goodsData.options = options;
+                goodsData.optionCreateRequest = options;
             }
 
             // JSON 데이터를 Blob으로 추가
-            formData.append('goodsCreateRequestDto', new Blob([JSON.stringify(goodsData)], {
+            formData.append('goodsCreateRequest', new Blob([JSON.stringify(goodsData)], {
                 type: 'application/json'
             }));
 
             // 이미지 파일 추가
             const files = document.getElementById('images').files;
             for (let i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
+                formData.append('multipartFiles', files[i]);
             }
 
             try {

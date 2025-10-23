@@ -28,19 +28,24 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/goods}">상품</a>
                     </li>
+                    <li class="nav-item" id="registerGoodsNav" style="display: none;">
+                        <a class="nav-link" th:href="@{/goods/register}">
+                            <i class="fas fa-plus-circle"></i> 상품등록
+                        </a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item" id="cartNav">
+                    <li class="nav-item" id="cartNav" style="display: none;">
                         <a class="nav-link" th:href="@{/cart}">
                             <i class="fas fa-shopping-cart"></i> 장바구니
                         </a>
                     </li>
-                    <li class="nav-item" id="ordersNav">
+                    <li class="nav-item" id="ordersNav" style="display: none;">
                         <a class="nav-link" th:href="@{/orders}">
                             <i class="fas fa-box"></i> 주문내역
                         </a>
                     </li>
-                    <li class="nav-item" id="mypageNav">
+                    <li class="nav-item" id="mypageNav" style="display: none;">
                         <a class="nav-link" th:href="@{/mypage}">
                             <i class="fas fa-user"></i> 마이페이지
                         </a>

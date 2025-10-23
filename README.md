@@ -20,16 +20,29 @@
 
 ### 📊 프로젝트 정보
 - **개발 기간**: 2022.10.31 ~ 2023.01.19 (약 3개월)
+- **수정 기간**: 2025.10.23 ~ 
 - **참여 인원**: 1명 (개인 프로젝트)
-- **배포 환경**: AWS EC2 + Docker + GitHub Actions
-- **API 문서**: [Swagger UI](http://15.165.145.187:8080/swagger-ui/index.html)
+- **배포 환경**: AWS EC2 + Docker + GitHub Actions (중단)
+- **API 문서**: [Swagger UI](http://15.165.145.187:8080/swagger-ui/index.html) (중단)
 
 ### 📝 변경 이력
+- **2025.10.23**: **Thymeleaf → React 완전 전환** (Frontend 아키텍처 변경)
+- **2025.10.23**: React 프론트엔드 추가 (React 18, React Router v6, Bootstrap)
+- **2025.10.23**: CORS 설정 추가 (React dev server 연동)
+- **2025.10.23**: 로컬 개발 환경 구성 (application-local.yml, docker-compose)
+- **2025.10.23**: 회원가입 API 필드 수정 (phoneNumber, zipcode/detailAddress 선택사항)
+- **2025.10.23**: View 레이어 완전 제거 (Thymeleaf, static files, ViewController)
 - **2025.10.23**: 회원가입 권한 선택 - List에서 단일 선택으로 변경 (RoleType)
 - **2025.10.23**: H2 Database에서 MySQL Docker로 전환 (데이터 영구 저장)
 - **2025.10.23**: Map 사용 제거 및 DTO 패턴 적용 (LoginIdCheckRequest)
 
 ## 🛠 기술 스택
+
+### Frontend
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=black)
+![React Router](https://img.shields.io/badge/React%20Router-v6-CA4245?style=flat&logo=react-router&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?style=flat&logo=bootstrap&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white)
 
 ### Backend
 ![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat&logo=openjdk&logoColor=white)
@@ -69,6 +82,10 @@
 ### 상세 기술 스택
 | 카테고리 | 기술 | 버전 | 용도 |
 |---------|------|------|------|
+| **Frontend** | React | 18 | UI 프레임워크 |
+| **Router** | React Router | v6 | 클라이언트 사이드 라우팅 |
+| **UI Library** | React Bootstrap | 2.x | UI 컴포넌트 |
+| **HTTP Client** | Axios | - | API 통신 |
 | **Language** | Java | 17 | 메인 개발 언어 |
 | **Framework** | Spring Boot | 2.7.5 | 애플리케이션 프레임워크 |
 | **ORM** | Spring Data JPA | 2.7.5 | 데이터 접근 계층 |
@@ -248,49 +265,43 @@ git clone [repository-url]
 cd shoppingmall_project
 ```
 
-#### 2. 환경 변수 설정
+#### 2. 데이터베이스 설정 (Docker Compose)
 ```bash
-# bootstrap.yml 또는 application.yml 설정
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/shopping_mall
-    username: your_db_username
-    password: your_db_password
+# MySQL Docker 컨테이너 실행
+docker-compose up -d
 
-cloud:
-  aws:
-    credentials:
-      access-key: your_aws_access_key
-      secret-key: your_aws_secret_key
-    s3:
-      bucket: your_s3_bucket_name
-    region:
-      static: ap-northeast-2
+# 확인
+docker ps
 ```
 
-#### 3. 데이터베이스 설정
+#### 3. 백엔드 실행 (Spring Boot)
 ```bash
-# Docker로 MySQL 실행
-docker run --name mysql-shopping \
-  -e MYSQL_ROOT_PASSWORD=password \
-  -e MYSQL_DATABASE=shopping_mall \
-  -p 3306:3306 \
-  -d mysql:8.0
-```
-
-#### 4. 애플리케이션 실행
-```bash
-# 개발 모드로 실행
-./gradlew bootRun
+# 로컬 프로필로 실행
+JAVA_HOME=/path/to/jdk-17 ./gradlew bootRun --args='--spring.profiles.active=local'
 
 # 또는 빌드 후 실행
-./gradlew build
-java -jar build/libs/*.jar
+./gradlew clean build -x test
+java -jar build/libs/*.jar --spring.profiles.active=local
 ```
 
-#### 5. API 문서 확인
-- Swagger UI: http://localhost:8080/swagger-ui/index.html
-- H2 Console (테스트): http://localhost:8080/h2-console
+#### 4. 프론트엔드 실행 (React)
+```bash
+cd frontend
+npm install
+npm start
+```
+
+#### 5. 접속 확인
+- **Frontend (React)**: http://localhost:3000
+- **Backend API**: http://localhost:8080
+- **Swagger UI**: http://localhost:8080/swagger-ui/index.html
+- **MySQL**: localhost:3306 (user: shopuser, password: shop1234)
+
+#### 6. 초기 데이터
+```sql
+-- 카테고리 자동 생성됨 (8개)
+-- Electronics, Clothing, Food, Books, Sports, Beauty, Home, Furniture
+```
 
 ### 🐳 Docker로 실행
 ```bash

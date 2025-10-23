@@ -34,11 +34,11 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private String name;            //이름
 
-    @Column(nullable = false)
-    private String zipcode;         //우편번호
+    @Column
+    private String zipcode;         //우편번호 (선택사항)
 
-    @Column(nullable = false)
-    private String detailAddress;   //상세주소
+    @Column
+    private String detailAddress;   //상세주소 (선택사항)
 
     @Column(nullable = false, length = 50)
     @Email
@@ -66,7 +66,7 @@ public class Member extends BaseTimeEntity {
                 .zipcode(memberSignupRequest.getZipcode())
                 .detailAddress(memberSignupRequest.getDetailAddress())
                 .email(memberSignupRequest.getEmail())
-                .phone(memberSignupRequest.getPhone())
+                .phone(memberSignupRequest.getPhoneNumber())
                 .loginType(LoginType.NO_SOCIAL)
                 .build();
     }

@@ -31,6 +31,7 @@ function updateNavigation(isLoggedIn) {
     const cartNav = document.getElementById('cartNav');
     const ordersNav = document.getElementById('ordersNav');
     const mypageNav = document.getElementById('mypageNav');
+    const registerGoodsNav = document.getElementById('registerGoodsNav');
 
     if (isLoggedIn) {
         // 로그인 상태
@@ -40,6 +41,11 @@ function updateNavigation(isLoggedIn) {
         if (cartNav) cartNav.style.display = 'block';
         if (ordersNav) ordersNav.style.display = 'block';
         if (mypageNav) mypageNav.style.display = 'block';
+
+        // SELLER 권한이 있으면 상품 등록 버튼 표시
+        if (registerGoodsNav && hasRole('ROLE_SELLER')) {
+            registerGoodsNav.style.display = 'block';
+        }
     } else {
         // 비로그인 상태
         if (loginNav) loginNav.style.display = 'block';
@@ -48,6 +54,7 @@ function updateNavigation(isLoggedIn) {
         if (cartNav) cartNav.style.display = 'none';
         if (ordersNav) ordersNav.style.display = 'none';
         if (mypageNav) mypageNav.style.display = 'none';
+        if (registerGoodsNav) registerGoodsNav.style.display = 'none';
     }
 }
 
@@ -160,7 +167,17 @@ function hasRole(role) {
     if (!token) return false;
 
     const payload = parseJwt(token);
-    if (!payload || !payload.roles) return false;
+    if (!payload) return false;
 
-    return payload.roles.includes(role);
+    // JWT 토큰의 권한 정보가 여러 형태로 올 수 있음
+    const roles = payload.roles || payload.authorities || payload.auth || [];
+
+    // 배열이거나 문자열일 수 있음
+    if (Array.isArray(roles)) {
+        return roles.includes(role);
+    } else if (typeof roles === 'string') {
+        return roles === role;
+    }
+
+    return false;
 }
