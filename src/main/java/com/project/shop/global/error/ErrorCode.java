@@ -18,6 +18,8 @@ public enum ErrorCode {
 
     // 권한
     NOT_FOUND_AUTHORITY(HttpStatus.NOT_FOUND, "존재하지 않는 권한입니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
+    FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "판매자만 등록할 수 있습니다."),
 
     // 상품
     NOT_FOUND_GOODS(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),

@@ -1,5 +1,7 @@
 package com.project.shop.goods.controller;
 
+import com.project.shop.global.error.ErrorCode;
+import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.GoodsCreateRequest;
 import com.project.shop.goods.controller.request.GoodsEditRequest;
 import com.project.shop.goods.controller.request.GoodsSearchCondition;
@@ -15,12 +17,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +35,35 @@ import java.util.List;
 public class GoodsController {
 
     private final GoodsService goodsService;
+
+    // 상품 등록 페이지 접근 권한 체크
+    @GetMapping("/goods/check-access")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 등록 페이지 접근 권한 체크")
+    public Map<String, Object> checkGoodsCreateAccess() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Map<String, Object> response = new HashMap<>();
+
+        // 비로그인 사용자
+        if (authentication == null || !authentication.isAuthenticated()
+            || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        // 로그인했지만 SELLER 권한이 없는 경우
+        boolean hasSeller = authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .anyMatch(role -> role.equals("ROLE_SELLER"));
+
+        if (!hasSeller) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        // SELLER 권한이 있는 경우
+        response.put("hasAccess", true);
+        response.put("message", "상품 등록 페이지에 접근할 수 있습니다.");
+        return response;
+    }
 
     // 상품 등록
     @PostMapping(value = "/goods")

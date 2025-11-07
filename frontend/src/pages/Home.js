@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Spinner } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         loadData();
@@ -27,6 +28,31 @@ const Home = () => {
         }
     };
 
+    const handleProductRegisterClick = async () => {
+        try {
+            // 권한 체크 API 호출
+            const response = await api.get('/goods/check-access');
+
+            // SELLER 권한이 있으면 상품 등록 페이지로 이동
+            if (response.data.hasAccess) {
+                navigate('/goods/create');
+            }
+        } catch (error) {
+            if (error.response) {
+                // Backend에서 온 에러 메시지를 알럿으로 표시
+                alert(error.response.data.errorMessage);
+
+                // 401 에러 (비로그인)인 경우 로그인 페이지로 이동
+                if (error.response.status === 401) {
+                    navigate('/login');
+                }
+                // 403 에러 (권한 없음)인 경우는 알럿만 표시
+            } else {
+                alert('서버와 연결할 수 없습니다.');
+            }
+        }
+    };
+
     if (loading) {
         return (
             <Container className="text-center my-5">
@@ -37,6 +63,17 @@ const Home = () => {
 
     return (
         <Container className="my-4">
+            {/* 상품 등록 버튼 */}
+            <div className="d-flex justify-content-end mb-3">
+                <Button
+                    variant="success"
+                    onClick={handleProductRegisterClick}
+                    size="lg"
+                >
+                    상품 등록
+                </Button>
+            </div>
+
             {/* Hero Section */}
             <section className="bg-light py-5 mb-5 rounded">
                 <Row className="align-items-center">

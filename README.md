@@ -26,6 +26,12 @@
 - **API 문서**: [Swagger UI](http://15.165.145.187:8080/swagger-ui/index.html) (중단)
 
 ### 📝 변경 이력
+- **2025.11.07**: RoleType Enum JSON 역직렬화 개선 (@JsonCreator 추가, "SELLER" → "ROLE_SELLER" 자동 변환)
+- **2025.11.07**: Member Entity 필드 기본값 설정 (zipcode, detailAddress null 처리 개선)
+- **2025.11.07**: 상품 등록 권한 체크 API 추가 (GET /api/goods/check-access)
+- **2025.11.07**: 권한별 접근 제어 구현 (비회원 → 로그인 페이지, 일반회원 → 알럿, 판매자 → 등록 페이지)
+- **2025.11.07**: 상품 등록 페이지 UI 구현 (GoodsCreate.js - 이미지 미리보기, 폼 검증)
+- **2025.11.07**: ErrorCode 추가 (UNAUTHORIZED_ACCESS, FORBIDDEN_ACCESS)
 - **2025.10.23**: **Thymeleaf → React 완전 전환** (Frontend 아키텍처 변경)
 - **2025.10.23**: React 프론트엔드 추가 (React 18, React Router v6, Bootstrap)
 - **2025.10.23**: CORS 설정 추가 (React dev server 연동)
