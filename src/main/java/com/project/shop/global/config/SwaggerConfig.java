@@ -29,7 +29,6 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 @EnableSwagger2
-@EnableWebMvc
 public class SwaggerConfig implements WebMvcConfigurer {
     /**
      * http://localhost:8080/swagger-ui/index.html#/ 접속
