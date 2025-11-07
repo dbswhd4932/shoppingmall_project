@@ -36,7 +36,7 @@ public class GoodsController {
 
     private final GoodsService goodsService;
 
-    // 상품 등록 페이지 접근 권한 체크
+    // 상품 등록 페이지 접근 권한 체크 (특정 경로를 먼저 매핑)
     @GetMapping("/goods/check-access")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 등록 페이지 접근 권한 체크")
@@ -65,6 +65,32 @@ public class GoodsController {
         return response;
     }
 
+    // 상품 가격 변경 확인 (특정 경로를 먼저 매핑)
+    @GetMapping("/goods/checkUpdateGoods")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 가격 변경 확인",
+            notes = "changeCheck True = 변경 / False = 변경 없음")
+    public List<UpdateGoodsResponse> checkGoodsUpdate(@RequestBody List<UpdateCheckRequest> updateCheckRequest) {
+        return goodsService.checkGoodsUpdate(updateCheckRequest);
+    }
+
+    // 상품 검색 (특정 경로를 먼저 매핑)
+    @GetMapping("/goods/keyword")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 검색")
+    public Page<GoodsResponse> goodsFindKeyword(@RequestParam String keyword,
+                                                @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return goodsService.goodsFindKeyword(keyword, pageable);
+    }
+
+    // 상품 가격으로 검색 (특정 경로를 먼저 매핑)
+    @GetMapping("/goods/search")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "상품 가격으로 검색 (0원 이상 0원 이하)")
+    public Page<GoodsResponse> search(@ModelAttribute GoodsSearchCondition condition, Pageable pageable) {
+        return goodsService.searchBetweenPrice(condition, pageable);
+    }
+
     // 상품 등록
     @PostMapping(value = "/goods")
     @ResponseStatus(HttpStatus.CREATED)
@@ -84,30 +110,12 @@ public class GoodsController {
         return goodsService.goodsFindAll(pageable);
     }
 
-    // 상품 가격 변경 확인
-    @GetMapping("/goods/checkUpdateGoods")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "상품 가격 변경 확인",
-            notes = "changeCheck True = 변경 / False = 변경 없음")
-    public List<UpdateGoodsResponse> checkGoodsUpdate(@RequestBody List<UpdateCheckRequest> updateCheckRequest) {
-        return goodsService.checkGoodsUpdate(updateCheckRequest);
-    }
-
-    // 상품 단품 상세 조회
+    // 상품 단품 상세 조회 (가장 마지막에 매핑 - 경로 변수 사용)
     @GetMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 단품 상세 조회")
     public GoodsResponse goodsDetailFind(@PathVariable("goodsId") Long goodsId) {
         return goodsService.goodsDetailFind(goodsId);
-    }
-
-    // 상품 검색
-    @GetMapping("/goods/keyword")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "상품 검색")
-    public Page<GoodsResponse> goodsFindKeyword(@RequestParam String keyword,
-                                                @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return goodsService.goodsFindKeyword(keyword, pageable);
     }
 
     // 상품 수정
@@ -129,14 +137,5 @@ public class GoodsController {
     @ApiOperation(value = "상품 삭제")
     public void goodsDelete(@PathVariable("goodsId") Long goodsId) {
         goodsService.goodsDelete(goodsId);
-    }
-
-    //상품 ~원 이상 ~원 이하 값 찾기
-    @GetMapping("/goods/search")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "상품 가격으로 검색 (0원 이상 0원 이하)")
-    public Page<GoodsResponse> search(@ModelAttribute GoodsSearchCondition condition, Pageable pageable) {
-
-        return goodsService.searchBetweenPrice(condition, pageable);
     }
 }

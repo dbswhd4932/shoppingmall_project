@@ -100,11 +100,11 @@ const Home = () => {
                 ) : (
                     <Row>
                         {products.map(product => (
-                            <Col key={product.id} md={3} className="mb-4">
+                            <Col key={product.goodsId} md={3} className="mb-4">
                                 <Card className="h-100">
                                     <Card.Img
                                         variant="top"
-                                        src={product.imageUrl || 'https://via.placeholder.com/300'}
+                                        src={product.imageList?.[0]?.fileUrl || 'https://via.placeholder.com/300'}
                                     />
                                     <Card.Body>
                                         <Card.Title>{product.goodsName}</Card.Title>
@@ -112,7 +112,7 @@ const Home = () => {
                                             ${product.price?.toLocaleString()}
                                         </Card.Text>
                                         <Link
-                                            to={`/goods/${product.id}`}
+                                            to={`/goods/${product.goodsId}`}
                                             className="btn btn-sm btn-outline-primary"
                                         >
                                             View Details
