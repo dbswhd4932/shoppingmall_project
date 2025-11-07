@@ -64,6 +64,9 @@ dependencies {
     implementation 'org.ehcache:ehcache:3.8.0'
     implementation 'javax.cache:cache-api:1.0.0' // expiry 기능을 위해 필요
 
+    // ELK - Logstash (Spring Boot 2.7.x compatible version)
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
