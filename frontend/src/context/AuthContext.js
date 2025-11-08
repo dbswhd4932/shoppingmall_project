@@ -35,6 +35,16 @@ export const AuthProvider = ({ children }) => {
         return false;
     };
 
+    // ADMIN 권한 확인
+    const isAdmin = () => {
+        return hasRole('ROLE_ADMIN');
+    };
+
+    // SELLER 권한 확인
+    const isSeller = () => {
+        return hasRole('ROLE_SELLER');
+    };
+
     // 초기 로드 시 토큰 확인
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
@@ -85,6 +95,8 @@ export const AuthProvider = ({ children }) => {
             logout,
             signup,
             hasRole,
+            isAdmin,
+            isSeller,
             loading,
             isAuthenticated: !!user
         }}>

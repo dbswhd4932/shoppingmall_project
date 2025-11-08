@@ -125,10 +125,15 @@ const Signup = () => {
                                         name="roleType"
                                         value={formData.roleType}
                                         onChange={handleChange}
+                                        required
                                     >
-                                        <option value="USER">User</option>
-                                        <option value="SELLER">Seller</option>
+                                        <option value="USER">User (일반 사용자)</option>
+                                        <option value="SELLER">Seller (판매자)</option>
+                                        <option value="ADMIN">Admin (관리자)</option>
                                     </Form.Select>
+                                    <Form.Text className="text-muted">
+                                        User: 일반 회원 | Seller: 상품 등록 가능 | Admin: 모든 권한
+                                    </Form.Text>
                                 </Form.Group>
 
                                 <div className="d-grid">
