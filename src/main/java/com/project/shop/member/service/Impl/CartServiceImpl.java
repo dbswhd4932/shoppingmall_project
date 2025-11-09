@@ -76,9 +76,13 @@ public class CartServiceImpl implements CartService {
         Member member = getMember();
 
         Page<Cart> carts = cartRepository.findAllByMemberId(member.getId(), pageable);
-        return carts.map(CartResponse::new);
 
-
+        // Cart와 Goods 정보를 함께 매핑
+        return carts.map(cart -> {
+            Goods goods = goodsRepository.findById(cart.getGoodsId())
+                    .orElseThrow(() -> new BusinessException(NOT_FOUND_GOODS));
+            return CartResponse.of(cart, goods);
+        });
     }
 
     // 장바구니 수량, 옵션 변경

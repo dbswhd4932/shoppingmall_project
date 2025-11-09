@@ -10,6 +10,7 @@ import GoodsList from './pages/Goods/GoodsList';
 import GoodsCreate from './pages/Goods/GoodsCreate';
 import GoodsDetail from './pages/Goods/GoodsDetail';
 import CategoryCreate from './pages/Category/CategoryCreate';
+import CartList from './pages/Cart/CartList';
 import MyPage from './pages/MyPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -28,6 +29,7 @@ function App() {
                             <Route path="/goods/create" element={<GoodsCreate />} />
                             <Route path="/goods/:goodsId" element={<GoodsDetail />} />
                             <Route path="/categories/create" element={<CategoryCreate />} />
+                            <Route path="/cart" element={<CartList />} />
                             <Route path="/mypage" element={<MyPage />} />
                             {/* 추가 라우트는 여기에 */}
                         </Routes>
