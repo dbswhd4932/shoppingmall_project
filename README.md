@@ -26,6 +26,18 @@
 - **API 문서**: [Swagger UI](http://15.165.145.187:8080/swagger-ui/index.html) (중단)
 
 ### 📝 변경 이력
+- **2025.11.09**: 장바구니/주문 권한 확대 (USER → 모든 인증 사용자로 변경)
+- **2025.11.09**: 상품 상세 화면 구현 (GoodsDetail.js - 이미지 갤러리, 수량 선택, 장바구니 담기)
+- **2025.11.09**: 홈/목록 화면에 장바구니 버튼 추가 (상세보기 + 장바구니 버튼 그룹)
+- **2025.11.09**: My Page 구현 (사용자 정보, 권한, 가입일 조회)
+- **2025.11.09**: MemberResponse에 createdAt, updatedAt 필드 추가
+- **2025.11.09**: 가격 표시 단위 변경 ($ → ₩ 원화)
+- **2025.11.09**: 로컬 파일 저장 시스템 구현 (LocalFileService - AWS S3 대체)
+- **2025.11.09**: WebConfig 추가 (업로드 파일 정적 리소스 서빙 /uploads/**)
+- **2025.11.08**: 카테고리 생성 권한 체크 API 추가 (GET /api/categories/check-access)
+- **2025.11.08**: 홈 화면에 카테고리 생성 버튼 추가 (ADMIN 권한만 가능)
+- **2025.11.08**: Spring Security 권한 체크 수정 (hasAnyRole → hasRole, ROLE_ 접두사 추가)
+- **2025.11.08**: GoodsServiceImpl null 체크 추가 (상품 옵션 없을 시 처리)
 - **2025.11.07**: RoleType Enum JSON 역직렬화 개선 (@JsonCreator 추가, "SELLER" → "ROLE_SELLER" 자동 변환)
 - **2025.11.07**: Member Entity 필드 기본값 설정 (zipcode, detailAddress null 처리 개선)
 - **2025.11.07**: 상품 등록 권한 체크 API 추가 (GET /api/goods/check-access)
@@ -249,7 +261,7 @@ src/main/java/com/project/shop/
 | 상품 등록/수정/삭제 | ❌ | ✅ | ✅ |
 | 상품 조회/검색 | ✅ | ✅ | ✅ |
 | 장바구니 관리 | ✅ | ✅ | ✅ |
-| 주문 생성/조회 | ✅ | ❌ | ✅ |
+| 주문 생성/조회 | ✅ | ✅ | ✅ |
 | 리뷰 작성/수정/삭제 | ✅ (본인만) | ❌ | ✅ |
 | 대댓글 작성/수정 | ❌ | ✅ (본인 상품만) | ✅ |
 | 카테고리 관리 | ❌ | ❌ | ✅ |
