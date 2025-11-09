@@ -51,3 +51,8 @@ cloud:
 
 jwt:
   header: Authorization
+
+# 로컬 파일 업로드 설정
+file:
+  upload:
+    directory: uploads

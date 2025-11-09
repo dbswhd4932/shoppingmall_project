@@ -94,7 +94,7 @@ public class GoodsController {
     // 상품 등록
     @PostMapping(value = "/goods")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('SELLER')")
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @ApiOperation(value = "상품 등록")
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
                             @RequestPart List<MultipartFile> multipartFiles) throws IOException {
@@ -121,7 +121,7 @@ public class GoodsController {
     // 상품 수정
     @PostMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('SELLER')")
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @ApiOperation(value = "상품 수정")
     public void goodsEdit(@PathVariable("goodsId") Long goodsId,
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
@@ -133,7 +133,7 @@ public class GoodsController {
     // 상품 삭제
     @DeleteMapping("/goods/{goodsId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('SELLER')")
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @ApiOperation(value = "상품 삭제")
     public void goodsDelete(@PathVariable("goodsId") Long goodsId) {
         goodsService.goodsDelete(goodsId);

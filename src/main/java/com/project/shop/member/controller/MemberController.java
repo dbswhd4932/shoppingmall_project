@@ -50,7 +50,7 @@ public class MemberController {
 
     // 내 정보 가져오기
     @GetMapping("/members/me")
-    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_SELLER','ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "내 정보 조회")
     public MemberResponse findByDetailMyInfo() {
@@ -60,7 +60,7 @@ public class MemberController {
     //회원 수정
     @PutMapping("/members")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_SELLER','ROLE_ADMIN')")
     @ApiOperation(value = "회원 수정")
     public void memberEdit(@RequestBody @Valid MemberEditRequest memberEditRequest) {
         memberService.memberEdit(memberEditRequest);
@@ -69,7 +69,7 @@ public class MemberController {
     //회원 탈퇴
     @DeleteMapping("/members")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('USER','SELLER','ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_SELLER','ROLE_ADMIN')")
     @ApiOperation(value = "회원 탈퇴")
     public void memberDelete() {
         memberService.memberDelete();

@@ -2,6 +2,7 @@ package com.project.shop.member.controller.response;
 
 import com.project.shop.member.domain.Member;
 import lombok.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -19,6 +20,8 @@ public class MemberResponse {
     private String email;           //이메일
     private String phone;           //핸드폰번호
     private List<String> roles;
+    private LocalDateTime createdAt; //가입일
+    private LocalDateTime updatedAt; //최종 수정일
 
     // Member -> MemberResponse 변환
     public static MemberResponse toResponse(Member m) {
@@ -29,6 +32,8 @@ public class MemberResponse {
                 .detailAddress(m.getDetailAddress())
                 .email(m.getEmail())
                 .phone(m.getPhone())
+                .createdAt(m.getCratedAt())
+                .updatedAt(m.getUpdatedAt())
                 .build();
     }
 }

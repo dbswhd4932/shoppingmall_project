@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, ButtonGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 
@@ -53,6 +53,53 @@ const Home = () => {
         }
     };
 
+    const handleCategoryCreateClick = async () => {
+        try {
+            // ADMIN 권한 체크 API 호출
+            const response = await api.get('/categories/check-access');
+
+            // ADMIN 권한이 있으면 카테고리 생성 페이지로 이동
+            if (response.data.hasAccess) {
+                navigate('/categories/create');
+            }
+        } catch (error) {
+            if (error.response) {
+                // Backend에서 온 에러 메시지를 알럿으로 표시
+                alert(error.response.data.errorMessage);
+
+                // 401 에러 (비로그인)인 경우 로그인 페이지로 이동
+                if (error.response.status === 401) {
+                    navigate('/login');
+                }
+                // 403 에러 (권한 없음)인 경우는 알럿만 표시
+            } else {
+                alert('서버와 연결할 수 없습니다.');
+            }
+        }
+    };
+
+    const handleAddToCart = async (goodsId) => {
+        try {
+            await api.post('/carts', {
+                goodsId: goodsId,
+                amount: 1,
+                optionNumber: null
+            });
+            alert('장바구니에 상품이 추가되었습니다!');
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 401) {
+                    alert('로그인이 필요합니다.');
+                    navigate('/login');
+                } else {
+                    alert(error.response.data.errorMessage || '장바구니 추가에 실패했습니다.');
+                }
+            } else {
+                alert('서버와 연결할 수 없습니다.');
+            }
+        }
+    };
+
     if (loading) {
         return (
             <Container className="text-center my-5">
@@ -63,8 +110,15 @@ const Home = () => {
 
     return (
         <Container className="my-4">
-            {/* 상품 등록 버튼 */}
-            <div className="d-flex justify-content-end mb-3">
+            {/* 상품 등록 및 카테고리 생성 버튼 */}
+            <div className="d-flex justify-content-end mb-3 gap-2">
+                <Button
+                    variant="primary"
+                    onClick={handleCategoryCreateClick}
+                    size="lg"
+                >
+                    카테고리 생성
+                </Button>
                 <Button
                     variant="success"
                     onClick={handleProductRegisterClick}
@@ -109,14 +163,28 @@ const Home = () => {
                                     <Card.Body>
                                         <Card.Title>{product.goodsName}</Card.Title>
                                         <Card.Text className="text-primary fw-bold">
-                                            ${product.price?.toLocaleString()}
+                                            ₩{product.price?.toLocaleString()}
                                         </Card.Text>
-                                        <Link
-                                            to={`/goods/${product.goodsId}`}
-                                            className="btn btn-sm btn-outline-primary"
-                                        >
-                                            View Details
-                                        </Link>
+                                        <ButtonGroup className="w-100">
+                                            <Button
+                                                as={Link}
+                                                to={`/goods/${product.goodsId}`}
+                                                variant="outline-primary"
+                                                size="sm"
+                                            >
+                                                상세보기
+                                            </Button>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleAddToCart(product.goodsId);
+                                                }}
+                                            >
+                                                <i className="fas fa-shopping-cart"></i>
+                                            </Button>
+                                        </ButtonGroup>
                                     </Card.Body>
                                 </Card>
                             </Col>

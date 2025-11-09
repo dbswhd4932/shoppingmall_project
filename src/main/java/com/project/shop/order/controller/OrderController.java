@@ -37,7 +37,7 @@ public class OrderController {
     // 주문 생성
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_SELLER','ROLE_ADMIN')")
     @ApiOperation(value = "주문 생성")
     public void orderCreate(@RequestBody @Valid OrderCreateRequest orderCreateRequest) {
         orderService.cartOrder(orderCreateRequest);
@@ -46,7 +46,7 @@ public class OrderController {
     // 주문 전체 조회
     @GetMapping("/orders")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_SELLER','ROLE_ADMIN')")
     @ApiOperation(value = "주문 조회")
     public List<OrderPageResponse> orderFindMember(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return orderService.orderFindMember(pageable);
@@ -55,7 +55,7 @@ public class OrderController {
     // 주문 단건 조회
     @GetMapping("/orders/{orderId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_SELLER','ROLE_ADMIN')")
     @ApiOperation(value = "주문 단건 조회")
     public OrderResponse orderFindOne(@PathVariable("orderId") Long orderId) {
         return orderService.orderFindOne(orderId);
@@ -64,7 +64,7 @@ public class OrderController {
     // 결제 취소
     @PostMapping("/payCancel")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_SELLER','ROLE_ADMIN')")
     @ApiOperation(value = "결제 취소")
     public void payCancel(@RequestBody PayCancelRequest payCancelRequest) {
         orderService.payCancel(payCancelRequest);

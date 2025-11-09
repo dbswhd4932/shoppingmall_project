@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Spinner, Pagination } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Container, Row, Col, Card, Spinner, Pagination, Button, ButtonGroup } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 
 const GoodsList = () => {
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
@@ -22,6 +23,28 @@ const GoodsList = () => {
             console.error('Failed to load products:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleAddToCart = async (goodsId) => {
+        try {
+            await api.post('/carts', {
+                goodsId: goodsId,
+                amount: 1,
+                optionNumber: null
+            });
+            alert('장바구니에 상품이 추가되었습니다!');
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 401) {
+                    alert('로그인이 필요합니다.');
+                    navigate('/login');
+                } else {
+                    alert(error.response.data.errorMessage || '장바구니 추가에 실패했습니다.');
+                }
+            } else {
+                alert('서버와 연결할 수 없습니다.');
+            }
         }
     };
 
@@ -51,14 +74,28 @@ const GoodsList = () => {
                                     <Card.Body>
                                         <Card.Title>{product.goodsName}</Card.Title>
                                         <Card.Text className="text-primary fw-bold">
-                                            ${product.price?.toLocaleString()}
+                                            ₩{product.price?.toLocaleString()}
                                         </Card.Text>
-                                        <Link
-                                            to={`/goods/${product.id}`}
-                                            className="btn btn-sm btn-outline-primary"
-                                        >
-                                            View Details
-                                        </Link>
+                                        <ButtonGroup className="w-100">
+                                            <Button
+                                                as={Link}
+                                                to={`/goods/${product.goodsId}`}
+                                                variant="outline-primary"
+                                                size="sm"
+                                            >
+                                                상세보기
+                                            </Button>
+                                            <Button
+                                                variant="primary"
+                                                size="sm"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleAddToCart(product.goodsId);
+                                                }}
+                                            >
+                                                <i className="fas fa-shopping-cart"></i>
+                                            </Button>
+                                        </ButtonGroup>
                                     </Card.Body>
                                 </Card>
                             </Col>

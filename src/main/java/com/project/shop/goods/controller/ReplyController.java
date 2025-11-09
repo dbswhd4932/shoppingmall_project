@@ -23,7 +23,7 @@ public class ReplyController {
     // 대댓글 생성
     @PostMapping("/replies")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('SELLER')")
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @ApiOperation(value = "대댓글 등록")
     public void replyCreate(Long reviewId, @RequestBody @Valid ReplyCreateRequest request) {
         replyService.replyCreate(reviewId, request);
@@ -32,7 +32,7 @@ public class ReplyController {
     // 대댓글 수정
     @PutMapping("/replies/{replyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('SELLER')")
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @ApiOperation(value = "대댓글 수정")
     public void replyEdit(@PathVariable("replyId") Long replyId, @RequestBody @Valid ReplyEditRequest request) {
         replyService.replyEdit(replyId, request);
@@ -41,7 +41,7 @@ public class ReplyController {
     // 대댓글 삭제
     @DeleteMapping("/replies/{replyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('SELLER','ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_SELLER','ROLE_ADMIN')")
     @ApiOperation(value = "대댓글 삭제")
     public void replyDelete(@PathVariable("replyId") Long replyId) {
         replyService.replyDelete(replyId);

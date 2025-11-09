@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests() // 설정시작
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/uploads/**").permitAll() // 업로드된 파일 접근 허용
                 .antMatchers("/api/members/signup", "/api/members/exist", "/api/members/login").permitAll()
                 .antMatchers("/api/goods", "/api/goods/**", "/api/categories", "/api/categories/**").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()

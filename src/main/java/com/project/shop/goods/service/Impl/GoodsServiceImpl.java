@@ -42,7 +42,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private final S3Service s3Service;
+    private final LocalFileService localFileService;
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
     private final OptionRepository optionRepository;
@@ -67,18 +67,20 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = Goods.create(goodsCreateRequest, category, member);
         goodsRepository.save(goods);
 
-        // 옵션 정보 저장
-        List<Options> optionsList = goodsCreateRequest.getOptionCreateRequest().stream().map(
-                optionCreateRequest -> Options.toOption(optionCreateRequest, goods)).collect(Collectors.toList());
+        // 옵션 정보 저장 (옵션이 있는 경우에만)
+        if (goodsCreateRequest.getOptionCreateRequest() != null && !goodsCreateRequest.getOptionCreateRequest().isEmpty()) {
+            List<Options> optionsList = goodsCreateRequest.getOptionCreateRequest().stream().map(
+                    optionCreateRequest -> Options.toOption(optionCreateRequest, goods)).collect(Collectors.toList());
 
-        for (Options options : optionsList) {
-            options.setGoods(goods);
+            for (Options options : optionsList) {
+                options.setGoods(goods);
+            }
+
+            optionRepository.saveAll(optionsList);
         }
 
-        optionRepository.saveAll(optionsList);
-
-        // S3 저장
-        List<String> list = s3Service.upload(imgPaths);
+        // 로컬 파일 시스템에 저장
+        List<String> list = localFileService.upload(imgPaths);
 
         // 이미지 DB 저장
         List<Image> imageList = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
@@ -191,16 +193,16 @@ public class GoodsServiceImpl implements GoodsService {
             optionRepository.saveAll(optionsList);
         }
 
-        // s3 , 이미지DB 삭제
+        // 로컬 파일, 이미지DB 삭제
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
         for (Image image : imageList) {
             String fileName = image.getFileUrl();
-            s3Service.deleteFile(fileName);
+            localFileService.deleteFile(fileName);
             imageRepository.deleteById(image.getId());
         }
 
-        // S3 이미지 저장
-        List<String> list = s3Service.upload(imgPaths);
+        // 로컬 파일 시스템에 이미지 저장
+        List<String> list = localFileService.upload(imgPaths);
 
         // 이미지 정보 저장
         List<Image> images = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
@@ -222,12 +224,12 @@ public class GoodsServiceImpl implements GoodsService {
         if (!goods.getMemberId().equals(member.getId()))
             throw new BusinessException(NOT_SELLING_GOODS);
 
-        // s3 이미지 삭제
+        // 로컬 파일 이미지 삭제
         List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
 
         for (Image image : imageList) {
             String fileName = image.getFileUrl();
-            s3Service.deleteFile(fileName);
+            localFileService.deleteFile(fileName);
         }
         goodsRepository.deleteById(goods.getId());
     }

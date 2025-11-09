@@ -46,7 +46,7 @@ const CategoryCreate = () => {
 
             setSuccess('카테고리가 성공적으로 등록되었습니다!');
             setTimeout(() => {
-                navigate('/categories');
+                navigate('/');
             }, 1500);
 
         } catch (error) {

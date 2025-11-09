@@ -8,7 +8,9 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import GoodsList from './pages/Goods/GoodsList';
 import GoodsCreate from './pages/Goods/GoodsCreate';
+import GoodsDetail from './pages/Goods/GoodsDetail';
 import CategoryCreate from './pages/Category/CategoryCreate';
+import MyPage from './pages/MyPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -24,7 +26,9 @@ function App() {
                             <Route path="/signup" element={<Signup />} />
                             <Route path="/goods" element={<GoodsList />} />
                             <Route path="/goods/create" element={<GoodsCreate />} />
+                            <Route path="/goods/:goodsId" element={<GoodsDetail />} />
                             <Route path="/categories/create" element={<CategoryCreate />} />
+                            <Route path="/mypage" element={<MyPage />} />
                             {/* 추가 라우트는 여기에 */}
                         </Routes>
                     </main>
