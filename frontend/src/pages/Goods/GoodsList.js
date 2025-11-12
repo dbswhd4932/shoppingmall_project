@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Spinner, Pagination, Button, ButtonGroup } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../api/axios';
 
 const GoodsList = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const categoryId = searchParams.get('category');
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
@@ -12,11 +14,15 @@ const GoodsList = () => {
 
     useEffect(() => {
         loadProducts();
-    }, [page]);
+    }, [page, categoryId]);
 
     const loadProducts = async () => {
         try {
-            const response = await api.get(`/goods?page=${page}&size=12`);
+            let url = `/goods?page=${page}&size=12`;
+            if (categoryId) {
+                url += `&categoryId=${categoryId}`;
+            }
+            const response = await api.get(url);
             setProducts(response.data.content || []);
             setTotalPages(response.data.totalPages || 0);
         } catch (error) {
@@ -69,7 +75,7 @@ const GoodsList = () => {
                                 <Card className="h-100">
                                     <Card.Img
                                         variant="top"
-                                        src={product.imageUrl || 'https://via.placeholder.com/300'}
+                                        src={product.imageUrl ? `http://localhost:8080${product.imageUrl}` : 'https://via.placeholder.com/300'}
                                     />
                                     <Card.Body>
                                         <Card.Title>{product.goodsName}</Card.Title>

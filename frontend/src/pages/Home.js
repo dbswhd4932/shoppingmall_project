@@ -16,7 +16,7 @@ const Home = () => {
     const loadData = async () => {
         try {
             const [productsRes, categoriesRes] = await Promise.all([
-                api.get('/goods?page=0&size=8'),
+                api.get('/goods?page=0&size=100'),
                 api.get('/categories')
             ]);
             setProducts(productsRes.data.content || []);
@@ -130,25 +130,14 @@ const Home = () => {
 
             {/* Hero Section */}
             <section className="bg-light py-5 mb-5 rounded">
-                <Row className="align-items-center">
-                    <Col lg={6}>
-                        <h1 className="display-4 fw-bold">Welcome to Shopping Mall</h1>
-                        <p className="lead">Discover the best products at the lowest prices</p>
-                        <Link to="/goods" className="btn btn-primary btn-lg">Browse Products</Link>
-                    </Col>
-                    <Col lg={6}>
-                        <img
-                            src="https://via.placeholder.com/600x400"
-                            alt="Hero"
-                            className="img-fluid rounded"
-                        />
-                    </Col>
-                </Row>
+                <div className="text-center">
+                    <h1 className="display-4 fw-bold"> 쇼핑몰 </h1>
+                </div>
             </section>
 
             {/* Featured Products */}
             <section>
-                <h2 className="mb-4">Featured Products</h2>
+                <h2 className="mb-4"> 전체 상품</h2>
                 {products.length === 0 ? (
                     <p>No products available.</p>
                 ) : (
@@ -158,7 +147,7 @@ const Home = () => {
                                 <Card className="h-100">
                                     <Card.Img
                                         variant="top"
-                                        src={product.imageList?.[0]?.fileUrl || 'https://via.placeholder.com/300'}
+                                        src={product.imageList?.[0]?.fileUrl ? `http://localhost:8080${product.imageList[0].fileUrl}` : 'https://via.placeholder.com/300'}
                                     />
                                     <Card.Body>
                                         <Card.Title>{product.goodsName}</Card.Title>
@@ -193,14 +182,14 @@ const Home = () => {
                 )}
                 <div className="text-center mt-4">
                     <Link to="/goods" className="btn btn-outline-primary">
-                        View More Products
+                        전체 상품 보기
                     </Link>
                 </div>
             </section>
 
             {/* Categories */}
             <section className="mt-5">
-                <h2 className="mb-4">Categories</h2>
+                <h2 className="mb-4"> 카테고리 </h2>
                 <Row>
                     {categories.map(category => (
                         <Col key={category.categoryId} md={3} className="mb-3">

@@ -21,6 +21,9 @@ public interface GoodsService {
     // 상품 전체 검색 - 페이징 기능
     Page<GoodsResponse> goodsFindAll(Pageable pageable);
 
+    // 카테고리별 상품 검색 - 페이징 기능
+    Page<GoodsResponse> goodsFindByCategory(Long categoryId, Pageable pageable);
+
     // 상품 가격 변경 확인
     List<UpdateGoodsResponse> checkGoodsUpdate(List<UpdateCheckRequest> updateCheckRequest);
 

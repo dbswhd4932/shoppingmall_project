@@ -104,6 +104,18 @@ public class GoodsServiceImpl implements GoodsService {
 
     }
 
+    // 카테고리별 상품 검색
+    @Override
+    @Transactional(readOnly = true)
+    public Page<GoodsResponse> goodsFindByCategory(Long categoryId, Pageable pageable) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_CATEGORY));
+
+        Page<Goods> goods = goodsRepository.findAllByCategory(category, pageable);
+
+        return goods.map(good -> new GoodsResponse(good));
+    }
+
     // 상품 가격 변경 확인
     @Transactional(readOnly = true)
     public List<UpdateGoodsResponse> checkGoodsUpdate(List<UpdateCheckRequest> updateCheckRequest) {

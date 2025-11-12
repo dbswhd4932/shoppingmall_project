@@ -23,7 +23,8 @@ public class OrderPageResponse {
     private String zipcode;         //우편번호
     private String detailAddress;   //상세주소
     private String requirement;     //요청사항
-    private String merchantId;      //주문번호 ID
+    private String merchantId;      //주문번호 UUID
+    private String orderNumber;     //주문번호 표시용
     private int totalPrice;         //결제금액
     private OrderStatus orderStatus;
     private LocalDateTime orderTime;
@@ -42,6 +43,7 @@ public class OrderPageResponse {
                 .detailAddress(order.getDetailAddress())
                 .requirement(order.getRequirement())
                 .merchantId(order.getMerchantId())
+                .orderNumber(order.getOrderNumber())
                 .totalPrice(order.getTotalPrice())
                 .orderStatus(order.getOrderStatus())
                 .orderTime(order.getCratedAt())

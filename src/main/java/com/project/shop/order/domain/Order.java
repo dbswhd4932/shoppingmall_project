@@ -49,10 +49,13 @@ public class Order extends BaseTimeEntity {
     private String impUid;         // 아임포트 발급 ID ex)imp_727855699150
 
     @Column(nullable = false)
-    private String merchantId;     // 주문번호         ex)ORD20180131-0000014
+    private String merchantId;     // 주문번호 UUID    ex)550e8400-e29b-41d4-a716-446655440000
+
+    @Column(nullable = false, unique = true)
+    private String orderNumber;    // 주문번호 표시용  ex)ORDER-20251109-A1B2C3
 
     @Builder
-    public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice, String impUid, String merchantId) {
+    public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice, String impUid, String merchantId, String orderNumber) {
         this.memberId = memberId;
         this.name = name;
         this.phone = phone;
@@ -60,9 +63,10 @@ public class Order extends BaseTimeEntity {
         this.detailAddress = detailAddress;
         this.requirement = requirement;
         this.totalPrice = totalPrice;
-        this.orderStatus = OrderStatus.COMPLETE;
+        this.orderStatus = OrderStatus.ORDER;  // 초기 상태는 주문완료
         this.impUid = impUid;
         this.merchantId = merchantId;
+        this.orderNumber = orderNumber;
     }
 
     // 주문 생성
@@ -86,8 +90,18 @@ public class Order extends BaseTimeEntity {
                 .build();
     }
 
-    // 주문 상태 변경
+    // 주문 상태 변경 - 취소
     public void orderStatusChangeCancel() {
         this.orderStatus = OrderStatus.CANCEL;
+    }
+
+    // 주문 상태 변경 - 배송중
+    public void orderStatusChangeDelivery() {
+        this.orderStatus = OrderStatus.DELIVERY;
+    }
+
+    // 주문 상태 변경 - 배송완료
+    public void orderStatusChangeComplete() {
+        this.orderStatus = OrderStatus.COMPLETE;
     }
 }

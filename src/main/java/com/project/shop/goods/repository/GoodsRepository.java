@@ -15,6 +15,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long>, GoodsReposi
 
     Page<Goods> findGoodsByGoodsNameContaining(Pageable pageable, String keyword);
     List<Goods> findAllByCategory(Category category);
+    Page<Goods> findAllByCategory(Category category, Pageable pageable);
 
     List<Goods> findAllByMemberId(Long memberId);
 }

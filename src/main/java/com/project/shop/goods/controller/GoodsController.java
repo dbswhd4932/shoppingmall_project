@@ -102,11 +102,16 @@ public class GoodsController {
         goodsService.goodsCreate(goodsCreateRequest, multipartFiles);
     }
 
-    // 상품 전체 조회
+    // 상품 전체 조회 (카테고리 필터링 옵션)
     @GetMapping("/goods")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "상품 전체 조회")
-    public Page<GoodsResponse> goodsFindAll(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public Page<GoodsResponse> goodsFindAll(
+            @RequestParam(required = false) Long categoryId,
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        if (categoryId != null) {
+            return goodsService.goodsFindByCategory(categoryId, pageable);
+        }
         return goodsService.goodsFindAll(pageable);
     }
 

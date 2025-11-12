@@ -8,7 +8,6 @@ const CartList = () => {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     useEffect(() => {
         loadCart();
@@ -17,6 +16,7 @@ const CartList = () => {
     const loadCart = async () => {
         try {
             const response = await api.get('/carts?page=0&size=100');
+            console.log('Cart API Response:', response.data); // 디버깅용
             setCartItems(response.data.content || []);
         } catch (error) {
             console.error('Failed to load cart:', error);
@@ -53,9 +53,6 @@ const CartList = () => {
                     ? { ...item, totalAmount: newAmount, totalPrice: item.price * newAmount }
                     : item
             ));
-
-            setSuccess('수량이 변경되었습니다.');
-            setTimeout(() => setSuccess(''), 2000);
         } catch (error) {
             console.error('Failed to update quantity:', error);
             setError(error.response?.data?.errorMessage || '수량 변경에 실패했습니다.');
@@ -90,9 +87,6 @@ const CartList = () => {
             }
 
             await api.put(`/carts/${cartId}`, requestData);
-
-            setSuccess('수량이 변경되었습니다.');
-            setTimeout(() => setSuccess(''), 2000);
         } catch (error) {
             console.error('Failed to update quantity:', error);
             setError(error.response?.data?.errorMessage || '수량 변경에 실패했습니다.');
@@ -110,8 +104,6 @@ const CartList = () => {
         try {
             await api.delete(`/carts/${cartId}`);
             setCartItems(cartItems.filter(item => item.cartId !== cartId));
-            setSuccess('장바구니에서 삭제되었습니다.');
-            setTimeout(() => setSuccess(''), 2000);
         } catch (error) {
             console.error('Failed to delete cart item:', error);
             setError(error.response?.data?.errorMessage || '삭제에 실패했습니다.');
@@ -137,7 +129,6 @@ const CartList = () => {
             <h2 className="mb-4">장바구니</h2>
 
             {error && <Alert variant="danger" dismissible onClose={() => setError('')}>{error}</Alert>}
-            {success && <Alert variant="success" dismissible onClose={() => setSuccess('')}>{success}</Alert>}
 
             {cartItems.length === 0 ? (
                 <Card className="text-center py-5">
@@ -168,7 +159,7 @@ const CartList = () => {
                                     <tr key={item.cartId}>
                                         <td>
                                             <img
-                                                src={item.imageUrl || 'https://via.placeholder.com/100'}
+                                                src={item.imageUrl ? `http://localhost:8080${item.imageUrl}` : 'https://via.placeholder.com/100'}
                                                 alt={item.goodsName}
                                                 style={{ width: '80px', height: '80px', objectFit: 'cover' }}
                                                 className="rounded"
@@ -238,7 +229,7 @@ const CartList = () => {
                                     <Row>
                                         <Col xs={4}>
                                             <img
-                                                src={item.imageUrl || 'https://via.placeholder.com/100'}
+                                                src={item.imageUrl ? `http://localhost:8080${item.imageUrl}` : 'https://via.placeholder.com/100'}
                                                 alt={item.goodsName}
                                                 className="img-fluid rounded"
                                                 onClick={() => navigate(`/goods/${item.goodsId}`)}
@@ -317,10 +308,7 @@ const CartList = () => {
                                     <Button
                                         variant="primary"
                                         size="lg"
-                                        onClick={() => {
-                                            // TODO: 주문 페이지로 이동
-                                            alert('주문 페이지는 구현 예정입니다.');
-                                        }}
+                                        onClick={() => navigate('/order')}
                                     >
                                         주문하기
                                     </Button>

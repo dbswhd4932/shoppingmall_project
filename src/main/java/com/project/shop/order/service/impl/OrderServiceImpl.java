@@ -26,8 +26,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static com.project.shop.global.error.ErrorCode.*;
 
@@ -44,13 +47,44 @@ public class OrderServiceImpl implements OrderService {
     private final MemberRepository memberRepository;
     private final PayCancelRepository payCancelRepository;
 
+    // 주문번호 생성 (ORDER-20251109-A1B2C3 형식)
+    private String generateOrderNumber() {
+        // 현재 날짜 (yyyyMMdd 형식)
+        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        // 랜덤 6자리 영문+숫자
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder randomCode = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            randomCode.append(chars.charAt(random.nextInt(chars.length())));
+        }
+
+        return "ORDER-" + dateStr + "-" + randomCode.toString();
+    }
+
     // 주문 생성
     @Override
     public void cartOrder(OrderCreateRequest orderCreateRequest) {
 
         Member member = getMember();
 
-        Order order = Order.toOrder(orderCreateRequest, member);
+        // 주문번호 생성
+        String orderNumber = generateOrderNumber();
+
+        // Order 생성 시 orderNumber 추가
+        Order order = Order.builder()
+                .memberId(member.getId())
+                .name(orderCreateRequest.getName())
+                .phone(orderCreateRequest.getPhone())
+                .zipcode(orderCreateRequest.getZipcode())
+                .detailAddress(orderCreateRequest.getDetailAddress())
+                .requirement(orderCreateRequest.getRequirement())
+                .totalPrice(orderCreateRequest.getTotalPrice())
+                .impUid(orderCreateRequest.getImpUid())
+                .merchantId(orderCreateRequest.getMerchantId())
+                .orderNumber(orderNumber)
+                .build();
 
         // 주문_상품 DB 저장
         for (OrderCreateRequest.orderItemCreate orderItemCreate : orderCreateRequest.getOrderItemCreates()) {

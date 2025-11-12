@@ -85,7 +85,7 @@ const GoodsDetail = () => {
                     <Card className="mb-3">
                         <Card.Img
                             variant="top"
-                            src={product?.imageList?.[selectedImage]?.fileUrl || 'https://via.placeholder.com/500'}
+                            src={product?.imageList?.[selectedImage]?.fileUrl ? `http://localhost:8080${product.imageList[selectedImage].fileUrl}` : 'https://via.placeholder.com/500'}
                             style={{ height: '500px', objectFit: 'cover' }}
                         />
                     </Card>
@@ -94,7 +94,7 @@ const GoodsDetail = () => {
                             {product.imageList.map((image, index) => (
                                 <Col key={index} xs={3} className="mb-2">
                                     <img
-                                        src={image.fileUrl}
+                                        src={`http://localhost:8080${image.fileUrl}`}
                                         alt={`Thumbnail ${index + 1}`}
                                         className={`img-fluid rounded cursor-pointer ${selectedImage === index ? 'border border-primary border-3' : ''}`}
                                         style={{ cursor: 'pointer', height: '100px', objectFit: 'cover' }}

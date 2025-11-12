@@ -1,8 +1,10 @@
 package com.project.shop.order.repository;
 
 import com.project.shop.order.domain.Order;
+import com.project.shop.order.domain.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -10,4 +12,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByMerchantId(String merchantId);
 
     Optional<Order> findByIdAndMemberId(Long orderId, Long memberId);
+
+    List<Order> findByOrderStatus(OrderStatus orderStatus);
 }
