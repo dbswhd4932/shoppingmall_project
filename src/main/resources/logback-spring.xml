@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Seoul} [%thread] %-5level %logger{36} - %msg%n"/>
     <property name="LOG_DIR" value="./logs"/>
 
     <!-- Console Appender -->
@@ -10,25 +10,105 @@
         </encoder>
     </appender>
 
-    <!-- File Appender with JSON format for ELK -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- JSON File Appender -->
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/shoppingmall.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_DIR}/shoppingmall.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>{"app_name":"shoppingmall","environment":"local"}</customFields>
+            <includeMdc>true</includeMdc>
+            <includeContext>true</includeContext>
+            <includeCallerData>true</includeCallerData>
+            <timeZone>Asia/Seoul</timeZone>
         </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/shoppingmall.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
     </appender>
+
+    <!-- Logstash TCP Appender -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5044</destination>
+
+        <!-- 재연결 설정 -->
+        <reconnectionDelay>10 second</reconnectionDelay>
+
+        <!-- JSON 인코더 -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- 애플리케이션 메타데이터 -->
+            <customFields>{"app_name":"shoppingmall","environment":"local"}</customFields>
+
+            <!-- MDC(Mapped Diagnostic Context) 포함 -->
+            <includeMdc>true</includeMdc>
+            <includeContext>true</includeContext>
+            <includeCallerData>true</includeCallerData>
+
+            <!-- 한국 시간대 설정 -->
+            <timeZone>Asia/Seoul</timeZone>
+
+            <!-- 스택 트레이스 해시 추가 (에러 그룹핑용) -->
+            <includeStructuredArguments>true</includeStructuredArguments>
+        </encoder>
+
+        <!-- 비동기 처리 설정 -->
+        <keepAliveDuration>5 minutes</keepAliveDuration>
+        <writeBufferSize>8192</writeBufferSize>
+    </appender>
+
+    <!-- 비동기 Appender (성능 향상) -->
+    <appender name="ASYNC_LOGSTASH" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOGSTASH"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <appender name="ASYNC_JSON_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="JSON_FILE"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <!-- 에러 로그만 별도 파일로 저장 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name":"shoppingmall","log_type":"error"}</customFields>
+            <timeZone>Asia/Seoul</timeZone>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 패키지별 로그 레벨 설정 -->
+    <logger name="com.project.shop" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_JSON_FILE"/>
+        <appender-ref ref="ASYNC_LOGSTASH"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <logger name="org.springframework.web" level="INFO"/>
+    <logger name="org.hibernate" level="INFO"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
 
     <!-- Root Logger -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="ASYNC_JSON_FILE"/>
+        <appender-ref ref="ASYNC_LOGSTASH"/>
     </root>
-
-    <!-- Application Logger -->
-    <logger name="com.project.shop" level="DEBUG"/>
 
 </configuration>
