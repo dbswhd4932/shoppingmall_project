@@ -99,7 +99,12 @@ public class GoodsServiceImpl implements GoodsService {
     public Page<GoodsResponse> goodsFindAll(Pageable pageable) {
         Page<Goods> goods = goodsRepository.findAll(pageable);
 
-        Page<GoodsResponse> responses = goods.map(good -> new GoodsResponse(good));
+        Page<GoodsResponse> responses = goods.map(good -> {
+            Member member = memberRepository.findById(good.getMemberId())
+                    .orElse(null);
+            String memberLoginId = (member != null) ? member.getLoginId() : "Unknown";
+            return new GoodsResponse(good, memberLoginId);
+        });
         return responses;
 
     }
@@ -113,7 +118,12 @@ public class GoodsServiceImpl implements GoodsService {
 
         Page<Goods> goods = goodsRepository.findAllByCategory(category, pageable);
 
-        return goods.map(good -> new GoodsResponse(good));
+        return goods.map(good -> {
+            Member member = memberRepository.findById(good.getMemberId())
+                    .orElse(null);
+            String memberLoginId = (member != null) ? member.getLoginId() : "Unknown";
+            return new GoodsResponse(good, memberLoginId);
+        });
     }
 
     // 상품 가격 변경 확인
@@ -160,7 +170,11 @@ public class GoodsServiceImpl implements GoodsService {
         Goods goods = goodsRepository.findById(goodsId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_GOODS));
 
-        return new GoodsResponse(goods);
+        Member member = memberRepository.findById(goods.getMemberId())
+                .orElse(null);
+        String memberLoginId = (member != null) ? member.getLoginId() : "Unknown";
+
+        return new GoodsResponse(goods, memberLoginId);
     }
 
     // 상품 검색 ( 키워드 )
@@ -170,7 +184,12 @@ public class GoodsServiceImpl implements GoodsService {
     public Page<GoodsResponse> goodsFindKeyword(String keyword, Pageable pageable) {
         // keyword 로 검색 후 모든 상품 찾기
         Page<Goods> goods = goodsRepository.findGoodsByGoodsNameContaining(pageable, keyword);
-        return goods.map(GoodsResponse::new);
+        return goods.map(good -> {
+            Member member = memberRepository.findById(good.getMemberId())
+                    .orElse(null);
+            String memberLoginId = (member != null) ? member.getLoginId() : "Unknown";
+            return new GoodsResponse(good, memberLoginId);
+        });
     }
 
     // 상품 수정
@@ -252,7 +271,14 @@ public class GoodsServiceImpl implements GoodsService {
         GoodsSearchCondition result =
                 new GoodsSearchCondition(condition.getPriceMin(), condition.getPriceMax(), condition.getCategory());
 
-        return goodsRepository.searchBetweenPrice(result, pageable);
+        Page<Goods> goods = goodsRepository.searchBetweenPrice(result, pageable);
+
+        return goods.map(good -> {
+            Member member = memberRepository.findById(good.getMemberId())
+                    .orElse(null);
+            String memberLoginId = (member != null) ? member.getLoginId() : "Unknown";
+            return new GoodsResponse(good, memberLoginId);
+        });
 
     }
 

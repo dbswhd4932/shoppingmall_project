@@ -3,9 +3,8 @@ package com.project.shop.goods.repository;
 import com.project.shop.global.error.ErrorCode;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.controller.request.GoodsSearchCondition;
-import com.project.shop.goods.controller.response.GoodsResponse;
-import com.project.shop.goods.controller.response.QGoodsResponse;
 import com.project.shop.goods.domain.Category;
+import com.project.shop.goods.domain.Goods;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -29,12 +28,11 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
     }
 
     @Override
-    public Page<GoodsResponse> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable) {
+    public Page<Goods> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable) {
 
-        List<GoodsResponse> content = queryFactory
-                .select(new QGoodsResponse(goods))
-                .from(goods)
-                .innerJoin(goods.category, category1)
+        List<Goods> content = queryFactory
+                .selectFrom(goods)
+                .innerJoin(goods.category, category1).fetchJoin()
                 .where(
                         betweenPrice(condition.getPriceMin(), condition.getPriceMax()),
                         categoryEq(condition))
