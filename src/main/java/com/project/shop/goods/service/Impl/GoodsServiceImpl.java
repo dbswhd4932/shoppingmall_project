@@ -79,15 +79,18 @@ public class GoodsServiceImpl implements GoodsService {
             optionRepository.saveAll(optionsList);
         }
 
-        // 로컬 파일 시스템에 저장
-        List<String> list = localFileService.upload(imgPaths);
+        // 이미지 정보 저장 (이미지가 있는 경우에만)
+        if (imgPaths != null && !imgPaths.isEmpty()) {
+            // 로컬 파일 시스템에 저장
+            List<String> list = localFileService.upload(imgPaths);
 
-        // 이미지 DB 저장
-        List<Image> imageList = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
-        for (Image image : imageList) {
-            image.setGoods(goods);
+            // 이미지 DB 저장
+            List<Image> imageList = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
+            for (Image image : imageList) {
+                image.setGoods(goods);
+            }
+            imageRepository.saveAll(imageList);
         }
-        imageRepository.saveAll(imageList);
 
     }
 
@@ -224,23 +227,26 @@ public class GoodsServiceImpl implements GoodsService {
             optionRepository.saveAll(optionsList);
         }
 
-        // 로컬 파일, 이미지DB 삭제
-        List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
-        for (Image image : imageList) {
-            String fileName = image.getFileUrl();
-            localFileService.deleteFile(fileName);
-            imageRepository.deleteById(image.getId());
-        }
+        // 이미지 정보 저장 (이미지가 있는 경우에만)
+        if (imgPaths != null && !imgPaths.isEmpty()) {
+            // 로컬 파일, 이미지DB 삭제 (기존 이미지 삭제)
+            List<Image> imageList = imageRepository.findByGoodsId(goods.getId());
+            for (Image image : imageList) {
+                String fileName = image.getFileUrl();
+                localFileService.deleteFile(fileName);
+                imageRepository.deleteById(image.getId());
+            }
 
-        // 로컬 파일 시스템에 이미지 저장
-        List<String> list = localFileService.upload(imgPaths);
+            // 로컬 파일 시스템에 이미지 저장
+            List<String> list = localFileService.upload(imgPaths);
 
-        // 이미지 정보 저장
-        List<Image> images = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
-        for (Image image : images) {
-            image.setGoods(goods);
+            // 이미지 정보 저장
+            List<Image> images = list.stream().map(img -> Image.builder().fileUrl(img).goods(goods).build()).collect(Collectors.toList());
+            for (Image image : images) {
+                image.setGoods(goods);
+            }
+            imageRepository.saveAll(images);
         }
-        imageRepository.saveAll(images);
 
     }
 

@@ -71,7 +71,7 @@ const GoodsList = () => {
                 <>
                     <Row>
                         {products.map(product => (
-                            <Col key={product.id} md={3} className="mb-4">
+                            <Col key={product.goodsId} md={3} className="mb-4">
                                 <Card className="h-100">
                                     <Card.Img
                                         variant="top"

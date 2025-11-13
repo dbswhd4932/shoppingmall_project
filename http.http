@@ -1,0 +1,14 @@
+GET localhost:8080/api/redis/test/string
+
+###
+GET localhost:8080/api/redis/test/ttl
+
+###
+GET localhost:8080/api/redis/test/hash
+
+###
+POST localhost:8080/api/redis/test/hash/increment
+
+{
+    "amount":3
+}

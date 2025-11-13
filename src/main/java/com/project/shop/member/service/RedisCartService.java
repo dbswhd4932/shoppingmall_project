@@ -52,7 +52,7 @@ public class RedisCartService {
     private final MemberRepository memberRepository;
 
     private static final String CART_KEY_PREFIX = "cart:user:";
-    private static final int CART_TTL_DAYS = 30;
+    private static final int CART_TTL_DAYS = 7;
 
     /**
      * 1. 장바구니 추가
@@ -152,18 +152,21 @@ public class RedisCartService {
         // 최근 추가된 순서로 정렬 (addedAt 내림차순)
         cartItems.sort((a, b) -> Long.compare(b.cartItem.getAddedAt(), a.cartItem.getAddedAt()));
 
-        // Goods 배치 조회
+        // Goods 배치 조회 (images를 함께 조회하여 LazyInitializationException 방지)
         List<Long> goodsIds = cartItems.stream()
                 .map(item -> item.goodsId)
                 .collect(Collectors.toList());
 
-        Map<Long, Goods> goodsMap = goodsRepository.findAllById(goodsIds).stream()
-                .collect(Collectors.toMap(Goods::getId, goods -> goods));
+        List<Goods> goodsList = goodsRepository.findAllByIdWithImages(goodsIds);
 
         // CartResponse 생성
         List<CartResponse> responses = cartItems.stream()
                 .map(item -> {
-                    Goods goods = goodsMap.get(item.goodsId);
+                    Goods goods = goodsList.stream()
+                            .filter(g -> g.getId().equals(item.goodsId))
+                            .findFirst()
+                            .orElse(null);
+
                     if (goods == null) {
                         log.warn("[Redis Cart] 상품을 찾을 수 없음: goodsId={}", item.goodsId);
                         return null;

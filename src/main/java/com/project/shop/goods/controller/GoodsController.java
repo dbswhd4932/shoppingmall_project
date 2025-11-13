@@ -97,7 +97,7 @@ public class GoodsController {
     @PreAuthorize("hasRole('ROLE_SELLER')")
     @ApiOperation(value = "상품 등록")
     public void goodsCreate(@RequestPart @Valid GoodsCreateRequest goodsCreateRequest,
-                            @RequestPart List<MultipartFile> multipartFiles) throws IOException {
+                            @RequestPart(required = false) List<MultipartFile> multipartFiles) throws IOException {
 
         goodsService.goodsCreate(goodsCreateRequest, multipartFiles);
     }
@@ -130,7 +130,7 @@ public class GoodsController {
     @ApiOperation(value = "상품 수정")
     public void goodsEdit(@PathVariable("goodsId") Long goodsId,
                           @RequestPart @Valid GoodsEditRequest goodsEditRequest,
-                          @RequestPart List<MultipartFile> multipartFiles) {
+                          @RequestPart(required = false) List<MultipartFile> multipartFiles) {
 
         goodsService.goodsEdit(goodsId, goodsEditRequest, multipartFiles);
     }

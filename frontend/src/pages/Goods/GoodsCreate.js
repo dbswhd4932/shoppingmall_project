@@ -72,11 +72,6 @@ const GoodsCreate = () => {
             return;
         }
 
-        if (images.length === 0) {
-            setError('최소 1개 이상의 이미지를 업로드해주세요.');
-            return;
-        }
-
         setLoading(true);
 
         try {
@@ -96,10 +91,12 @@ const GoodsCreate = () => {
                 type: 'application/json'
             }));
 
-            // 이미지 파일들 추가
-            images.forEach(image => {
-                submitData.append('multipartFiles', image);
-            });
+            // 이미지 파일들 추가 (있는 경우에만)
+            if (images.length > 0) {
+                images.forEach(image => {
+                    submitData.append('multipartFiles', image);
+                });
+            }
 
             await api.post('/goods', submitData, {
                 headers: {
@@ -201,16 +198,15 @@ const GoodsCreate = () => {
 
                         {/* 이미지 업로드 */}
                         <Form.Group className="mb-3">
-                            <Form.Label>상품 이미지 <span className="text-danger">*</span></Form.Label>
+                            <Form.Label>상품 이미지</Form.Label>
                             <Form.Control
                                 type="file"
                                 multiple
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                required
                             />
                             <Form.Text className="text-muted">
-                                최소 1개 이상의 이미지를 업로드해주세요.
+                                이미지는 선택사항입니다.
                             </Form.Text>
                         </Form.Group>
 

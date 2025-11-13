@@ -2,8 +2,6 @@ package com.project.shop.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -44,19 +42,14 @@ public class RedisConfig {
     }
 
     /**
-     * ObjectMapper 커스터마이징
+     * Redis 전용 ObjectMapper 커스터마이징
      *
      * Jackson을 사용한 JSON 직렬화 설정
      * - JavaTimeModule: LocalDateTime, LocalDate 등 Java 8 시간 타입 지원
-     * - PolymorphicTypeValidator: 다형성 타입 안전하게 처리
+     * - 전역 ObjectMapper와 충돌하지 않도록 별도 빈으로 관리
      */
-    @Bean
-    public ObjectMapper objectMapper() {
-        // PolymorphicTypeValidator 설정 (보안을 위해 특정 패키지만 허용)
-        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator.builder()
-                .allowIfBaseType(Object.class)  // 모든 타입 허용 (개발 단계)
-                .build();
-
+    @Bean(name = "redisObjectMapper")
+    public ObjectMapper redisObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
 
         // Java 8 날짜/시간 타입 지원
@@ -65,8 +58,9 @@ public class RedisConfig {
         // 날짜를 timestamp가 아닌 ISO-8601 문자열로 직렬화
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        // 다형성 타입 활성화 (클래스 정보를 JSON에 포함)
-        mapper.activateDefaultTyping(typeValidator, ObjectMapper.DefaultTyping.NON_FINAL);
+        // Redis 장바구니에는 단순 DTO(CartItem)만 저장하므로
+        // 다형성 타입 정보(activateDefaultTyping)는 불필요
+        // 제거함으로써 전역 ObjectMapper와의 충돌 방지
 
         return mapper;
     }
@@ -89,14 +83,14 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<String, Object> redisTemplate(
             RedisConnectionFactory connectionFactory,
-            ObjectMapper objectMapper) {
+            ObjectMapper redisObjectMapper) {
 
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
-        // JSON 직렬화 설정 (커스텀 ObjectMapper 사용)
+        // JSON 직렬화 설정 (Redis 전용 ObjectMapper 사용)
         GenericJackson2JsonRedisSerializer serializer =
-                new GenericJackson2JsonRedisSerializer(objectMapper);
+                new GenericJackson2JsonRedisSerializer(redisObjectMapper);
 
         // Key는 String 형태로 저장 (예: "cart:user:123")
         template.setKeySerializer(new StringRedisSerializer());
