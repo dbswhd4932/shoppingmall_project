@@ -26,33 +26,61 @@
 - **API 문서**: [Swagger UI](http://15.165.145.187:8080/swagger-ui/index.html) (중단)
 
 ### 📝 변경 이력
-- **2025.11.09**: 장바구니/주문 권한 확대 (USER → 모든 인증 사용자로 변경)
-- **2025.11.09**: 상품 상세 화면 구현 (GoodsDetail.js - 이미지 갤러리, 수량 선택, 장바구니 담기)
-- **2025.11.09**: 홈/목록 화면에 장바구니 버튼 추가 (상세보기 + 장바구니 버튼 그룹)
-- **2025.11.09**: My Page 구현 (사용자 정보, 권한, 가입일 조회)
-- **2025.11.09**: MemberResponse에 createdAt, updatedAt 필드 추가
-- **2025.11.09**: 가격 표시 단위 변경 ($ → ₩ 원화)
-- **2025.11.09**: 로컬 파일 저장 시스템 구현 (LocalFileService - AWS S3 대체)
-- **2025.11.09**: WebConfig 추가 (업로드 파일 정적 리소스 서빙 /uploads/**)
-- **2025.11.08**: 카테고리 생성 권한 체크 API 추가 (GET /api/categories/check-access)
-- **2025.11.08**: 홈 화면에 카테고리 생성 버튼 추가 (ADMIN 권한만 가능)
-- **2025.11.08**: Spring Security 권한 체크 수정 (hasAnyRole → hasRole, ROLE_ 접두사 추가)
-- **2025.11.08**: GoodsServiceImpl null 체크 추가 (상품 옵션 없을 시 처리)
-- **2025.11.07**: RoleType Enum JSON 역직렬화 개선 (@JsonCreator 추가, "SELLER" → "ROLE_SELLER" 자동 변환)
-- **2025.11.07**: Member Entity 필드 기본값 설정 (zipcode, detailAddress null 처리 개선)
-- **2025.11.07**: 상품 등록 권한 체크 API 추가 (GET /api/goods/check-access)
-- **2025.11.07**: 권한별 접근 제어 구현 (비회원 → 로그인 페이지, 일반회원 → 알럿, 판매자 → 등록 페이지)
-- **2025.11.07**: 상품 등록 페이지 UI 구현 (GoodsCreate.js - 이미지 미리보기, 폼 검증)
-- **2025.11.07**: ErrorCode 추가 (UNAUTHORIZED_ACCESS, FORBIDDEN_ACCESS)
-- **2025.10.23**: **Thymeleaf → React 완전 전환** (Frontend 아키텍처 변경)
-- **2025.10.23**: React 프론트엔드 추가 (React 18, React Router v6, Bootstrap)
-- **2025.10.23**: CORS 설정 추가 (React dev server 연동)
-- **2025.10.23**: 로컬 개발 환경 구성 (application-local.yml, docker-compose)
-- **2025.10.23**: 회원가입 API 필드 수정 (phoneNumber, zipcode/detailAddress 선택사항)
-- **2025.10.23**: View 레이어 완전 제거 (Thymeleaf, static files, ViewController)
-- **2025.10.23**: 회원가입 권한 선택 - List에서 단일 선택으로 변경 (RoleType)
-- **2025.10.23**: H2 Database에서 MySQL Docker로 전환 (데이터 영구 저장)
-- **2025.10.23**: Map 사용 제거 및 DTO 패턴 적용 (LoginIdCheckRequest)
+
+<details>
+<summary><b>🔽 전체 변경 이력 보기</b></summary>
+
+#### 2025.11.13
+- **Redis 기반 장바구니 시스템 구현** (RedisCartService - MySQL Cart 테이블 대체)
+  - Redis Hash 구조 활용: `cart:user:{userId}` 키에 장바구니 데이터 저장
+  - TTL 30일 자동 만료, JSON 직렬화/역직렬화
+  - Map 사용 최소화: `Map<Long, Goods>` → `List<Goods>`로 변경하여 메모리 효율 개선
+- 상품 이미지 업로드 선택사항으로 변경 (필수 → 선택)
+  - Backend: GoodsController `@RequestPart(required = false)` 추가
+  - Frontend: GoodsCreate.js 이미지 필수 검증 제거
+- LazyInitializationException 해결
+  - GoodsRepository에 `findAllByIdWithImages()` 메서드 추가 (LEFT JOIN FETCH)
+  - RedisCartService에서 Goods 배치 조회 시 images 함께 로딩
+- Redis ObjectMapper 분리 및 Jackson 직렬화 충돌 해결
+  - Redis 전용 ObjectMapper 빈 생성 (`redisObjectMapper`)
+  - `activateDefaultTyping()` 제거하여 전역 Jackson 설정과 분리
+
+#### 2025.11.09
+- 장바구니/주문 권한 확대 (USER → 모든 인증 사용자로 변경)
+- 상품 상세 화면 구현 (GoodsDetail.js - 이미지 갤러리, 수량 선택, 장바구니 담기)
+- 홈/목록 화면에 장바구니 버튼 추가 (상세보기 + 장바구니 버튼 그룹)
+- My Page 구현 (사용자 정보, 권한, 가입일 조회)
+- MemberResponse에 createdAt, updatedAt 필드 추가
+- 가격 표시 단위 변경 ($ → ₩ 원화)
+- 로컬 파일 저장 시스템 구현 (LocalFileService - AWS S3 대체)
+- WebConfig 추가 (업로드 파일 정적 리소스 서빙 /uploads/**)
+
+#### 2025.11.08
+- 카테고리 생성 권한 체크 API 추가 (GET /api/categories/check-access)
+- 홈 화면에 카테고리 생성 버튼 추가 (ADMIN 권한만 가능)
+- Spring Security 권한 체크 수정 (hasAnyRole → hasRole, ROLE_ 접두사 추가)
+- GoodsServiceImpl null 체크 추가 (상품 옵션 없을 시 처리)
+
+#### 2025.11.07
+- RoleType Enum JSON 역직렬화 개선 (@JsonCreator 추가, "SELLER" → "ROLE_SELLER" 자동 변환)
+- Member Entity 필드 기본값 설정 (zipcode, detailAddress null 처리 개선)
+- 상품 등록 권한 체크 API 추가 (GET /api/goods/check-access)
+- 권한별 접근 제어 구현 (비회원 → 로그인 페이지, 일반회원 → 알럿, 판매자 → 등록 페이지)
+- 상품 등록 페이지 UI 구현 (GoodsCreate.js - 이미지 미리보기, 폼 검증)
+- ErrorCode 추가 (UNAUTHORIZED_ACCESS, FORBIDDEN_ACCESS)
+
+#### 2025.10.23
+- **Thymeleaf → React 완전 전환** (Frontend 아키텍처 변경)
+- React 프론트엔드 추가 (React 18, React Router v6, Bootstrap)
+- CORS 설정 추가 (React dev server 연동)
+- 로컬 개발 환경 구성 (application-local.yml, docker-compose)
+- 회원가입 API 필드 수정 (phoneNumber, zipcode/detailAddress 선택사항)
+- View 레이어 완전 제거 (Thymeleaf, static files, ViewController)
+- 회원가입 권한 선택 - List에서 단일 선택으로 변경 (RoleType)
+- H2 Database에서 MySQL Docker로 전환 (데이터 영구 저장)
+- Map 사용 제거 및 DTO 패턴 적용 (LoginIdCheckRequest)
+
+</details>
 
 ## 🛠 기술 스택
 
@@ -71,6 +99,7 @@
 
 ### Database & Storage
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-7.x-DC382D?style=flat&logo=redis&logoColor=white)
 ![H2](https://img.shields.io/badge/H2-Database-blue?style=flat)
 ![AWS RDS](https://img.shields.io/badge/AWS%20RDS-MySQL-232F3E?style=flat&logo=amazon-aws&logoColor=white)
 ![AWS S3](https://img.shields.io/badge/AWS%20S3-232F3E?style=flat&logo=amazon-s3&logoColor=white)
@@ -111,6 +140,7 @@
 | **Security** | Spring Security + JWT | 2.7.5 | 인증/인가 |
 | **Database** | MySQL | 8.0 | 운영 데이터베이스 |
 | **Database** | H2 | 1.4.200 | 테스트 데이터베이스 |
+| **Cache** | Redis | 7.x | 장바구니 데이터 저장 |
 | **Cache** | Ehcache | 3.8.0 | 애플리케이션 캐시 |
 | **File Storage** | AWS S3 | - | 상품 이미지 저장 |
 | **Server** | AWS EC2 | Amazon Linux 2 | 애플리케이션 서버 |
@@ -186,13 +216,19 @@ src/main/java/com/project/shop/
 <img src="https://user-images.githubusercontent.com/103364805/213637232-d6de2126-797f-47e5-ad5b-efe563cd1d0f.png"  width="800" height="500">
 
 ### 주요 테이블 관계
-- **Member ↔ Cart**: 1:N (회원 당 여러 장바구니 아이템)
 - **Member ↔ Order**: 1:N (회원 당 여러 주문)
 - **Member ↔ Goods**: 1:N (판매자 당 여러 상품)
 - **Goods ↔ Category**: N:1 (상품 당 하나의 카테고리)
 - **Order ↔ OrderItem**: 1:N (주문 당 여러 주문 아이템)
 - **Goods ↔ Review**: 1:N (상품 당 여러 리뷰)
 - **Review ↔ Reply**: 1:1 (리뷰 당 하나의 대댓글)
+
+### Redis 데이터 구조
+- **장바구니**: Redis Hash 구조 (`cart:user:{userId}`)
+  - Key: `cart:user:{userId}`
+  - Field: `goods:{goodsId}:option:{optionNumber}`
+  - Value: JSON (amount, totalPrice, addedAt)
+  - TTL: 30일 자동 만료
 
 
 ## 🔧 주요 기능
@@ -201,8 +237,10 @@ src/main/java/com/project/shop/
 - **다중 권한 시스템**: USER(구매자), SELLER(판매자), ADMIN(관리자) 역할별 접근 제어
 - **실시간 가격 검증**: 장바구니에서 주문으로 넘어갈 때 상품 가격 변경 여부 확인
 - **소프트 딜리트**: 회원 탈퇴 시 데이터 무결성 보장을 위한 논리적 삭제
-- **이미지 관리**: AWS S3를 통한 상품 이미지 업로드/다운로드/삭제
-- **캐싱 시스템**: Ehcache를 통한 성능 최적화
+- **이미지 관리**: 로컬 파일 시스템을 통한 상품 이미지 업로드/다운로드/삭제 (개발 환경)
+- **캐싱 시스템**:
+  - Redis를 활용한 장바구니 데이터 캐싱 (TTL 30일)
+  - Ehcache를 통한 상품/카테고리 조회 성능 최적화
 
 ### 📋 API 엔드포인트 목록
 
@@ -231,10 +269,10 @@ src/main/java/com/project/shop/
 - `DELETE /{categoryId}` - 카테고리 삭제
 
 #### 🛒 장바구니 관리 (`/api/carts`)
-- `POST /` - 장바구니 상품 추가
-- `GET /` - 내 장바구니 조회
-- `PUT /{cartId}` - 장바구니 수량 수정
-- `DELETE /{cartId}` - 장바구니 상품 삭제
+- `POST /` - 장바구니 상품 추가 (Redis 저장)
+- `GET /` - 내 장바구니 조회 (Redis에서 조회, 페이징)
+- `PUT /{goodsId}` - 장바구니 수량/옵션 수정
+- `DELETE /{goodsId}` - 장바구니 상품 삭제 (optionNumber 파라미터 필요)
 
 #### 📝 주문 관리 (`/api/orders`)
 - `GET /merchantId` - 주문번호 UUID 생성
@@ -272,8 +310,9 @@ src/main/java/com/project/shop/
 
 ### 📋 필수 조건
 - Java 17 이상
-- Docker & Docker Compose
-- AWS 계정 (S3, RDS, EC2 - 선택사항)
+- Docker & Docker Compose (MySQL, Redis 컨테이너 실행)
+- Node.js 14 이상 (React 프론트엔드)
+- AWS 계정 (S3, RDS, EC2 - 선택사항, 현재 미사용)
 
 ### 🛠 로컬 개발 환경 설정
 
@@ -283,13 +322,14 @@ git clone [repository-url]
 cd shoppingmall_project
 ```
 
-#### 2. 데이터베이스 설정 (Docker Compose)
+#### 2. 데이터베이스 및 Redis 설정 (Docker Compose)
 ```bash
-# MySQL Docker 컨테이너 실행
+# MySQL + Redis Docker 컨테이너 실행
 docker-compose up -d
 
 # 확인
 docker ps
+# shopping_mall_mysql, shopping_mall_redis 컨테이너 실행 확인
 ```
 
 #### 3. 백엔드 실행 (Spring Boot)
@@ -314,6 +354,7 @@ npm start
 - **Backend API**: http://localhost:8080
 - **Swagger UI**: http://localhost:8080/swagger-ui/index.html
 - **MySQL**: localhost:3306 (user: shopuser, password: shop1234)
+- **Redis**: localhost:6379 (비밀번호 없음)
 
 #### 6. 초기 데이터
 ```sql
