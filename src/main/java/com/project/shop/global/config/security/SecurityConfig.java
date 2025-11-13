@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .antMatchers("/uploads/**").permitAll() // 업로드된 파일 접근 허용
                 .antMatchers("/api/members/signup", "/api/members/exist", "/api/members/login").permitAll()
                 .antMatchers("/api/goods", "/api/goods/**", "/api/categories", "/api/categories/**").permitAll()
+                .antMatchers("/api/redis/test/**").permitAll() // Redis 테스트 API 접근 허용
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .anyRequest().authenticated()
                 .and()

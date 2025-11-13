@@ -20,8 +20,22 @@ services:
     networks:
       - shop-network
 
+  redis:
+    image: redis:7-alpine
+    container_name: shoppingmall-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --appendfsync everysec
+    volumes:
+      - redis-data:/data
+    networks:
+      - shop-network
+    restart: unless-stopped
+
 volumes:
   mysql-data:
+    driver: local
+  redis-data:
     driver: local
 
 networks:
