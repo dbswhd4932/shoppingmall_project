@@ -8,6 +8,7 @@ import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.member.service.RedisCartService;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.request.PayCancelRequest;
 import com.project.shop.order.controller.response.OrderPageResponse;
@@ -46,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final MemberRepository memberRepository;
     private final PayCancelRepository payCancelRepository;
+    private final RedisCartService redisCartService;
 
     // 주문번호 생성 (ORDER-20251109-A1B2C3 형식)
     private String generateOrderNumber() {
@@ -95,12 +97,10 @@ public class OrderServiceImpl implements OrderService {
                             order, goods.getGoodsName(), orderItemCreate.getOrderPrice()/orderItemCreate.getAmount());
             orderItemRepository.save(orderItem);
 
-            // 장바구니에 없는 상품이면 예외처리
-            Cart cart = cartRepository.findByGoodsIdAndMember(goods.getId(), member).orElseThrow(
-                    () -> new BusinessException(CART_NO_PRODUCTS));
-
-            // 주문된 상품은 장바구니에서 삭제
-            cartRepository.deleteById(cart.getId());
+            // Redis 장바구니에서 주문된 상품 삭제
+            // optionNumber는 orderItemCreate에 있다면 사용, 없으면 null
+            Long optionNumber = orderItemCreate.getOptionNumber();
+            redisCartService.removeFromCart(goods.getId(), optionNumber);
         }
 
         // 주문 DB 저장
@@ -125,8 +125,38 @@ public class OrderServiceImpl implements OrderService {
         Member member = getMember();
         Page<Order> orderList = orderRepository.findAll(pageable);
 
-        return orderList.stream().filter(findOrder -> findOrder.getMemberId().equals(member.getId()))
-                .map(order -> OrderPageResponse.toResponse(order, orderList)).toList();
+        return orderList.stream()
+                .filter(findOrder -> findOrder.getMemberId().equals(member.getId()))
+                .map(order -> {
+                    // 주문에 속한 상품 ID 목록 조회
+                    List<OrderItem> orderItems = orderItemRepository.findAllByOrder(order);
+                    List<Long> goodsIds = orderItems.stream()
+                            .map(OrderItem::getGoodsId)
+                            .toList();
+
+                    // OrderPageResponse 생성 후 goodsId 설정
+                    OrderPageResponse response = OrderPageResponse.toResponse(order, orderList);
+                    return OrderPageResponse.builder()
+                            .orderId(response.getOrderId())
+                            .memberId(response.getMemberId())
+                            .name(response.getName())
+                            .phone(response.getPhone())
+                            .zipcode(response.getZipcode())
+                            .detailAddress(response.getDetailAddress())
+                            .requirement(response.getRequirement())
+                            .merchantId(response.getMerchantId())
+                            .orderNumber(response.getOrderNumber())
+                            .totalPrice(response.getTotalPrice())
+                            .orderStatus(response.getOrderStatus())
+                            .orderTime(response.getOrderTime())
+                            .totalPage(response.getTotalPage())
+                            .totalCount(response.getTotalCount())
+                            .pageNumber(response.getPageNumber())
+                            .currentPageSize(response.getCurrentPageSize())
+                            .goodsId(goodsIds)
+                            .build();
+                })
+                .toList();
     }
 
     // 주문 단건 조회

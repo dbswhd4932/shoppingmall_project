@@ -62,8 +62,8 @@ public class MemberFactory {
                 .zipcode("123-123")
                 .detailAddress("seoul")
                 .email("user@test.com")
-                .phone("010-1111-1111")
-                .roles(List.of(RoleType.ROLE_USER))
+                .phoneNumber("010-1111-1111")
+                .roleType(RoleType.ROLE_USER)
                 .build();
 
         return memberSignupRequest;

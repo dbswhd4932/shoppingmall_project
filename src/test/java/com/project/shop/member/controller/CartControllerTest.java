@@ -112,7 +112,14 @@ class CartControllerTest extends ControllerSetting {
                 .build();
         cartRepository.save(cart);
 
-        CartResponse cartResponse = new CartResponse(cart);
+        // CartResponse를 Builder로 생성
+        CartResponse cartResponse = CartResponse.builder()
+                .cartId(cart.getId())
+                .goodsId(cart.getGoodsId())
+                .totalAmount(cart.getTotalAmount())
+                .totalPrice(cart.getTotalPrice())
+                .optionNumber(cart.getOptionNumber())
+                .build();
 
         //when
         mockMvc.perform(get("/api/carts")

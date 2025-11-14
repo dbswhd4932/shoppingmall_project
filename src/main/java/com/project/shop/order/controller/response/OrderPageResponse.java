@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -32,6 +33,7 @@ public class OrderPageResponse {
     private int totalCount;
     private int pageNumber;
     private int currentPageSize;
+    private List<Long> goodsId;     //주문한 상품 ID 목록
 
     public static OrderPageResponse toResponse(Order order, Page page) {
         return OrderPageResponse.builder()

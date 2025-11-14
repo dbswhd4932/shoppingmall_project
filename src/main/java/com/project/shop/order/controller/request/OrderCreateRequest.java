@@ -51,8 +51,9 @@ public class OrderCreateRequest {
     @AllArgsConstructor
     @Builder
     public static class orderItemCreate {
-        private Long goodsId;   // 상품 ID
-        private int amount;    // 상품 수량
+        private Long goodsId;       // 상품 ID
+        private int amount;         // 상품 수량
         private int orderPrice;     // 각 상품 주문 가격
+        private Long optionNumber;  // 옵션 번호 (Redis 장바구니 삭제용)
     }
 }

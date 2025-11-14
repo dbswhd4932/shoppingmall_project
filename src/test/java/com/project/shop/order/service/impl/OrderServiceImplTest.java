@@ -10,6 +10,7 @@ import com.project.shop.member.domain.Cart;
 import com.project.shop.member.domain.Member;
 import com.project.shop.member.repository.CartRepository;
 import com.project.shop.member.repository.MemberRepository;
+import com.project.shop.member.service.RedisCartService;
 import com.project.shop.order.controller.request.OrderCreateRequest;
 import com.project.shop.order.controller.request.PayCancelRequest;
 import com.project.shop.order.controller.response.OrderPageResponse;
@@ -75,6 +76,9 @@ class OrderServiceImplTest {
     MemberRepository memberRepository;
 
     @Mock
+    RedisCartService redisCartService;
+
+    @Mock
     PasswordEncoder passwordEncoder;
 
     @BeforeEach()
@@ -102,13 +106,14 @@ class OrderServiceImplTest {
                 .willReturn(Optional.of(goods));
 
         given(orderItemRepository.save(any())).willReturn(orderItem);
-        given(cartRepository.findByGoodsIdAndMember(goods.getId(), member)).willReturn(Optional.ofNullable(cart));
+        // Redis 장바구니 사용으로 cartRepository Mock 제거
 
         //when
         orderService.cartOrder(orderCreateRequest);
 
         //then
-        verify(cartRepository).deleteById(any());
+        // Redis 장바구니에서 삭제되는지 확인
+        verify(redisCartService).removeFromCart(any(), any());
         verify(orderRepository).save(any());
         verify(payRepository).save(any());
     }

@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: local  # 기본 프로파일을 local로 설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${spring.datasource.url}
