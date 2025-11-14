@@ -80,5 +80,49 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
         return priceMax != null ? goods.price.goe(priceMax) : null;
     }
 
+    @Override
+    public Page<Goods> searchGoods(GoodsSearchCondition condition, Pageable pageable) {
+        List<Goods> content = queryFactory
+                .selectFrom(goods)
+                .leftJoin(goods.category, category1).fetchJoin()
+                .where(
+                        keywordContains(condition.getKeyword()),
+                        categoryIdEq(condition.getCategoryId()),
+                        priceGoeMin(condition.getMinPrice()),
+                        priceLoeMax(condition.getMaxPrice())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(goods.count())
+                .from(goods)
+                .where(
+                        keywordContains(condition.getKeyword()),
+                        categoryIdEq(condition.getCategoryId()),
+                        priceGoeMin(condition.getMinPrice()),
+                        priceLoeMax(condition.getMaxPrice())
+                )
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total != null ? total : 0);
+    }
+
+    private BooleanExpression keywordContains(String keyword) {
+        return keyword != null && !keyword.trim().isEmpty() ? goods.goodsName.contains(keyword) : null;
+    }
+
+    private BooleanExpression categoryIdEq(Long categoryId) {
+        return categoryId != null ? goods.category.id.eq(categoryId) : null;
+    }
+
+    private BooleanExpression priceGoeMin(Integer minPrice) {
+        return minPrice != null ? goods.price.goe(minPrice) : null;
+    }
+
+    private BooleanExpression priceLoeMax(Integer maxPrice) {
+        return maxPrice != null ? goods.price.loe(maxPrice) : null;
+    }
 
 }

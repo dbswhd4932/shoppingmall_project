@@ -86,9 +86,22 @@ public class GoodsController {
     // 상품 가격으로 검색 (특정 경로를 먼저 매핑)
     @GetMapping("/goods/search")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "상품 가격으로 검색 (0원 이상 0원 이하)")
-    public Page<GoodsResponse> search(@ModelAttribute GoodsSearchCondition condition, Pageable pageable) {
-        return goodsService.searchBetweenPrice(condition, pageable);
+    @ApiOperation(value = "상품 통합 검색 (키워드, 카테고리, 가격 범위)")
+    public Page<GoodsResponse> search(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        GoodsSearchCondition condition = GoodsSearchCondition.builder()
+                .keyword(keyword)
+                .categoryId(categoryId)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
+                .build();
+
+        return goodsService.searchGoods(condition, pageable);
     }
 
     // 상품 등록

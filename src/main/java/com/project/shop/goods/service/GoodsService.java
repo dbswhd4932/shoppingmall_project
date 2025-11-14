@@ -41,4 +41,7 @@ public interface GoodsService {
 
     Page<GoodsResponse> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable);
 
+    // 상품 통합 검색 (키워드, 카테고리, 가격 범위)
+    Page<GoodsResponse> searchGoods(GoodsSearchCondition condition, Pageable pageable);
+
 }

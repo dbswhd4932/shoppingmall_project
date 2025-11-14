@@ -8,9 +8,9 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        if (window.confirm('Are you sure you want to logout?')) {
+        if (window.confirm('로그아웃 하시겠습니까?')) {
             logout();
-            alert('You have been logged out.');
+            alert('로그아웃 되었습니다.');
             navigate('/');
         }
     };
@@ -24,10 +24,12 @@ const Navbar = () => {
                 <BSNavbar.Toggle aria-controls="basic-navbar-nav" />
                 <BSNavbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link as={Link} to="/goods">Products</Nav.Link>
+                        <Nav.Link as={Link} to="/goods">
+                            <i className="fas fa-list"></i> 전체 상품
+                        </Nav.Link>
                         {isAuthenticated && hasRole('ROLE_SELLER') && (
-                            <Nav.Link as={Link} to="/goods/register">
-                                <i className="fas fa-plus-circle"></i> Add Product
+                            <Nav.Link as={Link} to="/goods/create">
+                                <i className="fas fa-plus-circle"></i> 상품 등록
                             </Nav.Link>
                         )}
                     </Nav>
@@ -35,20 +37,20 @@ const Navbar = () => {
                         {isAuthenticated ? (
                             <>
                                 <Nav.Link as={Link} to="/cart">
-                                    <i className="fas fa-shopping-cart"></i> Cart
+                                    <i className="fas fa-shopping-cart"></i> 장바구니
                                 </Nav.Link>
                                 <Nav.Link as={Link} to="/orders">
-                                    <i className="fas fa-box"></i> Orders
+                                    <i className="fas fa-box"></i> 주문내역
                                 </Nav.Link>
                                 <Nav.Link as={Link} to="/mypage">
-                                    <i className="fas fa-user"></i> My Page
+                                    <i className="fas fa-user"></i> 마이페이지
                                 </Nav.Link>
-                                <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+                                <Nav.Link onClick={handleLogout}>로그아웃</Nav.Link>
                             </>
                         ) : (
                             <>
-                                <Nav.Link as={Link} to="/login">Login</Nav.Link>
-                                <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
+                                <Nav.Link as={Link} to="/login">로그인</Nav.Link>
+                                <Nav.Link as={Link} to="/signup">회원가입</Nav.Link>
                             </>
                         )}
                     </Nav>

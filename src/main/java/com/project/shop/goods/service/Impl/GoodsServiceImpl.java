@@ -274,10 +274,7 @@ public class GoodsServiceImpl implements GoodsService {
     // 상품 가격으로 조회 (000원 이상 0000 이하)
     @Override
     public Page<GoodsResponse> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable) {
-        GoodsSearchCondition result =
-                new GoodsSearchCondition(condition.getPriceMin(), condition.getPriceMax(), condition.getCategory());
-
-        Page<Goods> goods = goodsRepository.searchBetweenPrice(result, pageable);
+        Page<Goods> goods = goodsRepository.searchBetweenPrice(condition, pageable);
 
         return goods.map(good -> {
             Member member = memberRepository.findById(good.getMemberId())
@@ -286,6 +283,21 @@ public class GoodsServiceImpl implements GoodsService {
             return new GoodsResponse(good, memberLoginId);
         });
 
+    }
+
+    // 상품 통합 검색 (키워드, 카테고리, 가격 범위)
+    @Override
+    @TimerAop
+    @Transactional(readOnly = true)
+    public Page<GoodsResponse> searchGoods(GoodsSearchCondition condition, Pageable pageable) {
+        Page<Goods> goods = goodsRepository.searchGoods(condition, pageable);
+
+        return goods.map(good -> {
+            Member member = memberRepository.findById(good.getMemberId())
+                    .orElse(null);
+            String memberLoginId = (member != null) ? member.getLoginId() : "Unknown";
+            return new GoodsResponse(good, memberLoginId);
+        });
     }
 
     private Member getMember() {

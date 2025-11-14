@@ -160,7 +160,7 @@ class MemberServiceImplTest {
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
 
         MemberEditRequest memberEditRequest
-                = new MemberEditRequest("4321", "zipcode", "detailAddress",
+                = new MemberEditRequest("4321", "테스트이름", "zipcode", "detailAddress",
                 "test@test.com", "010-1234-1234");
 
         //when

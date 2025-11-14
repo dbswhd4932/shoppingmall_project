@@ -10,4 +10,6 @@ import java.util.List;
 public interface GoodsRepositoryCustom {
 
     Page<Goods> searchBetweenPrice(GoodsSearchCondition condition, Pageable pageable);
+
+    Page<Goods> searchGoods(GoodsSearchCondition condition, Pageable pageable);
 }
