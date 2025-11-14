@@ -87,7 +87,11 @@ public class Member extends BaseTimeEntity {
 
     // 회원 수정
     public Member edit(MemberEditRequest memberEditRequest, PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(memberEditRequest.getPassword());
+        // 비밀번호가 제공된 경우에만 업데이트
+        if (memberEditRequest.getPassword() != null && !memberEditRequest.getPassword().isEmpty()) {
+            this.password = passwordEncoder.encode(memberEditRequest.getPassword());
+        }
+        this.name = memberEditRequest.getName();
         this.zipcode = memberEditRequest.getZipcode();
         this.detailAddress = memberEditRequest.getDetailAddress();
         this.email = memberEditRequest.getEmail();

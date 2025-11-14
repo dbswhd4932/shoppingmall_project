@@ -14,19 +14,18 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class MemberEditRequest {
 
-    @NotNull(message = "비밀번호를 입력하세요.")
-    private String password;        //비밀번호
+    private String password;        //비밀번호 (선택)
 
-    @NotNull(message = "우편번호를 입력하세요.")
+    @NotNull(message = "이름을 입력하세요.")
+    private String name;            //이름
+
     private String zipcode;         //우편번호
 
-    @NotNull(message = "상세주소를 입력하세요.")
     private String detailAddress;   //상세주소
 
     @NotNull(message = "이메일을 입력해주세요.")
     @Email(message = "이메일 형식에 맞지 않습니다.")
     private String email;           //이메일
 
-    @NotNull(message = "전화번호를 입력하세요.")
     private String phone;           //핸드폰번호
 }

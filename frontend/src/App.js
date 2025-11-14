@@ -15,6 +15,7 @@ import OrderCreate from './pages/Order/OrderCreate';
 import OrderList from './pages/Order/OrderList';
 import OrderDetail from './pages/Order/OrderDetail';
 import MyPage from './pages/MyPage';
+import MyPageEdit from './pages/MyPageEdit';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
                             <Route path="/orders" element={<OrderList />} />
                             <Route path="/orders/:orderId" element={<OrderDetail />} />
                             <Route path="/mypage" element={<MyPage />} />
+                            <Route path="/mypage/edit" element={<MyPageEdit />} />
                             {/* 추가 라우트는 여기에 */}
                         </Routes>
                     </main>
