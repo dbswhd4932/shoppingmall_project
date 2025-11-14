@@ -11,7 +11,7 @@ services:
       MYSQL_PASSWORD: shop1234
       TZ: Asia/Seoul
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     command:
@@ -30,6 +30,19 @@ services:
       - redis-data:/data
     networks:
       - shop-network
+    restart: unless-stopped
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: shoppingmall-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    networks:
+      - shop-network
+    depends_on:
+      - redis
     restart: unless-stopped
 
 volumes:
