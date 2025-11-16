@@ -39,6 +39,19 @@ spring:
         min-idle: 2     # 최소 유휴 커넥션 수
         max-wait: -1ms  # 커넥션 대기 시간 (-1: 무제한)
 
+  # RabbitMQ 설정
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin1234
+    listener:
+      simple:
+        acknowledge-mode: auto  # 자동 ACK
+        concurrency: 5          # 동시 처리할 Consumer 수
+        max-concurrency: 10     # 최대 Consumer 수
+        prefetch: 10            # 한 번에 가져올 메시지 수
+
 logging:
   level:
     org:

@@ -14,6 +14,8 @@ import com.project.shop.order.controller.request.PayCancelRequest;
 import com.project.shop.order.controller.response.OrderPageResponse;
 import com.project.shop.order.controller.response.OrderResponse;
 import com.project.shop.order.domain.*;
+import com.project.shop.order.event.OrderCreatedEvent;
+import com.project.shop.order.publisher.OrderEventPublisher;
 import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayCancelRepository;
@@ -48,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
     private final MemberRepository memberRepository;
     private final PayCancelRepository payCancelRepository;
     private final RedisCartService redisCartService;
+    private final OrderEventPublisher orderEventPublisher;
 
     // 주문번호 생성 (ORDER-20251109-A1B2C3 형식)
     private String generateOrderNumber() {
@@ -97,10 +100,17 @@ public class OrderServiceImpl implements OrderService {
                             order, goods.getGoodsName(), orderItemCreate.getOrderPrice()/orderItemCreate.getAmount());
             orderItemRepository.save(orderItem);
 
-            // Redis 장바구니에서 주문된 상품 삭제
+            // Redis 장바구니에서 주문된 상품 삭제 (있는 경우만)
             // optionNumber는 orderItemCreate에 있다면 사용, 없으면 null
             Long optionNumber = orderItemCreate.getOptionNumber();
-            redisCartService.removeFromCart(goods.getId(), optionNumber);
+            try {
+                redisCartService.removeFromCart(goods.getId(), optionNumber);
+            } catch (BusinessException e) {
+                // 장바구니에 없는 경우 무시 (직접 주문 시)
+                if (!e.getErrorCode().equals(NOT_FOUND_CART)) {
+                    throw e;
+                }
+            }
         }
 
         // 주문 DB 저장
@@ -116,6 +126,19 @@ public class OrderServiceImpl implements OrderService {
         // 결제 DB 저장
         payRepository.save(pay);
 
+        // RabbitMQ 이벤트 발행 - 주문 생성 알림
+        OrderCreatedEvent event = OrderCreatedEvent.builder()
+                .orderId(order.getId())
+                .merchantId(order.getMerchantId())
+                .memberId(member.getId())
+                .memberLoginId(member.getLoginId())
+                .memberEmail(member.getEmail())
+                .totalPrice(order.getTotalPrice())
+                .orderStatus(order.getOrderStatus().name())
+                .createdAt(order.getCratedAt())
+                .build();
+
+        orderEventPublisher.publishOrderCreated(event);
     }
 
     // 주문 조회

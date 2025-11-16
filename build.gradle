@@ -68,6 +68,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'io.lettuce:lettuce-core' // Redis 클라이언트 (Jedis보다 성능 좋음)
 
+    // RabbitMQ 설정
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
     // ELK - Logstash (Spring Boot 2.7.x compatible version)
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 

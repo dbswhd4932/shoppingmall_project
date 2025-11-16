@@ -1,3 +1,4 @@
+### Redis 테스트
 GET localhost:8080/api/redis/test/string
 
 ###
@@ -8,7 +9,79 @@ GET localhost:8080/api/redis/test/hash
 
 ###
 POST localhost:8080/api/redis/test/hash/increment
+Content-Type: application/json
 
 {
     "amount":3
 }
+
+### ========================================
+### 주문 API 테스트 (RabbitMQ 이벤트 발행 확인)
+### ========================================
+
+### 1. 로그인 (JWT 토큰 발급)
+# @name login
+POST localhost:8080/api/members/login
+Content-Type: application/json
+
+{
+  "loginId": "seller1",
+  "password": "1234",
+  "loginType": "NO_SOCIAL"
+}
+
+### 2. 주문 생성 (RabbitMQ 이벤트 발행 테스트)
+# 주의: 실제 goodsId를 사용해야 합니다 (DB에 존재하는 상품 ID)
+# 주문 생성 후 콘솔 로그에서 RabbitMQ 이벤트 발행/수신 확인
+POST localhost:8080/api/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzZWxsZXIxIiwibWVtYmVySWQiOjEsImF1dGgiOiJbXCJST0xFX1NFTExFUlwiXSIsIkxPR0lOX1RZUEUiOiJOT19TT0NJQUwiLCJleHAiOjE3NjMzNzAwMTF9.eXLEIG0siWzgR-wqbPrhjUbEeHIGqgK2MjYYxPrFZ3o
+
+{
+  "name": "홍길동",
+  "phone": "010-1234-5678",
+  "zipcode": "12345",
+  "detailAddress": "서울시 강남구 테헤란로 123",
+  "requirement": "문 앞에 놔주세요",
+  "orderItemCreates": [
+    {
+      "goodsId": 4,
+      "amount": 2,
+      "orderPrice": 60000,
+      "optionNumber": null
+    },
+    {
+      "goodsId": 5,
+      "amount": 1,
+      "orderPrice": 30000,
+      "optionNumber": null
+    }
+  ],
+  "totalPrice": 90000,
+  "impUid": "imp_123456789",
+  "merchantId": "550e8400-e29b-41d4-a716-446655440000",
+  "cardCompany": "신한카드",
+  "cardNumber": "1234-5678-9012-3456"
+}
+
+### 3. 주문 목록 조회
+GET localhost:8080/api/orders?page=0&size=10
+Authorization: Bearer {{login.response.body.jwtToken}}
+
+### 4. 주문 단건 조회 (orderId를 실제 값으로 변경)
+GET localhost:8080/api/orders/1
+Authorization: Bearer {{login.response.body.jwtToken}}
+
+### ========================================
+### RabbitMQ 이벤트 확인 방법:
+### 1. 주문 생성 API 실행 후 콘솔 로그 확인
+### 2. 예상 로그:
+###    - [RabbitMQ] 주문 생성 이벤트 발행 시작: orderId=...
+###    - [RabbitMQ] 주문 생성 이벤트 발행 성공
+###    - [RabbitMQ Consumer] 주문 생성 이벤트 수신 시작
+###    - 주문 ID, merchantId, 회원 정보, 총 금액 등 상세 정보
+### 3. RabbitMQ Management UI: http://localhost:15672
+###    - Username: admin
+###    - Password: admin1234
+###    - Queues 탭에서 'order.notification.queue' 확인
+### ========================================

@@ -22,6 +22,7 @@ import com.project.shop.order.repository.OrderItemRepository;
 import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayCancelRepository;
 import com.project.shop.order.repository.PayRepository;
+import com.project.shop.order.publisher.OrderEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -77,6 +78,9 @@ class OrderServiceImplTest {
 
     @Mock
     RedisCartService redisCartService;
+
+    @Mock
+    OrderEventPublisher orderEventPublisher;
 
     @Mock
     PasswordEncoder passwordEncoder;

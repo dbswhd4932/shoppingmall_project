@@ -45,10 +45,32 @@ services:
       - redis
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: shoppingmall-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin1234
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management UI port
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - shop-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
   mysql-data:
     driver: local
   redis-data:
+    driver: local
+  rabbitmq-data:
     driver: local
 
 networks:
