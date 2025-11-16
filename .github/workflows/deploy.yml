@@ -36,16 +36,16 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
-      # 서버에서 Docker 이미지 실행
-      - name: 도커 허브 pull & 도커 run
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_WAS_IP }}
-          username: ec2-user
-          key: ${{ secrets.PRIVATE_KEY }}
-          script: | 
-            docker stop ${{ secrets.DOCKER_REPO }}
-            docker rm ${{ secrets.DOCKER_REPO }}
-            docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-            docker run --name ${{ secrets.DOCKER_REPO }} -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e AWS_REGION=ap-northeast-2 -e cloud.aws.credentials.access-key=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }} -e cloud.aws.credentials.secret-key=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }} -e cloud.aws.s3.bucket=${{ secrets.S3_BUCKET }} -e cloud.aws.region.static=ap-northeast-2 -e spring.datasource.url=${{ secrets.DATABASE_URL }} -e spring.datasource.username=${{ secrets.DATABASE_USERNAME }} -e spring.datasource.password=${{ secrets.DATABASE_PASSWORD }} -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
+      # 서버에서 Docker 이미지 실행 (현재 비활성화 - EC2 중단 상태)
+      # - name: 도커 허브 pull & 도커 run
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.EC2_WAS_IP }}
+      #     username: ec2-user
+      #     key: ${{ secrets.PRIVATE_KEY }}
+      #     script: |
+      #       docker stop ${{ secrets.DOCKER_REPO }}
+      #       docker rm ${{ secrets.DOCKER_REPO }}
+      #       docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+      #       docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+      #       docker run --name ${{ secrets.DOCKER_REPO }} -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -e AWS_REGION=ap-northeast-2 -e cloud.aws.credentials.access-key=${{ secrets.CLOUD_AWS_CREDENTIALS_ACCESS_KEY }} -e cloud.aws.credentials.secret-key=${{ secrets.CLOUD_AWS_CREDENTIALS_SECRET_KEY }} -e cloud.aws.s3.bucket=${{ secrets.S3_BUCKET }} -e cloud.aws.region.static=ap-northeast-2 -e spring.datasource.url=${{ secrets.DATABASE_URL }} -e spring.datasource.username=${{ secrets.DATABASE_USERNAME }} -e spring.datasource.password=${{ secrets.DATABASE_PASSWORD }} -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
