@@ -26,6 +26,7 @@ public class Payment extends BaseTimeEntity {
     @Column(unique = true)
     private String paymentKey;      // PG사 결제 키
 
+    @Column(name = "pg_order_id")
     private String orderId;         // PG사 주문 ID
 
     @Column(nullable = false)

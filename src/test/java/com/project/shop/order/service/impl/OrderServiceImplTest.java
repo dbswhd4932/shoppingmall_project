@@ -23,6 +23,10 @@ import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayCancelRepository;
 import com.project.shop.order.repository.PayRepository;
 import com.project.shop.order.publisher.OrderEventPublisher;
+import com.project.shop.payment.dto.PaymentRequest;
+import com.project.shop.payment.dto.PaymentResponse;
+import com.project.shop.payment.repository.PaymentRepository;
+import com.project.shop.payment.service.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,6 +89,12 @@ class OrderServiceImplTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    @Mock
+    PaymentService paymentService;
+
+    @Mock
+    PaymentRepository paymentRepository;
+
     @BeforeEach()
     void beforeEach() {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -105,7 +115,18 @@ class OrderServiceImplTest {
         OrderItem orderItem = OrderItem.createOrderItem
                 (member, goods.getId(), 10000, 10, order, goods.getGoodsName(), goods.getPrice());
         OrderCreateRequest orderCreateRequest = OrderFactory.orderCreateRequest(goods);
+
+        // PaymentService Mock 설정 추가
+        PaymentResponse mockPaymentResponse = PaymentResponse.builder()
+                .merchantId(orderCreateRequest.getMerchantId())
+                .orderId(orderCreateRequest.getMerchantId())
+                .amount(orderCreateRequest.getTotalPrice())
+                .status("READY")
+                .method("CARD")
+                .build();
+
         given(memberRepository.findByLoginId(member.getLoginId())).willReturn(Optional.of(member));
+        given(paymentService.requestPayment(any(PaymentRequest.class))).willReturn(mockPaymentResponse);
         given(goodsRepository.findById(orderCreateRequest.getOrderItemCreates().get(0).getGoodsId()))
                 .willReturn(Optional.of(goods));
 
@@ -120,6 +141,7 @@ class OrderServiceImplTest {
         verify(redisCartService).removeFromCart(any(), any());
         verify(orderRepository).save(any());
         verify(payRepository).save(any());
+        verify(paymentService).requestPayment(any(PaymentRequest.class));
     }
 
     @Test
