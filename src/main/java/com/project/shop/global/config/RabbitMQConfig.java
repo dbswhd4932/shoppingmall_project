@@ -3,6 +3,8 @@ package com.project.shop.global.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -41,7 +43,13 @@ public class RabbitMQConfig {
      */
     @Bean
     public Queue orderNotificationQueue() {
-        return new Queue(ORDER_NOTIFICATION_QUEUE, true);
+        // 쿼럼(복제옵션) 큐로 설정하기 위한 Argument 맵 생성
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-queue-type", "quorum");
+
+        // new Queue(name, durable, exclusive, autoDelete, arguments)
+        // 쿼럼 큐는 기본적으로 durable=true, exclusive=false, autoDelete=false 입니다.
+        return new Queue(ORDER_NOTIFICATION_QUEUE, true, false, false, args);
     }
 
     /**

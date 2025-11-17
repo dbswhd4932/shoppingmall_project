@@ -45,17 +45,74 @@ services:
       - redis
     restart: unless-stopped
 
-  rabbitmq:
+  # =======================================================
+  # RabbitMQ 클러스터 - 3개 노드 (HA 구성)
+  # =======================================================
+
+  # 노드 1 (메인 노드 - Master)
+  rabbitmq1:
     image: rabbitmq:3.12-management-alpine
-    container_name: shoppingmall-rabbitmq
+    container_name: rabbitmq1
+    hostname: rabbitmq1
     environment:
+      # [중요] 모든 노드가 동일한 Erlang Cookie를 가져야 클러스터링 가능
+      RABBITMQ_ERLANG_COOKIE: "VQNnQPg9HA5UgI50J+kKl3xsG3S8N8q+lNOyGz14Jyk="
+      RABBITMQ_NODENAME: rabbit@rabbitmq1
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin1234
     ports:
-      - "5672:5672"   # AMQP protocol port
-      - "15672:15672" # Management UI port
+      - "5672:5672"    # AMQP protocol port (메인 노드만 외부 노출)
+      - "15672:15672"  # Management UI port (메인 노드만 외부 노출)
     volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
+      - rabbitmq1-data:/var/lib/rabbitmq
+    networks:
+      - shop-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 노드 2 (슬레이브 노드 1)
+  rabbitmq2:
+    image: rabbitmq:3.12-management-alpine
+    container_name: rabbitmq2
+    hostname: rabbitmq2
+    environment:
+      # [중요] 동일한 Erlang Cookie
+      RABBITMQ_ERLANG_COOKIE: "VQNnQPg9HA5UgI50J+kKl3xsG3S8N8q+lNOyGz14Jyk="
+      RABBITMQ_NODENAME: rabbit@rabbitmq2
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin1234
+    depends_on:
+      - rabbitmq1  # rabbitmq1이 먼저 시작되도록 설정
+    volumes:
+      - rabbitmq2-data:/var/lib/rabbitmq
+    networks:
+      - shop-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 노드 3 (슬레이브 노드 2)
+  rabbitmq3:
+    image: rabbitmq:3.12-management-alpine
+    container_name: rabbitmq3
+    hostname: rabbitmq3
+    environment:
+      # [중요] 동일한 Erlang Cookie
+      RABBITMQ_ERLANG_COOKIE: "VQNnQPg9HA5UgI50J+kKl3xsG3S8N8q+lNOyGz14Jyk="
+      RABBITMQ_NODENAME: rabbit@rabbitmq3
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin1234
+    depends_on:
+      - rabbitmq1
+    volumes:
+      - rabbitmq3-data:/var/lib/rabbitmq
     networks:
       - shop-network
     restart: unless-stopped
@@ -70,7 +127,12 @@ volumes:
     driver: local
   redis-data:
     driver: local
-  rabbitmq-data:
+  # RabbitMQ 클러스터 볼륨 (3개 노드)
+  rabbitmq1-data:
+    driver: local
+  rabbitmq2-data:
+    driver: local
+  rabbitmq3-data:
     driver: local
 
 networks:
