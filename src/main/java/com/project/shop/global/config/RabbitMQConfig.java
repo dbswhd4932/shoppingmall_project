@@ -37,7 +37,7 @@ public class RabbitMQConfig {
     /**
      * 주문 알림 큐 생성
      *
-     * durable = true: 서버 재시작 시에도 큐 유지
+     * durable = true: 서버 재시작 시에도 큐 유지 (필수)
      */
     @Bean
     public Queue orderNotificationQueue() {

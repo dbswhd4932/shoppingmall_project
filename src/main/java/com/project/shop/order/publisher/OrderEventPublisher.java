@@ -4,6 +4,7 @@ import com.project.shop.global.config.RabbitMQConfig;
 import com.project.shop.order.event.OrderCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,11 @@ public class OrderEventPublisher {
             rabbitTemplate.convertAndSend(
                     RabbitMQConfig.ORDER_EXCHANGE,              // Exchange
                     RabbitMQConfig.ORDER_NOTIFICATION_ROUTING_KEY,  // Routing Key
-                    event                                       // Message (자동으로 JSON 변환됨)
+                    event,                                       // Message (자동으로 JSON 변환됨)
+                    m -> {
+                        m.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT); // 메시지 영속화(메시지 유실 대비)
+                        return m;
+                    }
             );
 
             log.info("[RabbitMQ] 주문 생성 이벤트 발행 성공: orderId={}, memberEmail={}",

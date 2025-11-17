@@ -51,6 +51,8 @@ spring:
         concurrency: 5          # 동시 처리할 Consumer 수
         max-concurrency: 10     # 최대 Consumer 수
         prefetch: 10            # 한 번에 가져올 메시지 수
+    publisher-confirm-type: correlated # producer가 메시지 보냈을 때, Rabbit이 메시지를 잘 받았는지 확인(ACK/NACK) 받겠다는 옵션
+    publisher-returns: true # 주소(Routing Key)가 잘못되었거나 해당 주소와 연결된 큐가 없어서 배달에 실패한 경우 > Return
 
 logging:
   level:

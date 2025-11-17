@@ -29,8 +29,9 @@ public class OrderNotificationConsumer {
      * @RabbitListener: RabbitMQ 큐를 리스닝하는 어노테이션
      * - queues: 리스닝할 큐 이름
      * - 메시지가 큐에 도착하면 자동으로 이 메서드가 호출됨
+     * - concurrency : consumer 1 -> 2개로 나눔
      */
-    @RabbitListener(queues = RabbitMQConfig.ORDER_NOTIFICATION_QUEUE)
+    @RabbitListener(queues = RabbitMQConfig.ORDER_NOTIFICATION_QUEUE, ackMode = "AUTO", concurrency = "2")
     public void handleOrderCreated(OrderCreatedEvent event) {
         try {
             log.info("=".repeat(80));

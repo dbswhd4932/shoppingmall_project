@@ -35,7 +35,7 @@ Content-Type: application/json
 # 주문 생성 후 콘솔 로그에서 RabbitMQ 이벤트 발행/수신 확인
 POST localhost:8080/api/orders
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzZWxsZXIxIiwibWVtYmVySWQiOjEsImF1dGgiOiJbXCJST0xFX1NFTExFUlwiXSIsIkxPR0lOX1RZUEUiOiJOT19TT0NJQUwiLCJleHAiOjE3NjMzNzAwMTF9.eXLEIG0siWzgR-wqbPrhjUbEeHIGqgK2MjYYxPrFZ3o
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzZWxsZXIxIiwibWVtYmVySWQiOjgsImF1dGgiOiJbXCJST0xFX1NFTExFUlwiXSIsIkxPR0lOX1RZUEUiOiJOT19TT0NJQUwiLCJleHAiOjE3NjM0NDI1MDR9.L8vQQDjkW1_wZvRrDuPcecZTfG0TjjC5gYldflPFF0A
 
 {
   "name": "홍길동",
@@ -45,15 +45,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzZWxsZXIxIiwibWVtYmVySWQiO
   "requirement": "문 앞에 놔주세요",
   "orderItemCreates": [
     {
-      "goodsId": 4,
+      "goodsId": 2,
       "amount": 2,
-      "orderPrice": 60000,
-      "optionNumber": null
-    },
-    {
-      "goodsId": 5,
-      "amount": 1,
-      "orderPrice": 30000,
+      "orderPrice": 4000,
       "optionNumber": null
     }
   ],
