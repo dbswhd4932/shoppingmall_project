@@ -21,7 +21,16 @@ import com.project.shop.order.repository.OrderRepository;
 import com.project.shop.order.repository.PayCancelRepository;
 import com.project.shop.order.repository.PayRepository;
 import com.project.shop.order.service.OrderService;
+import com.project.shop.payment.domain.Payment;
+import com.project.shop.payment.domain.PaymentStatus;
+import com.project.shop.payment.dto.PaymentConfirmRequest;
+import com.project.shop.payment.dto.PaymentRequest;
+import com.project.shop.payment.dto.PaymentResponse;
+import com.project.shop.payment.repository.PaymentRepository;
+import com.project.shop.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -37,8 +46,8 @@ import java.util.Random;
 
 import static com.project.shop.global.error.ErrorCode.*;
 
+@Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class OrderServiceImpl implements OrderService {
 
@@ -51,6 +60,35 @@ public class OrderServiceImpl implements OrderService {
     private final PayCancelRepository payCancelRepository;
     private final RedisCartService redisCartService;
     private final OrderEventPublisher orderEventPublisher;
+    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
+
+    // 생성자에서 @Qualifier로 TossPaymentService 주입
+    public OrderServiceImpl(
+            OrderRepository orderRepository,
+            CartRepository cartRepository,
+            GoodsRepository goodsRepository,
+            PayRepository payRepository,
+            OrderItemRepository orderItemRepository,
+            MemberRepository memberRepository,
+            PayCancelRepository payCancelRepository,
+            RedisCartService redisCartService,
+            OrderEventPublisher orderEventPublisher,
+            @Qualifier("tossPaymentService") PaymentService paymentService,
+            PaymentRepository paymentRepository
+    ) {
+        this.orderRepository = orderRepository;
+        this.cartRepository = cartRepository;
+        this.goodsRepository = goodsRepository;
+        this.payRepository = payRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.memberRepository = memberRepository;
+        this.payCancelRepository = payCancelRepository;
+        this.redisCartService = redisCartService;
+        this.orderEventPublisher = orderEventPublisher;
+        this.paymentService = paymentService;
+        this.paymentRepository = paymentRepository;
+    }
 
     // 주문번호 생성 (ORDER-20251109-A1B2C3 형식)
     private String generateOrderNumber() {
@@ -68,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
         return "ORDER-" + dateStr + "-" + randomCode.toString();
     }
 
-    // 주문 생성
+    // 주문 생성 (결제 예시 버전)
     @Override
     public void cartOrder(OrderCreateRequest orderCreateRequest) {
 
@@ -77,7 +115,56 @@ public class OrderServiceImpl implements OrderService {
         // 주문번호 생성
         String orderNumber = generateOrderNumber();
 
-        // Order 생성 시 orderNumber 추가
+        // 1. 결제 준비 요청 (TossPayments)
+        PaymentRequest paymentRequest = new PaymentRequest(
+                orderCreateRequest.getMerchantId(),
+                orderCreateRequest.getTotalPrice(),
+                orderNumber + " 외 " + orderCreateRequest.getOrderItemCreates().size() + "건", // 주문명
+                member.getEmail(),
+                member.getName(),
+                "CARD" // 기본 결제수단, 프론트엔드에서 선택 가능하도록 개선 필요
+        );
+
+        PaymentResponse paymentResponse = paymentService.requestPayment(paymentRequest);
+        log.info("결제 준비 완료 - merchantId: {}, orderId: {}, amount: {}, status: {}",
+                paymentResponse.getMerchantId(),
+                paymentResponse.getOrderId(),
+                paymentResponse.getAmount(),
+                paymentResponse.getStatus());
+
+        // ========== 결제 승인 로직 (주석 처리) ==========
+        // 실제 운영 환경에서는 프론트엔드에서 TossPayments SDK로 결제 후
+        // PaymentController의 confirmPayment API를 호출해야 함
+        // 아래는 테스트용 자동 승인 예시 코드
+        /*
+        try {
+            // TossPayments에서 결제 완료 후 받는 paymentKey를 가정
+            // 실제로는 프론트엔드에서 TossPayments SDK 응답으로 받음
+            String mockPaymentKey = "test_payment_key_" + System.currentTimeMillis();
+
+            PaymentConfirmRequest confirmRequest = new PaymentConfirmRequest(
+                    mockPaymentKey,                          // TossPayments에서 발급한 결제 키
+                    paymentResponse.getOrderId(),            // 주문 ID
+                    paymentResponse.getAmount()              // 결제 금액
+            );
+
+            // 결제 최종 승인 요청
+            PaymentResponse confirmedResponse = paymentService.confirmPayment(confirmRequest);
+            log.info("결제 승인 완료 - paymentKey: {}, status: {}, approvedAt: {}",
+                    confirmedResponse.getPaymentKey(),
+                    confirmedResponse.getStatus(),
+                    confirmedResponse.getApprovedAt());
+
+        } catch (Exception e) {
+            log.error("결제 승인 실패 - merchantId: {}, error: {}",
+                    paymentResponse.getMerchantId(), e.getMessage());
+            // 결제 승인 실패 시 주문도 취소 처리해야 함
+            throw new BusinessException(ErrorCode.PAYMENT_FAILED);
+        }
+        */
+        // ========== 결제 승인 로직 끝 ==========
+
+        // 2. Order 생성
         Order order = Order.builder()
                 .memberId(member.getId())
                 .name(orderCreateRequest.getName())
@@ -91,7 +178,7 @@ public class OrderServiceImpl implements OrderService {
                 .orderNumber(orderNumber)
                 .build();
 
-        // 주문_상품 DB 저장
+        // 3. 주문_상품 DB 저장
         for (OrderCreateRequest.orderItemCreate orderItemCreate : orderCreateRequest.getOrderItemCreates()) {
             Goods goods = goodsRepository.findById(orderItemCreate.getGoodsId()).orElseThrow(
                     () -> new BusinessException(NOT_FOUND_GOODS));
@@ -101,7 +188,6 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepository.save(orderItem);
 
             // Redis 장바구니에서 주문된 상품 삭제 (있는 경우만)
-            // optionNumber는 orderItemCreate에 있다면 사용, 없으면 null
             Long optionNumber = orderItemCreate.getOptionNumber();
             try {
                 redisCartService.removeFromCart(goods.getId(), optionNumber);
@@ -113,20 +199,22 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        // 주문 DB 저장
+        // 4. 주문 DB 저장
         orderRepository.save(order);
 
+        // 5. Payment 엔티티와 Order 연결 (선택 사항, 추후 확인용)
+        // Payment는 이미 requestPayment()에서 생성되었으므로 별도 처리 불필요
+
+        // 6. 기존 Pay 엔티티도 저장 (하위 호환성)
         Pay pay = Pay.builder()
                 .cardCompany(orderCreateRequest.getCardCompany())
                 .cardNumber(orderCreateRequest.getCardNumber())
                 .order(order)
                 .payPrice(order.getTotalPrice())
                 .build();
-
-        // 결제 DB 저장
         payRepository.save(pay);
 
-        // RabbitMQ 이벤트 발행 - 주문 생성 알림
+        // 7. RabbitMQ 이벤트 발행 - 주문 생성 알림
         OrderCreatedEvent event = OrderCreatedEvent.builder()
                 .orderId(order.getId())
                 .merchantId(order.getMerchantId())

@@ -3,6 +3,7 @@ package com.project.shop.order.domain;
 import com.project.shop.global.common.BaseTimeEntity;
 import com.project.shop.member.domain.Member;
 import com.project.shop.order.controller.request.OrderCreateRequest;
+import com.project.shop.payment.domain.Payment;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,6 +54,9 @@ public class Order extends BaseTimeEntity {
 
     @Column(nullable = false, unique = true)
     private String orderNumber;    // 주문번호 표시용  ex)ORDER-20251109-A1B2C3
+
+    @OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Payment payment;       // 결제 정보
 
     @Builder
     public Order(Long memberId, String name, String phone, String zipcode, String detailAddress, String requirement, int totalPrice, String impUid, String merchantId, String orderNumber) {

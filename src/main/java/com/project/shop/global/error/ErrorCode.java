@@ -61,6 +61,9 @@ public enum ErrorCode {
     ALREADY_CANCEL_PAY(HttpStatus.BAD_REQUEST, "이미 취소된 결제입니다."),
     CAN_NOT_CANCEL_PAY(HttpStatus.BAD_REQUEST, "결제를 취소할 수 없습니다."),
     NOT_EQUAL_MERCHANT_ID(HttpStatus.BAD_REQUEST, "주문번호 ID가 일치하지 않습니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "결제 정보를 찾을 수 없습니다."),
+    PAYMENT_FAILED(HttpStatus.BAD_REQUEST, "결제에 실패했습니다."),
+    PAYMENT_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "이미 취소된 결제입니다."),
 
     //기타
     FAIL_SERIALIZE_OBJECT_INTO_JSON(HttpStatus.BAD_REQUEST, "객체를 JSON으로 변환할 수 없습니다."),

@@ -1,7 +1,9 @@
 package com.project.shop.global.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -16,5 +18,14 @@ public class WebConfig implements WebMvcConfigurer {
         // /uploads/** 경로로 들어오는 요청을 로컬 파일 시스템의 uploads 디렉토리로 매핑
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadDirectory + "/");
+    }
+
+    /**
+     * RestTemplate 빈 등록
+     * 외부 API 호출 (TossPayments 등)에 사용
+     */
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }
