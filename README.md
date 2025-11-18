@@ -16,6 +16,7 @@
 - **완전한 쇼핑몰 플로우**: 회원가입부터 상품 등록, 주문, 결제까지 전체 프로세스 구현
 - **확장 가능한 아키텍처**: MSA 환경을 고려한 JWT 기반 인증 시스템
 - **실시간 가격 검증**: 장바구니-주문 전환 시 상품 가격 변경 감지
+- **비동기 메시징 시스템**: RabbitMQ를 통한 안정적인 결제 처리
 - **자동화된 배포**: CI/CD 파이프라인을 통한 무중단 배포 구현
 
 ### 📊 프로젝트 정보
@@ -29,6 +30,12 @@
 
 <details>
 <summary><b>🔽 전체 변경 이력 보기</b></summary>
+
+#### 2025.11.18
+- **RabbitMQ 메시징 시스템 구축**
+  - RabbitMQ 클러스터링 설정 (고가용성 확보)
+  - 가용성 및 성능 향상 설정 적용
+  - 결제 예상 코드 작성
 
 #### 2025.11.13
 - **Redis 기반 장바구니 시스템 구현** (RedisCartService - MySQL Cart 테이블 대체)
@@ -104,6 +111,9 @@
 ![AWS RDS](https://img.shields.io/badge/AWS%20RDS-MySQL-232F3E?style=flat&logo=amazon-aws&logoColor=white)
 ![AWS S3](https://img.shields.io/badge/AWS%20S3-232F3E?style=flat&logo=amazon-s3&logoColor=white)
 
+### Messaging & Queue
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=flat&logo=rabbitmq&logoColor=white)
+
 ### Security & Authentication
 ![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=JSON%20web%20tokens&logoColor=white)
 ![AWS Secrets Manager](https://img.shields.io/badge/AWS%20Secrets%20Manager-232F3E?style=flat&logo=amazon-aws&logoColor=white)
@@ -142,6 +152,7 @@
 | **Database** | H2 | 1.4.200 | 테스트 데이터베이스 |
 | **Cache** | Redis | 7.x | 장바구니 데이터 저장 |
 | **Cache** | Ehcache | 3.8.0 | 애플리케이션 캐시 |
+| **Message Queue** | RabbitMQ | 3.x | 비동기 메시징 (결제 처리) |
 | **File Storage** | AWS S3 | - | 상품 이미지 저장 |
 | **Server** | AWS EC2 | Amazon Linux 2 | 애플리케이션 서버 |
 | **CI/CD** | GitHub Actions | - | 자동 빌드/배포 |
@@ -238,6 +249,10 @@ src/main/java/com/project/shop/
 - **실시간 가격 검증**: 장바구니에서 주문으로 넘어갈 때 상품 가격 변경 여부 확인
 - **소프트 딜리트**: 회원 탈퇴 시 데이터 무결성 보장을 위한 논리적 삭제
 - **이미지 관리**: 로컬 파일 시스템을 통한 상품 이미지 업로드/다운로드/삭제 (개발 환경)
+- **비동기 메시징 시스템**:
+  - RabbitMQ를 활용한 비동기 결제 처리
+  - 클러스터링을 통한 고가용성 확보
+  - Dead Letter Queue를 통한 메시지 처리 실패 대응
 - **캐싱 시스템**:
   - Redis를 활용한 장바구니 데이터 캐싱 (TTL 30일)
   - Ehcache를 통한 상품/카테고리 조회 성능 최적화
@@ -310,7 +325,7 @@ src/main/java/com/project/shop/
 
 ### 📋 필수 조건
 - Java 17 이상
-- Docker & Docker Compose (MySQL, Redis 컨테이너 실행)
+- Docker & Docker Compose (MySQL, Redis, RabbitMQ 컨테이너 실행)
 - Node.js 14 이상 (React 프론트엔드)
 - AWS 계정 (S3, RDS, EC2 - 선택사항, 현재 미사용)
 
@@ -322,14 +337,14 @@ git clone [repository-url]
 cd shoppingmall_project
 ```
 
-#### 2. 데이터베이스 및 Redis 설정 (Docker Compose)
+#### 2. 데이터베이스, Redis 및 RabbitMQ 설정 (Docker Compose)
 ```bash
-# MySQL + Redis Docker 컨테이너 실행
+# MySQL + Redis + RabbitMQ Docker 컨테이너 실행
 docker-compose up -d
 
 # 확인
 docker ps
-# shopping_mall_mysql, shopping_mall_redis 컨테이너 실행 확인
+# shopping_mall_mysql, shopping_mall_redis, shopping_mall_rabbitmq 컨테이너 실행 확인
 ```
 
 #### 3. 백엔드 실행 (Spring Boot)
@@ -355,6 +370,8 @@ npm start
 - **Swagger UI**: http://localhost:8080/swagger-ui/index.html
 - **MySQL**: localhost:3306 (user: shopuser, password: shop1234)
 - **Redis**: localhost:6379 (비밀번호 없음)
+- **RabbitMQ Management**: http://localhost:15672 (user: guest, password: guest)
+- **RabbitMQ AMQP**: localhost:5672
 
 #### 6. 초기 데이터
 ```sql
@@ -616,67 +633,3 @@ public class GoodsOption {
 - [Jackson 직렬화 오류](https://josteady.tistory.com/760)
 - [Validation 타입 불일치](https://josteady.tistory.com/725)
 - [Swagger 설정 오류](https://josteady.tistory.com/768)
-
-## 🎯 프로젝트 회고 및 성장
-
-### 💭 **개발자로서의 성장**
-
-#### 🔍 **기술적 역량 향상**
-- **아키텍처 설계 능력**: 단순한 CRUD를 넘어 확장 가능한 시스템 아키텍처 설계 경험
-- **문제 해결 능력**: 다양한 기술적 이슈를 스스로 해결하며 troubleshooting 역량 강화
-- **코드 품질 의식**: 테스트 주도 개발과 리팩토링을 통한 코드 품질 개선 의식 확립
-
-#### 🎓 **학습과 적용의 선순환**
-- **지속적 학습**: 모르는 기술을 끈질기게 학습하여 실제 프로젝트에 적용하는 경험
-- **문서화 습관**: 학습한 내용을 체계적으로 정리하여 지식 자산화
-- **오픈소스 활용**: 우아한 형제들 등 오픈소스 레퍼런스를 분석하고 프로젝트에 적용
-
-### 💡 **핵심 깨달음**
-
-#### 🚀 **"동작하는 코드"를 넘어서**
-> *"기능이 정상적으로 동작하는 것은 끝이 아닌 시작점"*
-
-- 단순히 작동하는 코드가 아닌, **유지보수 가능하고 확장 가능한 코드**의 중요성 인식
-- 성능, 보안, 가독성을 모두 고려한 **종합적인 코드 품질** 추구
-
-#### 🧪 **테스트의 가치**
-> *"테스트하기 쉬운 코드가 좋은 코드"*
-
-- 단위 테스트와 통합 테스트를 통한 **코드 신뢰성** 확보
-- 리팩토링 시 테스트 코드가 주는 **안정감과 자신감** 경험
-
-#### 🔄 **실패를 통한 성장**
-> *"시행착오를 통해 더 많이 배우고 성장"*
-
-- 에러와 실패를 두려워하지 않고 **적극적으로 도전**하는 자세 형성
-- 각 에러를 해결하며 얻은 **깊이 있는 이해**의 가치 인식
-
-### 🔄 **지속적 개선 계획**
-
-#### 📈 **기술적 발전 방향**
-- **마이크로서비스 아키텍처** 적용 경험
-- **대용량 트래픽 처리** 및 성능 최적화
-- **모니터링 시스템** 구축 (ELK Stack, Prometheus 등)
-
-#### 🤝 **협업 능력 강화**
-- **코드 리뷰 문화** 경험 및 개선
-- **애자일 개발 방법론** 적용
-- **기술 공유 및 멘토링** 활동 참여
-
-## 🌟 마치며
-
-이 프로젝트는 단순한 **쇼핑몰 API 개발**을 넘어, **실무에서 요구되는 종합적인 개발 역량**을 기를 수 있었던 소중한 경험이었습니다.
-
-특히 **개발 → 테스트 → 배포 → 모니터링**의 전체 라이프사이클을 경험하며,
-단순히 코드를 작성하는 것이 아닌 **지속 가능한 소프트웨어를 만드는 것**의 의미를 깨달았습니다.
-
-앞으로도 이런 **체계적이고 품질 높은 개발 문화**를 바탕으로 더 나은 개발자로 성장해 나가겠습니다.
-
----
-
-### 📞 Contact
-- **Email**: [개발자 이메일]
-- **Blog**: [기술 블로그](https://josteady.tistory.com/)
-- **GitHub**: [GitHub 프로필]
-
-**⭐ 이 프로젝트가 도움이 되셨다면 Star를 눌러주세요!**
