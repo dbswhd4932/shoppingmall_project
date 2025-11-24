@@ -2,6 +2,7 @@ package com.project.shop.member.service.Impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.shop.global.config.security.JwtTokenDto;
+import com.project.shop.global.config.security.RefreshTokenService;
 import com.project.shop.global.config.security.TokenProvider;
 import com.project.shop.global.error.exception.BusinessException;
 import com.project.shop.goods.domain.Goods;
@@ -12,6 +13,7 @@ import com.project.shop.goods.service.Impl.S3Service;
 import com.project.shop.member.controller.request.LoginRequest;
 import com.project.shop.member.controller.request.MemberEditRequest;
 import com.project.shop.member.controller.request.MemberSignupRequest;
+import com.project.shop.member.controller.request.TokenReissueRequest;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.member.domain.*;
 import com.project.shop.member.repository.CartRepository;
@@ -46,6 +48,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final RefreshTokenService refreshTokenService;
     private final RoleRepository roleRepository;
     private final GoodsRepository goodsRepository;
     private final ImageRepository imageRepository;
@@ -112,6 +115,23 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(NOT_EQUAL_PASSWORD);
         }
         return tokenProvider.generateToken(loginRequest);
+    }
+
+    // 토큰 재발급
+    @Override
+    public JwtTokenDto reissueToken(TokenReissueRequest request) throws JsonProcessingException {
+        return tokenProvider.reissueToken(request.getRefreshToken());
+    }
+
+    // 로그아웃
+    @Override
+    public void logout() {
+        // 현재 인증된 사용자의 loginId 추출
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginId = authentication.getName();
+
+        // Redis에서 Refresh Token 삭제
+        refreshTokenService.deleteRefreshToken(loginId);
     }
 
     // 내 정보 조회

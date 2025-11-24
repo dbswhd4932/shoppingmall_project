@@ -1,10 +1,7 @@
 package com.project.shop.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.project.shop.member.controller.request.LoginIdCheckRequest;
-import com.project.shop.member.controller.request.LoginRequest;
-import com.project.shop.member.controller.request.MemberEditRequest;
-import com.project.shop.member.controller.request.MemberSignupRequest;
+import com.project.shop.member.controller.request.*;
 import com.project.shop.member.controller.response.MemberResponse;
 import com.project.shop.global.config.security.JwtTokenDto;
 import com.project.shop.member.service.MemberService;
@@ -46,6 +43,23 @@ public class MemberController {
     @ApiOperation(value = "일반 로그인")
     public JwtTokenDto login(@RequestBody LoginRequest loginRequest) throws JsonProcessingException {
         return memberService.login(loginRequest);
+    }
+
+    // 토큰 재발급 (Refresh Token 사용)
+    @PostMapping("/auth/reissue")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Access Token 재발급", notes = "Refresh Token을 사용하여 새로운 Access Token과 Refresh Token을 발급받습니다.")
+    public JwtTokenDto reissueToken(@RequestBody @Valid TokenReissueRequest request) throws JsonProcessingException {
+        return memberService.reissueToken(request);
+    }
+
+    // 로그아웃
+    @PostMapping("/auth/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_SELLER','ROLE_ADMIN')")
+    @ApiOperation(value = "로그아웃", notes = "Refresh Token을 Redis에서 삭제하여 세션을 무효화합니다.")
+    public void logout() {
+        memberService.logout();
     }
 
     // 내 정보 가져오기

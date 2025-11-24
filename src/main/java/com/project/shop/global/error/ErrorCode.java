@@ -21,6 +21,12 @@ public enum ErrorCode {
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "판매자만 등록할 수 있습니다."),
 
+    // JWT & Refresh Token
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),
+    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 Refresh Token입니다. 다시 로그인해주세요."),
+    NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, "Refresh Token을 찾을 수 없습니다."),
+    REFRESH_TOKEN_REUSE_DETECTED(HttpStatus.UNAUTHORIZED, "이미 사용된 Refresh Token입니다. 보안을 위해 재로그인이 필요합니다."),
+
     // 상품
     NOT_FOUND_GOODS(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
     DUPLICATE_GOODS(HttpStatus.BAD_REQUEST, "이미 존재하는 상품입니다."),
