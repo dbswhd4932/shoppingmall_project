@@ -107,7 +107,7 @@ class MemberServiceImplTest {
     void SocialLogin() throws JsonProcessingException {
         //given
         LoginRequest loginRequest = new LoginRequest("loginId", "1234", LoginType.KAKAO, "test@test.com");
-        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
+        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", "refreshToken", 1234L, 604800000L);
         given(tokenProvider.generateToken(loginRequest)).willReturn(tokenDto);
 
         //when
@@ -122,7 +122,7 @@ class MemberServiceImplTest {
     void noSocialLogin() throws Exception {
         //given
         LoginRequest loginRequest = LoginRequest.builder().loginId("loginId").password("1234").loginType(LoginType.NO_SOCIAL).build();
-        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", 1234L);
+        JwtTokenDto tokenDto = new JwtTokenDto("jwt", "accessToken", "refreshToken", 1234L, 604800000L);
         MemberFactory memberFactory = new MemberFactory(passwordEncoder);
         Member member = memberFactory.createMember();
         given(memberRepository.findByLoginId(loginRequest.getLoginId())).willReturn(Optional.ofNullable(member));
