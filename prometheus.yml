@@ -1,0 +1,36 @@
+# Prometheus 설정 파일
+# Spring Boot 애플리케이션에서 메트릭을 수집하는 설정
+
+global:
+  scrape_interval: 15s      # 15초마다 메트릭 수집
+  evaluation_interval: 15s  # 15초마다 규칙 평가
+  scrape_timeout: 10s       # 수집 타임아웃 10초
+
+# 알람 관리자 설정 (선택 사항)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: []
+
+# 수집 작업 설정
+scrape_configs:
+  # Prometheus 자체 모니터링
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Spring Boot 애플리케이션 모니터링
+  - job_name: 'spring-boot-app'
+    metrics_path: '/actuator/prometheus'  # Spring Actuator Prometheus 엔드포인트
+    scrape_interval: 10s                  # 10초마다 수집 (더 자주 수집)
+    static_configs:
+      - targets: ['host.docker.internal:8080']  # Docker 내부에서 호스트 접근
+        labels:
+          application: 'shoppingmall'
+          environment: 'local'
+
+  # RabbitMQ 모니터링 (선택 사항)
+  # RabbitMQ Management Plugin의 메트릭 수집
+  # - job_name: 'rabbitmq'
+  #   static_configs:
+  #     - targets: ['rabbitmq1:15692']  # RabbitMQ Prometheus plugin 포트

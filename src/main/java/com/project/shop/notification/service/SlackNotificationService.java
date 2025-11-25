@@ -2,7 +2,6 @@ package com.project.shop.notification.service;
 
 import com.project.shop.notification.dto.SlackMessage;
 import com.project.shop.order.event.OrderCreatedEvent;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -14,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -24,7 +22,6 @@ import java.util.Locale;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @ConditionalOnProperty(name = "slack.webhook.enabled", havingValue = "true", matchIfMissing = false)
 public class SlackNotificationService {
 

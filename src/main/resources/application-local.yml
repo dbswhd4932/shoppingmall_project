@@ -89,3 +89,28 @@ slack:
   webhook:
     url: ${SLACK_WEBHOOK_URL}  # .env 파일의 환경변수 사용
     enabled: true  # Slack 알림 활성화 여부
+
+# Prometheus + Grafana 모니터링 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics  # 노출할 엔드포인트
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always  # 헬스 체크 상세 정보 표시
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name:shoppingmall}  # 애플리케이션 태그
+      environment: local
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true  # HTTP 요청 히스토그램 활성화
+  server:
+    port: 8080  # Actuator도 동일 포트 사용

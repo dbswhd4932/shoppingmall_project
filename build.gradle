@@ -77,6 +77,10 @@ dependencies {
     // dotenv - .env 파일 지원
     implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
+    // Prometheus + Grafana - 모니터링
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     compileOnly 'org.projectlombok:lombok:1.18.30'
