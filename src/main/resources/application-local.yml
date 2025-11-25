@@ -83,3 +83,9 @@ jwt:
 file:
   upload:
     directory: uploads
+
+# Slack 알림 설정
+slack:
+  webhook:
+    url: ${SLACK_WEBHOOK_URL}  # .env 파일의 환경변수 사용
+    enabled: true  # Slack 알림 활성화 여부

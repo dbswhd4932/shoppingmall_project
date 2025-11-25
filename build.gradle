@@ -74,6 +74,9 @@ dependencies {
     // ELK - Logstash (Spring Boot 2.7.x compatible version)
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 
+    // dotenv - .env 파일 지원
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     compileOnly 'org.projectlombok:lombok:1.18.30'

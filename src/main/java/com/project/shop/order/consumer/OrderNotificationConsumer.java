@@ -1,16 +1,18 @@
 package com.project.shop.order.consumer;
 
 import com.project.shop.global.config.RabbitMQConfig;
+import com.project.shop.notification.service.SlackNotificationService;
 import com.project.shop.order.event.OrderCreatedEvent;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * 주문 알림 Consumer
  *
  * RabbitMQ에서 주문 생성 이벤트를 받아서 처리
+ * - Slack 알림 발송
  * - 이메일 발송
  * - 알림톡 발송
  * - 로그 기록
@@ -18,8 +20,12 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class OrderNotificationConsumer {
+
+    // @Autowired(required = false)로 Slack 서비스를 선택적으로 주입
+    // slack.webhook.enabled=false인 경우 Bean이 생성되지 않으므로 required=false 처리
+    @Autowired(required = true)
+    private SlackNotificationService slackNotificationService;
 
     /**
      * 주문 생성 이벤트 리스너
@@ -50,14 +56,17 @@ public class OrderNotificationConsumer {
             // 여기서 실제 알림 처리 로직 수행
             // ========================================
 
-            // 1. 이메일 발송 (미구현 - 로그만 출력)
-            sendEmailNotification(event);
+            // 1. Slack 알림 발송
+            sendSlackNotification(event);
 
-            // 2. 알림톡 발송 (미구현 - 로그만 출력)
-            sendKakaoNotification(event);
+            // 2. 이메일 발송 (미구현 - 로그만 출력)
+            // sendEmailNotification(event);
 
-            // 3. 관리자에게 알림 (미구현 - 로그만 출력)
-            notifyAdmin(event);
+            // 3. 알림톡 발송 (미구현 - 로그만 출력)
+            // sendKakaoNotification(event);
+
+            // 4. 관리자에게 알림 (미구현 - 로그만 출력)
+            // notifyAdmin(event);
 
             log.info("[RabbitMQ Consumer] 주문 생성 이벤트 처리 완료: orderId={}", event.getOrderId());
 
@@ -65,6 +74,17 @@ public class OrderNotificationConsumer {
             log.error("[RabbitMQ Consumer] 주문 생성 이벤트 처리 실패: orderId={}, error={}",
                     event.getOrderId(), e.getMessage(), e);
             // 실패 시 재시도 로직 추가 가능 (DLQ - Dead Letter Queue 활용)
+        }
+    }
+
+    /**
+     * Slack 알림 발송
+     */
+    private void sendSlackNotification(OrderCreatedEvent event) {
+        if (slackNotificationService != null) {
+            slackNotificationService.sendOrderNotification(event);
+        } else {
+            log.info("[Slack] Slack 알림이 비활성화되어 있습니다 (slack.webhook.enabled=false)");
         }
     }
 
